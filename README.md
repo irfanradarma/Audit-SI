@@ -70,131 +70,131 @@
                 <h3 class="text-2xl font-semibold mb-5">Bahan Perkuliahan</h3>
                 
                 <!-- Table container for horizontal scrolling on small screens -->
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[600px] border border-gray-400 border-collapse">
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full min-w-[600px] border-collapse">
                         <!-- Table Header -->
-                        <thead class="bg-gray-200 text-gray-700">
+                        <thead class="bg-gray-800 text-white">
                             <tr>
-                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider border border-gray-300">No</th>
-                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider border border-gray-300">Topik</th>
-                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider border border-gray-300">Bahan Ajar</th>
-                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider border border-gray-300">Praktikum</th>
-                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider border border-gray-300">Lain-Lain</th>
+                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">No</th>
+                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Topik</th>
+                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Bahan Ajar</th>
+                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Praktikum</th>
+                                <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Lain-Lain</th>
                             </tr>
                         </thead>
                         
                         <!-- Table Body -->
-                        <tbody>
+                        <tbody class="divide-y divide-gray-200">
                             <!-- Rows 1-6 with placeholder content -->
-                            <tr>
-                                <td class="p-3 border border-gray-300">1</td>
-                                <td class="p-3 border border-gray-300">Pendahuluan Audit SI</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 1</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Lab 1</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">1</td>
+                                <td class="p-3">Pendahuluan Audit SI</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 1</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Lab 1</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">2</td>
-                                <td class="p-3 border border-gray-300">Standar dan Kerangka Kerja Audit (COBIT)</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 2</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Lab 2</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Link COBIT</a></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">2</td>
+                                <td class="p-3">Standar dan Kerangka Kerja Audit (COBIT)</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 2</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Lab 2</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Link COBIT</a></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">3</td>
-                                <td class="p-3 border border-gray-300">Manajemen Risiko TI</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 3</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Studi Kasus 1</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">3</td>
+                                <td class="p-3">Manajemen Risiko TI</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 3</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Studi Kasus 1</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">4</td>
-                                <td class="p-3 border border-gray-300">Audit Tata Kelola (IT Governance)</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 4</a></td>
-                                <td class="p-3 border border-gray-300"></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">4</td>
+                                <td class="p-3">Audit Tata Kelola (IT Governance)</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 4</a></td>
+                                <td class="p-3"></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">5</td>
-                                <td class="p-3 border border-gray-300">Audit Kontrol Aplikasi</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 5</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Lab 3</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">5</td>
+                                <td class="p-3">Audit Kontrol Aplikasi</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 5</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Lab 3</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">6</td>
-                                <td class="p-3 border border-gray-300">Audit Infrastruktur dan Jaringan</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 6</a></td>
-                                <td class="p-3 border border-gray-300"></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Video</a></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">6</td>
+                                <td class="p-3">Audit Infrastruktur dan Jaringan</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 6</a></td>
+                                <td class="p-3"></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Video</a></td>
                             </tr>
                             
                             <!-- Row 7: Review -->
-                            <tr>
-                                <td class="p-3 border border-gray-300">7</td>
-                                <td class="p-3 border border-gray-300" colspan="4">Review Materi 1-6</td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">7</td>
+                                <td class="p-3" colspan="4">Review Materi 1-6</td>
                             </tr>
 
                             <!-- Row 8: Midterm Exam (UTS) -->
                             <tr class="bg-blue-50 text-blue-800 font-semibold text-center">
-                                <td class="p-3 border border-gray-300">8</td>
-                                <td class="p-3 border border-gray-300" colspan="4">Ujian Tengah Semester (UTS)</td>
+                                <td class="p-3">8</td>
+                                <td class="p-3" colspan="4">Ujian Tengah Semester (UTS)</td>
                             </tr>
 
                             <!-- Rows 9-14 with placeholder content -->
-                            <tr>
-                                <td class="p-3 border border-gray-300">9</td>
-                                <td class="p-3 border border-gray-300">Teknik Audit Berbantuan Komputer (TABK)</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 7</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Lab 4 (ACL)</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">9</td>
+                                <td class="p-3">Teknik Audit Berbantuan Komputer (TABK)</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 7</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Lab 4 (ACL)</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">10</td>
-                                <td class="p-3 border border-gray-300">Audit Keamanan Fisik dan Lingkungan</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 8</a></td>
-                                <td class="p-3 border border-gray-300"></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">10</td>
+                                <td class="p-3">Audit Keamanan Fisik dan Lingkungan</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 8</a></td>
+                                <td class="p-3"></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">11</td>
-                                <td class="p-3 border border-gray-300">Audit Business Continuity Planning (BCP)</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 9</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Studi Kasus 2</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">11</td>
+                                <td class="p-3">Audit Business Continuity Planning (BCP)</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 9</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Studi Kasus 2</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">12</td>
-                                <td class="p-3 border border-gray-300">Audit Proyek Pengembangan Sistem</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 10</a></td>
-                                <td class="p-3 border border-gray-300"></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">12</td>
+                                <td class="p-3">Audit Proyek Pengembangan Sistem</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 10</a></td>
+                                <td class="p-3"></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">13</td>
-                                <td class="p-3 border border-gray-300">Laporan Audit SI</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 11</a></td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Contoh Laporan</a></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">13</td>
+                                <td class="p-3">Laporan Audit SI</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 11</a></td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Contoh Laporan</a></td>
+                                <td class="p-3"></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border border-gray-300">14</td>
-                                <td class="p-3 border border-gray-300">Etika Profesi Audit</td>
-                                <td class="p-3 border border-gray-300"><a href="#" class="text-blue-600 hover:underline">Slide 12</a></td>
-                                <td class="p-3 border border-gray-300"></td>
-                                <td class="p-3 border border-gray-300"></td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">14</td>
+                                <td class="p-3">Etika Profesi Audit</td>
+                                <td class="p-3"><a href="#" class="text-blue-600 hover:underline">Slide 12</a></td>
+                                <td class="p-3"></td>
+                                <td class="p-3"></td>
                             </tr>
                             
                             <!-- Row 15: Review -->
-                            <tr>
-                                <td class="p-3 border border-gray-300">15</td>
-                                <td class="p-3 border border-gray-300" colspan="4">Review Materi 9-14 / Presentasi Proyek</td>
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
+                                <td class="p-3">15</td>
+                                <td class="p-3" colspan="4">Review Materi 9-14 / Presentasi Proyek</td>
                             </tr>
                             
                             <!-- Row 16: Final Exam (UAS) -->
                             <tr class="bg-green-50 text-green-800 font-semibold text-center">
-                                <td class="p-3 border border-gray-300">16</td>
-                                <td class="p-3 border border-gray-300" colspan="4">Ujian Akhir Semester (UAS)</td>
+                                <td class="p-3">16</td>
+                                <td class="p-3" colspan="4">Ujian Akhir Semester (UAS)</td>
                             </tr>
                         </tbody>
                     </table>
