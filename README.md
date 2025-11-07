@@ -30,7 +30,7 @@
 <body class="bg-gray-100 font-sans text-gray-800">
 
     <!-- Main Content Container -->
-    <div class="container mx-auto max-w-7xl p-4 sm:p-6 md:p-10">
+    <div class="container mx-auto p-4 sm:p-6 md:p-10">
         
         <!-- Page Header -->
         <header class="mb-8 p-6 bg-white rounded-xl shadow-md">
@@ -125,7 +125,7 @@
                             </tr>
                             
                             <!-- Row 7: Review -->
-                            <tr class_="" ="hover:bg-gray-50 even:bg-gray-50">
+                            <tr class="hover:bg-gray-50 even:bg-gray-50">
                                 <td class="p-3">7</td>
                                 <td class="p-3" colspan="4">Review Materi 1-6</td>
                             </tr>
