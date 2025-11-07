@@ -38,49 +38,49 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>1</td>
-    <td></td>
+    <td>IT Governance</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>2</td>
-    <td></td>
+    <td>IT Governance Audit Program</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>3</td>
-    <td></td>
+    <td>IS Acquisition, Development & Implementation I</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>4</td>
-    <td></td>
+    <td>IS Acquisition, Development & Implementation II</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>5</td>
-    <td></td>
+    <td>IS Operations & Business Resilience</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>6</td>
-    <td></td>
+    <td>Protection of Information Assets</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>7</td>
-    <td></td>
+    <td>Protection of Information Assets</td>
     <td></td>
     <td></td>
     <td></td>
@@ -91,49 +91,49 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>9</td>
-    <td></td>
+    <td>Basic of Data Analysis</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>10</td>
-    <td></td>
+    <td>Risk and Control</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>11</td>
-    <td></td>
+    <td>Parallel Simulation</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>12</td>
-    <td></td>
+    <td>Analytics and Sampling</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>13</td>
-    <td></td>
+    <td>Substantive Testing: Sales Cycle</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>14</td>
-    <td></td>
+    <td>Substantive Testing: Expentidure Cycle</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>15</td>
-    <td></td>
+    <td>Audit Report</td>
     <td></td>
     <td></td>
     <td></td>
