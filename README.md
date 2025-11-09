@@ -42,7 +42,8 @@ by Teuku Raja Irfan Radarma
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx" target="_blank">01 - IT Governance: Concept</a>
     </td>
     <td></td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Introduction.pdf" target="_blank">COBIT 2019 Framework by ISACA</a>
+    </td>
   </tr>
   <tr>
     <td>2</td>
