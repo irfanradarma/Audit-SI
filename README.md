@@ -39,7 +39,8 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>1</td>
     <td>IT Governance</td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx" target="_blank">01 - IT Governance: Concept</a>
+    </td>
     <td></td>
     <td></td>
   </tr>
