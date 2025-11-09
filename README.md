@@ -4,7 +4,7 @@ Semester Ganjil 2025-2026<br>
 by Teuku Raja Irfan Radarma
 
 ### Rencana Pembelajaran Semester
-[Unduh RPS](<https://github.com/irfanradarma/Audit-SI/blob/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf>)
+[Unduh RPS](<https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf>)
 
 ### Bahan Perkuliahan
 
