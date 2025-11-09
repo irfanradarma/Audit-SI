@@ -128,7 +128,7 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>14</td>
-    <td>Substantive Testing: Expentidure Cycle</td>
+    <td>Substantive Testing: Expenditure Cycle</td>
     <td></td>
     <td></td>
     <td></td>
