@@ -47,7 +47,7 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>2</td>
-    <td>IT Governance Audit (COBIT 2019)</td>
+    <td>IT Governance Audit</td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/02%20-%20IT%20Governance%20Audit.pptx" target="_blank">02 - IT Governance Audit</a></td>
     <td></td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Governance.pdf" target="_blank">COBIT 2019 Governance & Management Objectives</a></td>
