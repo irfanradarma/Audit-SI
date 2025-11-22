@@ -1,0 +1,56 @@
+[
+  {
+    "subjectName": "IT Governance (COBIT 2019)",
+    "flashcards": [
+      {"term": "COBIT 2019", "definition": "A framework for the governance and management of enterprise IT, focusing on value creation and risk management."},
+      {"term": "Governance Objective", "definition": "A statement of desired outcomes for enterprise IT, aligning with and contributing to business goals (e.g., Value Optimization, Risk Optimization)."},
+      {"term": "EDM", "definition": "Evaluate, Direct, and Monitor – The set of processes used by the governing body to ensure strategic alignment and compliance."},
+      {"term": "APO", "definition": "Align, Plan, and Organise – A COBIT Management domain focused on strategy, planning, enterprise architecture, and human resources."},
+      {"term": "MEA", "definition": "Monitor, Evaluate, and Assess – A COBIT Management domain focused on monitoring performance, compliance, and the internal control system."},
+      {"term": "Target Capability Level", "definition": "The desired level of process maturity for a specific Management Objective, typically assessed in audits or governance reviews."}
+    ],
+    "quizQuestions": [
+      {
+        "question": "Which COBIT 2019 component involves setting priorities and making decisions based on stakeholder needs?",
+        "options": ["Evaluate", "Direct", "Monitor", "Assess"],
+        "answer": "Direct"
+      },
+      {
+        "question": "What is the primary focus of the COBIT Governance component (EDM)?",
+        "options": ["Building, Acquiring, and Implementing solutions", "Ensuring IT operations run smoothly", "Evaluating Stakeholder Needs, setting Direction, and Monitoring performance", "Managing IT security and resilience"],
+        "answer": "Evaluating Stakeholder Needs, setting Direction, and Monitoring performance"
+      },
+      {
+        "question": "Which design principle allows COBIT to be tailored for specific enterprise contexts?",
+        "options": ["Separation of Governance and Management", "A Holistic Approach", "Tailored to Enterprise Needs", "Dynamic Governance System"],
+        "answer": "Tailored to Enterprise Needs"
+      }
+    ]
+  },
+  {
+    "subjectName": "IT Governance Audit (COBIT Focus)",
+    "flashcards": [
+      {"term": "Audit Charter", "definition": "A formal document that defines the internal audit activity's purpose, authority, and responsibility, usually approved by the highest level of governance (the Board)."},
+      {"term": "Control Objective", "definition": "A statement of the desired result or purpose to be achieved by implementing control procedures within IT processes."},
+      {"term": "Assurance Provider", "definition": "The role responsible for providing independent assurance on the effectiveness of the IT governance and control system to stakeholders."},
+      {"term": "Audit Trail", "definition": "A record of the sequence of events and operations that allows for reconstruction and review of transactions or actions (critical for forensic analysis)."}
+    ],
+    "quizQuestions": [
+      {
+        "question": "Which COBIT 2019 process domain is most relevant to assessing the efficiency and effectiveness of IT operations (Service Delivery)?",
+        "options": ["APO (Align, Plan, Organise)", "BAI (Build, Acquire, Implement)", "DSS (Deliver, Service, Support)", "MEA (Monitor, Evaluate, Assess)"],
+        "answer": "DSS (Deliver, Service, Support)"
+      },
+      {
+        "question": "The three components of EDM (Evaluate, Direct, Monitor) relate primarily to:",
+        "options": ["IT Management", "IT Operations", "The Governing Body", "Development Teams"],
+        "answer": "The Governing Body"
+      },
+      {
+        "question": "The independence and objectivity of the IT auditor are best maintained by reporting to which body?",
+        "options": ["IT Management", "The CIO", "The Audit Committee or Board", "The Head of Operations"],
+        "answer": "The Audit Committee or Board"
+      }
+    ]
+  }
+]
