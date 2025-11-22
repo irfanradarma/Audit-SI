@@ -21,6 +21,26 @@
       {
         "term": "Security Threat",
         "definition": "Any risk event that could exploit a vulnerability in an IS, potentially resulting in unauthorized access, data loss, or system disruption."
+      },
+      {
+        "term": "CIA Triad",
+        "definition": "The fundamental model for information security: Confidentiality, Integrity, and Availability."
+      },
+      {
+        "term": "Preventive Control",
+        "definition": "A type of control designed to stop an error or irregularity from occurring in the first place (e.g., strong password policy)."
+      },
+      {
+        "term": "Detective Control",
+        "definition": "A type of control designed to identify an error or irregularity after it has occurred (e.g., log monitoring, intrusion detection systems)."
+      },
+      {
+        "term": "Inherent Risk",
+        "definition": "The risk exposure if no controls (or control weaknesses) were applied. It is the initial risk level."
+      },
+      {
+        "term": "Residual Risk",
+        "definition": "The risk that remains after management has applied controls and implemented mitigation efforts. This is the risk the auditor ultimately reports on."
       }
     ],
     "quizQuestions": [
@@ -32,7 +52,7 @@
           "People and Processes",
           "Network Infrastructure"
         ],
-        "answer": "People and Processes"
+        "answerIndex": 2
       },
       {
         "question": "The primary goal of IS Auditing is to ensure that IS assets achieve what three key outcomes?",
@@ -42,7 +62,7 @@
           "Compliance with all local tax laws",
           "Implementing the latest software releases"
         ],
-        "answer": "Safeguarding information, maintaining data integrity, and achieving organizational goals"
+        "answerIndex": 1
       },
       {
         "question": "The necessity of IT Auditing in the modern era is primarily driven by:",
@@ -52,7 +72,7 @@
           "The shift to mainframe computing",
           "The increase in paper-based transactions"
         ],
-        "answer": "The rise of regulatory compliance and cyber threats"
+        "answerIndex": 1
       },
       {
         "question": "What is the main output of an Information System that supports executive action?",
@@ -62,7 +82,7 @@
           "Operational Technology",
           "Physical Assets"
         ],
-        "answer": "Processed Information"
+        "answerIndex": 1
       },
       {
         "question": "Which function is *not* a primary objective of an IS Audit?",
@@ -72,7 +92,7 @@
           "Designing and implementing new security software",
           "Evaluating the efficiency of IT resource usage"
         ],
-        "answer": "Designing and implementing new security software"
+        "answerIndex": 2
       },
       {
         "question": "What is the greatest risk in the era of digital transformation that an IS audit must address?",
@@ -82,7 +102,7 @@
           "High electricity costs",
           "Slow network speeds"
         ],
-        "answer": "Inadequate data governance and cybersecurity failures"
+        "answerIndex": 1
       },
       {
         "question": "The Sarbanes-Oxley Act (SOX) primarily drives the need for IT audit in which area?",
@@ -92,7 +112,7 @@
           "Physical security of data centers",
           "Employee benefits administration"
         ],
-        "answer": "Reliability of financial reporting data"
+        "answerIndex": 1
       },
       {
         "question": "What is a 'Control' in the context of IS Auditing?",
@@ -102,7 +122,7 @@
           "A type of programming language",
           "A business contract"
         ],
-        "answer": "A mechanism to mitigate risks and ensure objectives are met"
+        "answerIndex": 1
       },
       {
         "question": "The term 'Data Integrity' in IS Auditing primarily refers to:",
@@ -112,7 +132,7 @@
           "The accuracy, completeness, and validity of the data",
           "The cost of data storage"
         ],
-        "answer": "The accuracy, completeness, and validity of the data"
+        "answerIndex": 2
       },
       {
         "question": "Which characteristic differentiates IS Auditing from traditional financial auditing?",
@@ -122,7 +142,7 @@
           "The need to comply with GAAP",
           "Reviewing company inventory levels"
         ],
-        "answer": "Focus on non-financial operational processes and controls over systems"
+        "answerIndex": 1
       },
       {
         "question": "Which factor has increased the criticality of IT general controls in financial reporting?",
@@ -132,7 +152,7 @@
           "The complexity and integration of automated transaction processing",
           "Decreased scope of governmental regulation"
         ],
-        "answer": "The complexity and integration of automated transaction processing"
+        "answerIndex": 2
       },
       {
         "question": "A 'Vulnerability' in an IS is defined as:",
@@ -142,7 +162,7 @@
           "A weakness in the design, implementation, or operation of a system",
           "An external hacker"
         ],
-        "answer": "A weakness in the design, implementation, or operation of a system"
+        "answerIndex": 2
       },
       {
         "question": "Which regulation primarily addresses the privacy and protection of personal data in the European Union?",
@@ -152,7 +172,7 @@
           "GDPR",
           "PCI DSS"
         ],
-        "answer": "GDPR"
+        "answerIndex": 2
       },
       {
         "question": "What is the role of the IS Auditor regarding risk?",
@@ -162,7 +182,7 @@
           "To identify, assess, and report on IT-related risks",
           "To transfer all IT risk to insurance companies"
         ],
-        "answer": "To identify, assess, and report on IT-related risks"
+        "answerIndex": 2
       },
       {
         "question": "The scope of an IS Audit typically includes:",
@@ -172,7 +192,7 @@
           "Only the accounting department's procedures",
           "Only external vendor contracts"
         ],
-        "answer": "All processes, people, and technology related to an IS application or function"
+        "answerIndex": 1
       },
       {
         "question": "Which IT component is considered part of the 'Technology' component of an IS?",
@@ -182,7 +202,7 @@
           "The data entry clerk",
           "The decision-making procedure"
         ],
-        "answer": "The network router"
+        "answerIndex": 1
       },
       {
         "question": "What is the goal of an IT general control?",
@@ -192,7 +212,7 @@
           "To track specific financial transactions",
           "To handle complex calculations"
         ],
-        "answer": "To ensure the proper development and reliable operation of all IS resources"
+        "answerIndex": 1
       },
       {
         "question": "What is an 'Audit Trail'?",
@@ -202,7 +222,7 @@
           "A record of the sequence of events and operations that allows for reconstruction and review of transactions",
           "A list of all IT staff members"
         ],
-        "answer": "A record of the sequence of events and operations that allows for reconstruction and review of transactions"
+        "answerIndex": 2
       },
       {
         "question": "The use of a complex algorithm to analyze data falls under which IS component?",
@@ -212,7 +232,7 @@
           "Technology (Software)",
           "All of the above"
         ],
-        "answer": "All of the above"
+        "answerIndex": 2
       },
       {
         "question": "What does the 'confidentiality' principle of information security primarily ensure?",
@@ -222,7 +242,7 @@
           "Information is protected from unauthorized disclosure or access",
           "Information can be traced to its source"
         ],
-        "answer": "Information is protected from unauthorized disclosure or access"
+        "answerIndex": 2
       }
     ]
   },
@@ -252,6 +272,26 @@
       {
         "term": "Governance Audit Criteria",
         "definition": "The standards, metrics, or frameworks (like COBIT's Objectives and Domains) against which an IT Auditor assesses the effectiveness of the IT Governance system."
+      },
+      {
+        "term": "COBIT Enabler",
+        "definition": "Any component that helps an organization achieve its governance and management objectives (e.g., Processes, Organizational Structures, Culture, Information)."
+      },
+      {
+        "term": "Goals Cascade",
+        "definition": "The mechanism in COBIT used to translate stakeholder needs into practical, tailored enterprise goals, alignment goals, and process goals."
+      },
+      {
+        "term": "RAC-I Chart",
+        "definition": "A common responsibility assignment matrix used in COBIT to define who is Responsible, Accountable, Consulted, and Informed for each process activity."
+      },
+      {
+        "term": "Target Capability Level",
+        "definition": "The desired level of process maturity for a specific Management Objective, used as a benchmark during assurance and audit reviews."
+      },
+      {
+        "term": "Continuous Monitoring (MEA Domain)",
+        "definition": "An ongoing activity within the MEA domain to ensure that IT controls and processes are performing as intended over time, providing assurance to the governing body."
       }
     ],
     "quizQuestions": [
@@ -263,7 +303,7 @@
           "EDM (Evaluate, Direct, Monitor)",
           "MEA (Monitor, Evaluate, Assess)"
         ],
-        "answer": "EDM (Evaluate, Direct, Monitor)"
+        "answerIndex": 2
       },
       {
         "question": "If an auditor is assessing the effectiveness of the IT strategic planning process, they are focused on which COBIT Management Domain?",
@@ -273,7 +313,7 @@
           "APO (Align, Plan, Organize)",
           "MEA (Monitor, Evaluate, Assess)"
         ],
-        "answer": "APO (Align, Plan, Organize)"
+        "answerIndex": 2
       },
       {
         "question": "Which COBIT component specifies the desired outcomes that IT should deliver to the business?",
@@ -283,7 +323,7 @@
           "IT Governance Objective",
           "Control Activities"
         ],
-        "answer": "IT Governance Objective"
+        "answerIndex": 2
       },
       {
         "question": "The primary distinction between the COBIT Governance and Management domains is the difference between:",
@@ -293,7 +333,7 @@
           "Setting direction and executing the strategy",
           "Risk avoidance and risk transfer"
         ],
-        "answer": "Setting direction and executing the strategy"
+        "answerIndex": 2
       },
       {
         "question": "Which COBIT Management Domain focuses on obtaining and implementing IT solutions (development)?",
@@ -303,7 +343,7 @@
           "DSS (Deliver, Service, Support)",
           "MEA (Monitor, Evaluate, Assess)"
         ],
-        "answer": "BAI (Build, Acquire, Implement)"
+        "answerIndex": 1
       },
       {
         "question": "The management objective 'Manage Service Operations' belongs to which COBIT Management Domain?",
@@ -313,7 +353,7 @@
           "DSS",
           "MEA"
         ],
-        "answer": "DSS"
+        "answerIndex": 2
       },
       {
         "question": "The core principle 'Meeting Stakeholder Needs' is addressed by which COBIT component?",
@@ -323,7 +363,7 @@
           "The Information Flow",
           "The Resource Pools"
         ],
-        "answer": "The Goals Cascade"
+        "answerIndex": 0
       },
       {
         "question": "In COBIT, who is primarily responsible for the *execution* of the IT strategy?",
@@ -333,7 +373,7 @@
           "External Auditors",
           "Regulators"
         ],
-        "answer": "Senior Management"
+        "answerIndex": 1
       },
       {
         "question": "Which COBIT Governance objective relates to achieving the expected benefits from IT investments?",
@@ -343,7 +383,7 @@
           "Stakeholder Engagement",
           "Value Realization"
         ],
-        "answer": "Value Realization"
+        "answerIndex": 3
       },
       {
         "question": "Which element is NOT one of the five focus areas of IT Governance?",
@@ -353,7 +393,7 @@
           "Risk Management",
           "IT Infrastructure Maintenance"
         ],
-        "answer": "IT Infrastructure Maintenance"
+        "answerIndex": 3
       },
       {
         "question": "The COBIT design principle 'Separation of Governance and Management' is reflected by the distinct process domains:",
@@ -363,7 +403,7 @@
           "EDM and the four Management domains",
           "All Management domains"
         ],
-        "answer": "EDM and the four Management domains"
+        "answerIndex": 2
       },
       {
         "question": "Which COBIT Management Domain includes 'Manage Security' (APO13) and 'Manage Data' (BAI06)?",
@@ -373,7 +413,7 @@
           "DSS (Deliver, Service, Support)",
           "MEA (Monitor, Evaluate, Assess)"
         ],
-        "answer": "APO (Align, Plan, Organize)"
+        "answerIndex": 0
       },
       {
         "question": "Which COBIT domain is responsible for setting the priorities for investment and resource allocation?",
@@ -383,7 +423,7 @@
           "MEA",
           "BAI"
         ],
-        "answer": "EDM"
+        "answerIndex": 1
       },
       {
         "question": "Which process falls under the MEA (Monitor, Evaluate, Assess) domain?",
@@ -393,7 +433,7 @@
           "Monitor, Evaluate and Assess the System of Internal Control",
           "Manage Vendors"
         ],
-        "answer": "Monitor, Evaluate and Assess the System of Internal Control"
+        "answerIndex": 2
       },
       {
         "question": "'Optimisation of Risk' is an example of a:",
@@ -403,7 +443,7 @@
           "IT Governance Objective",
           "Control Environment"
         ],
-        "answer": "IT Governance Objective"
+        "answerIndex": 2
       },
       {
         "question": "Which COBIT design principle emphasizes that COBIT should cover the entire enterprise, including all functions and technologies?",
@@ -413,7 +453,7 @@
           "Dynamic Governance System",
           "Focus on Value"
         ],
-        "answer": "A Holistic Approach"
+        "answerIndex": 1
       },
       {
         "question": "What is the main output of the 'Evaluate' step in the EDM domain?",
@@ -423,7 +463,7 @@
           "Project plans and budgets",
           "User training manuals"
         ],
-        "answer": "A conclusion on IT performance and risk positions"
+        "answerIndex": 1
       },
       {
         "question": "An IS Auditor uses COBIT primarily to:",
@@ -433,7 +473,7 @@
           "Replace internal audit department functions",
           "Manage day-to-day IT operations"
         ],
-        "answer": "Establish the universally accepted structure for effective IT governance and management"
+        "answerIndex": 1
       },
       {
         "question": "What is the purpose of the COBIT cascading goals?",
@@ -443,7 +483,7 @@
           "To classify types of financial fraud",
           "To monitor network uptime"
         ],
-        "answer": "To translate stakeholder needs into practical, IT-related goals"
+        "answerIndex": 0
       },
       {
         "question": "Which process within APO focuses on managing IT costs and budgets?",
@@ -453,7 +493,7 @@
           "APO09 Manage Service Agreements",
           "APO12 Manage Risk"
         ],
-        "answer": "APO06 Manage Budget and Costs"
+        "answerIndex": 1
       },
       {
         "question": "What does the COBIT Management Domain 'BAI' primarily focus on?",
@@ -463,7 +503,7 @@
           "Ensuring IT operations run smoothly",
           "Monitoring and assurance activities"
         ],
-        "answer": "The acquisition, development, and implementation of new IT solutions"
+        "answerIndex": 1
       },
       {
         "question": "When assessing 'Value Delivery' as an audit objective, an auditor looks at:",
@@ -473,7 +513,7 @@
           "The cost of the help desk function",
           "The speed of database backups"
         ],
-        "answer": "The extent to which IT contributes to the achievement of business value"
+        "answerIndex": 1
       },
       {
         "question": "Which COBIT principle ensures the framework integrates with other standards like ITIL and ISO 27000?",
@@ -483,7 +523,7 @@
           "Focus on Stakeholder Needs",
           "Dynamic Governance System"
         ],
-        "answer": "Enabling a Holistic Approach"
+        "answerIndex": 0
       },
       {
         "question": "The 'Monitor' step in the EDM domain is primarily concerned with:",
@@ -493,7 +533,7 @@
           "Designing the enterprise architecture",
           "Hiring IT personnel"
         ],
-        "answer": "Ensuring compliance and performance against agreed-upon direction"
+        "answerIndex": 1
       }
     ]
   },
@@ -523,6 +563,26 @@
       {
         "term": "Project Management Office (PMO)",
         "definition": "The department or group that defines and maintains standards for project management within the organization, crucial for controlling IS acquisition projects."
+      },
+      {
+        "term": "Waterfall Model",
+        "definition": "A sequential (non-iterative) design process in which development flows downward through phases: Requirements, Design, Implementation, Verification, and Maintenance. Controls must be planned early."
+      },
+      {
+        "term": "Agile Development",
+        "definition": "An iterative and incremental approach focused on delivering working software frequently and adapting to change quickly. The auditor focuses on continuous assurance and embedded controls."
+      },
+      {
+        "term": "Unit Testing",
+        "definition": "Testing individual program modules, routines, or objects to ensure they function correctly in isolation. Typically performed by developers."
+      },
+      {
+        "term": "Integration Testing",
+        "definition": "Testing modules or components together to ensure they interact correctly and pass data seamlessly between them."
+      },
+      {
+        "term": "Post-Implementation Review (PIR)",
+        "definition": "An audit review performed after a system has gone live to assess whether the project met its original objectives, was completed on time/budget, and whether the system is functioning effectively and efficiently."
       }
     ],
     "quizQuestions": [
@@ -534,7 +594,7 @@
           "Implementation and Conversion",
           "Maintenance"
         ],
-        "answer": "Requirements Definition and Design"
+        "answerIndex": 1
       },
       {
         "question": "What is the riskiest conversion strategy, where the old system is immediately replaced by the new system on a specific date?",
@@ -544,7 +604,7 @@
           "Pilot Conversion",
           "Direct Cutover Conversion"
         ],
-        "answer": "Direct Cutover Conversion"
+        "answerIndex": 3
       },
       {
         "question": "The sign-off process performed by the business users to confirm the system meets functional needs is known as:",
@@ -554,7 +614,7 @@
           "Acceptance Testing",
           "Performance Testing"
         ],
-        "answer": "Acceptance Testing"
+        "answerIndex": 2
       },
       {
         "question": "In the IS acquisition process, the audit concern during the initial selection phase focuses on:",
@@ -564,7 +624,7 @@
           "Testing the final system code for bugs",
           "Calculating the system's eventual depreciation schedule"
         ],
-        "answer": "Validating that vendor selection criteria are fair, objective, and align with business needs"
+        "answerIndex": 1
       },
       {
         "question": "Which SDLC stage is most concerned with training users and installing hardware?",
@@ -574,7 +634,7 @@
           "System Design",
           "Post-Implementation Review"
         ],
-        "answer": "Implementation and Conversion"
+        "answerIndex": 1
       },
       {
         "question": "The process of proving that the developed system can handle expected transaction volume and speed is known as:",
@@ -584,7 +644,7 @@
           "Compliance Testing",
           "Security Testing"
         ],
-        "answer": "Volume Testing"
+        "answerIndex": 1
       },
       {
         "question": "Why is auditor involvement critical during the Requirements Definition phase?",
@@ -594,7 +654,7 @@
           "To manage the budget for the entire project",
           "To interview all potential system users"
         ],
-        "answer": "To ensure that internal controls are incorporated into the system design"
+        "answerIndex": 1
       },
       {
         "question": "In the Implementation phase, the process of running the new system alongside the old system for a period is called:",
@@ -604,7 +664,7 @@
           "Pilot Conversion",
           "Parallel Conversion"
         ],
-        "answer": "Parallel Conversion"
+        "answerIndex": 3
       },
       {
         "question": "Controls over program changes (e.g., source code management) are an audit concern primarily during which phase?",
@@ -614,7 +674,7 @@
           "Maintenance",
           "Post-Implementation Review"
         ],
-        "answer": "Development/Programming"
+        "answerIndex": 1
       },
       {
         "question": "What is the purpose of a System Flowchart in the design phase?",
@@ -624,7 +684,7 @@
           "To conduct user acceptance testing",
           "To hire technical staff"
         ],
-        "answer": "To document the sequence of operations and flow of data/information"
+        "answerIndex": 1
       },
       {
         "question": "Which type of testing verifies that the system operates correctly as a complete, interconnected application?",
@@ -634,7 +694,7 @@
           "System Testing",
           "Alpha Testing"
         ],
-        "answer": "System Testing"
+        "answerIndex": 2
       },
       {
         "question": "The risk of unauthorized changes being introduced during development is mitigated by which type of control?",
@@ -644,7 +704,7 @@
           "Physical Access Controls",
           "Financial Budget Controls"
         ],
-        "answer": "General IT Controls (Change Management)"
+        "answerIndex": 0
       },
       {
         "question": "What is the primary objective of a 'Pilot Conversion'?",
@@ -654,7 +714,7 @@
           "To run the old and new systems simultaneously",
           "To gradually introduce modules of the new system across the organization"
         ],
-        "answer": "To implement the new system in only one department or location first"
+        "answerIndex": 1
       },
       {
         "question": "Which document formally authorizes the start of the system development project, including scope and budget?",
@@ -664,7 +724,7 @@
           "Hardware Specification List",
           "System Maintenance Log"
         ],
-        "answer": "Project Charter (or initiation document)"
+        "answerIndex": 1
       },
       {
         "question": "If an auditor reviews a contract for a purchased software package, they are primarily assessing controls over:",
@@ -674,7 +734,7 @@
           "Disposal of old equipment",
           "Database administration"
         ],
-        "answer": "Vendor selection and acquisition procedures"
+        "answerIndex": 1
       },
       {
         "question": "Controls that ensure all program library changes are tracked, approved, and authorized are commonly known as:",
@@ -684,7 +744,7 @@
           "Program Change Controls",
           "Application Processing Controls"
         ],
-        "answer": "Program Change Controls"
+        "answerIndex": 2
       },
       {
         "question": "Which is *not* a typical type of feasibility examined in the initial SDLC phase?",
@@ -694,7 +754,7 @@
           "Marketing Feasibility",
           "Economic Feasibility"
         ],
-        "answer": "Marketing Feasibility"
+        "answerIndex": 2
       },
       {
         "question": "What is the main audit concern with 'Direct Cutover' conversion?",
@@ -704,7 +764,7 @@
           "The cost of running two systems concurrently",
           "The time taken to train users"
         ],
-        "answer": "High risk of business disruption if the new system fails"
+        "answerIndex": 1
       },
       {
         "question": "The use of structured walkthroughs and peer reviews is a key control for which SDLC stage?",
@@ -714,7 +774,7 @@
           "Data Conversion",
           "Final Sign-off"
         ],
-        "answer": "Programming and Coding"
+        "answerIndex": 1
       },
       {
         "question": "Which strategy involves introducing the new system module by module across the entire organization?",
@@ -724,7 +784,7 @@
           "Pilot Conversion",
           "Total Conversion"
         ],
-        "answer": "Phased Conversion"
+        "answerIndex": 1
       },
       {
         "question": "The final sign-off by management before the system goes live should happen after:",
@@ -734,7 +794,7 @@
           "The auditor issues the final report",
           "The budget is finalized"
         ],
-        "answer": "All testing, including Acceptance Testing, is successfully completed"
+        "answerIndex": 1
       },
       {
         "question": "What is the purpose of a 'Change Management' process post-implementation?",
@@ -744,7 +804,7 @@
           "To train new employees on the system",
           "To perform system backups"
         ],
-        "answer": "To ensure that all modifications to the system are controlled, tested, and authorized"
+        "answerIndex": 1
       },
       {
         "question": "What is a key control to ensure the integrity of code migrated from testing to production?",
@@ -754,7 +814,7 @@
           "Allowing users to copy code manually",
           "Performing a physical inventory of all servers"
         ],
-        "answer": "Using a formal, controlled migration process with segregation of duties"
+        "answerIndex": 1
       },
       {
         "question": "The auditor should ensure that the final system documentation is adequate for:",
@@ -764,7 +824,7 @@
           "Marketing purposes only",
           "Determining initial system requirements"
         ],
-        "answer": "Future maintenance, user training, and audit trail reconstruction"
+        "answerIndex": 1
       }
     ]
   }
