@@ -56,8 +56,8 @@ by Teuku Raja Irfan Radarma
     <td>3</td>
     <td>IS Acquisition, Development & Implementation I</td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/03%20-%20IS%20Acquisition%20%20Development.pptx" target="_blank">03 - IS Acquisition & Development</a></td>
-    <td><a href="https://irfanradarma.github.io/mind-map-audit5.html" target="_blank">Mind Map App 7 Audit-5</a><br>
-    <a href="https://irfanradarma.github.io/mind-map-sisfo2.html" target="_blank">Mind Map App 7 Sisfo-2</a></td>
+    <td><a href="https://irfanradarma.github.io/Audit-SI/mind-map-audit5.html" target="_blank">Mind Map App 7 Audit-5</a><br>
+    <a href="https://irfanradarma.github.io/Audit-SI/mind-map-sisfo2.html" target="_blank">Mind Map App 7 Sisfo-2</a></td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/CISA%20Review%20Manual%2027th%20Edition-2019.pdf" target="_blank">CISA Review Manual</a></td>
   </tr>
   <tr>
