@@ -1,41 +1,44 @@
 {
   "IS_Acquisition_and_Development": {
     "Project_Governance_and_Management": {
-      "Project_Initiation": {
-        "Definition_Project_Scope": {
-          "summary": "this is dummy brief explanation"
-        },
-        "Stakeholder_Identification": {
-          "summary": "this is dummy brief explanation"
-        },
-        "Project_Charter_Creation": {
-          "summary": "this is dummy brief explanation"
-        }
+      "Project_Management_Practices": {
+        "summary": "this is dummy brief explanation"
       },
-      "Project_Planning": {
-        "Resource_Planning": {
+      "Project_Management_Structure": {
           "summary": "this is dummy brief explanation"
-        },
-        "Budgeting_and_Cost_Estimation": {
-          "summary": "this is dummy brief explanation"
-        },
-        "Risk_Management_Planning": {
-          "summary": "this is dummy brief explanation"
-        },
-        "Scheduling_and_Timeline": {
-          "summary": "this is dummy brief explanation"
-        }
       },
-      "Project_Execution_and_Control": {
-        "Performance_Monitoring": {
+      "Project_Management_Roles_and_Responsibility": {
           "summary": "this is dummy brief explanation"
-        },
-        "Change_Management": {
+      },
+      "Project_Management_Techniques": {
           "summary": "this is dummy brief explanation"
-        },
-        "Quality_Assurance": {
+      },
+      "Porfolio/Program Management": {
           "summary": "this is dummy brief explanation"
-        }
+      },
+      "Project Management Office": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Benefit Realization": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Initiation": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Objectives": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Planning": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Execution": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Controlling and Monitoring": {
+          "summary": "this is dummy brief explanation"
+      },
+      "Project Closing": {
+          "summary": "this is dummy brief explanation"
       }
     },
 
