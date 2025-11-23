@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Self-Study Hub | Reels Style</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Font and Configuration -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s;
+        }
+
+        /* --- Custom Styles for Gen Z Aesthetic (Flashcards/Quiz) --- */
+
+        /* Flashcard Container Setup (Reel/Story Look) */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            /* Full height relative to container, ensuring it looks like a stand-alone card */
+            height: 380px; 
+            margin: 0 auto;
+            max-width: 480px; 
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-in-out;
+            cursor: pointer;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px; /* Highly rounded corners */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            padding: 2.5rem;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .flashcard-front {
+            background-color: #f87171; /* Red 400 - Fun, high contrast */
+            color: white;
+            font-size: 2rem;
+            font-weight: 800; 
+            border: 6px solid #b91c1c; /* Darker red border for depth */
+        }
+        .flashcard-back {
+            background-color: #34d399; /* Emerald 400 - Success color */
+            color: #101010;
+            transform: rotateY(180deg);
+            font-size: 1.25rem;
+            font-weight: 600;
+            border: 6px solid #065f46;
+        }
+
+        /* Quiz Option Button Styling (Big and Tappable) */
+        .quiz-option {
+            transition: background-color 0.15s, transform 0.1s;
+        }
+        .quiz-option:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Subject Card Styling */
+        .subject-card {
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            background: linear-gradient(45deg, #e0f2fe, #bfdbfe); /* Light blue gradient */
+            border: 2px solid #60a5fa;
+            color: #1f2937;
+        }
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+        .subject-card:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans antialiased p-4 flex items-center justify-center">
+
+    <!-- Global App Container -->
+    <div id="mainApp" class="max-w-4xl w-full bg-white rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-6 md:p-10 my-8">
+
+        <header class="mb-6 text-center border-b pb-4">
+            <h1 class="text-3xl font-extrabold text-gray-900">
+                Study Stream
+            </h1>
+            <button onclick="navigateTo('home')" class="text-sm text-indigo-500 hover:text-indigo-700 transition">
+                Home Dashboard
+            </button>
+        </header>
+
+        <!-- Loading / Error Message -->
+        <div id="statusMessage" class="text-center text-lg font-medium text-blue-600 min-h-[400px] flex items-center justify-center">
+            Loading application data...
+        </div>
+
+        <!-- APP VIEWS CONTAINER -->
+        <div id="appViewsContainer" class="min-h-[400px]">
+
+            <!-- 1. HOME VIEW (Initial Screen) -->
+            <div id="homeView" class="view p-8 hidden text-center">
+                <h2 class="text-4xl font-bold text-gray-800 mb-2">Welcome to Your Study Dashboard!</h2>
+                
+                <!-- NEW PROMINENT HEADING FOR SELECTION -->
+                <h3 class="text-2xl font-extrabold text-indigo-600 border-b-2 border-indigo-200 pb-2 mb-8 inline-block">
+                    🚀 Choose a Subject to Start Your Session
+                </h3>
+
+                <!-- DYNAMIC SUBJECT CARDS CONTAINER (PRIMARY FOCUS) -->
+                <div id="subjectCardContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-3xl mx-auto">
+                    <!-- Subject cards loaded here by JS -->
+                </div>
+
+                <!-- STATISTICS SECTION (DE-EMPHASIZED) -->
+                <div id="homeStats" class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100 max-w-lg mx-auto">
+                    <div class="p-3 rounded-lg bg-gray-50 text-left">
+                        <p class="text-lg font-extrabold text-gray-500" id="statSubjects">0</p>
+                        <p class="text-xs text-gray-400 mt-0">Total Subjects</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-gray-50 text-left">
+                        <p class="text-lg font-extrabold text-gray-500" id="statTotalItems">0</p>
+                        <p class="text-xs text-gray-400 mt-0">Total Q/A Items</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. STUDY VIEW (Subject & Feature Selection) -->
+            <div id="studyView" class="view hidden">
+                <!-- Subject and Feature Selection Bar -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 items-end p-4 bg-gray-100 rounded-xl shadow-inner">
+                    <div class="w-full">
+                        <label for="subjectSelect" class="block text-sm font-medium text-gray-700 mb-1">Current Subject:</label>
+                        <!-- Dropdown is kept to allow easy subject switching later -->
+                        <select id="subjectSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm bg-white text-gray-800" onchange="handleSubjectChange()">
+                            <!-- Options populated by JS -->
+                        </select>
+                    </div>
+                    <div class="w-full">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Select Mode:</label>
+                        <div class="flex space-x-2">
+                            <button id="btnQuiz" onclick="setFeature('quiz')" class="w-1/2 p-3 font-semibold rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition shadow-md">Quiz</button>
+                            <button id="btnFlashcard" onclick="setFeature('flashcard')" class="w-1/2 p-3 font-semibold rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition shadow-md">Flash Cards</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Content Area -->
+                <div id="featureContent" class="p-4 md:p-8 rounded-xl min-h-[300px] transition-all duration-300">
+
+                    <!-- Quiz Exercise Section -->
+                    <div id="quizContainer" class="hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Quiz Mode</h2>
+                        <div id="quizQuestion" class="min-h-[150px] mb-8">
+                            <!-- Quiz content loaded here -->
+                        </div>
+                        <div id="quizFeedback" class="mt-4 p-3 rounded-xl text-sm font-medium hidden text-center shadow-lg"></div>
+                        
+                        <div class="mt-8 flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <div id="quizScoreDisplay" class="text-lg font-bold text-green-700">Score: 0 / 0</div>
+                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition shadow-lg disabled:opacity-50" disabled>
+                                Next Question
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Flash Card Section -->
+                    <div id="flashcardContainer" class="hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Flash Card Stream</h2>
+                        
+                        <!-- Card Area -->
+                        <div id="flashcardDeck" class="flashcard-wrapper">
+                            <!-- Flashcard loaded here -->
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="mt-8 flex justify-center items-center space-x-6">
+                            <button onclick="prevCard()" class="p-3 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-400 transition shadow-lg disabled:opacity-50" id="prevCardBtn" aria-label="Previous Card">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" /></svg>
+                            </button>
+                            <p id="flashcardIndex" class="text-xl font-bold text-gray-800">Card 1 of 5</p>
+                            <button onclick="nextCard()" class="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition shadow-lg disabled:opacity-50" id="nextCardBtn" aria-label="Next Card">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Data Source URL
+        const DATA_SOURCE_URL = 'https://raw.githubusercontent.com/irfanradarma/Audit-SI/main/data_source.JSON';
+        
+        let studyData = [];
+        let currentSubjectIndex = 0;
+        let currentFeature = 'quiz'; // Default feature when navigating to study view
+
+        // --- QUIZ STATE ---
+        let quizState = {
+            currentQuestionIndex: 0,
+            score: 0,
+            totalAnswered: 0
+        };
+
+        // --- FLASHCARD STATE ---
+        let flashcardState = {
+            currentCardIndex: 0
+        };
+
+        // --- DOM Elements ---
+        const statusMessage = document.getElementById('statusMessage');
+        const homeView = document.getElementById('homeView');
+        const studyView = document.getElementById('studyView');
+        const subjectCardContainer = document.getElementById('subjectCardContainer'); // New container
+        const statSubjects = document.getElementById('statSubjects');
+        const statTotalItems = document.getElementById('statTotalItems');
+        const subjectSelect = document.getElementById('subjectSelect');
+        const btnQuiz = document.getElementById('btnQuiz');
+        const btnFlashcard = document.getElementById('btnFlashcard');
+        const quizContainer = document.getElementById('quizContainer');
+        const flashcardContainer = document.getElementById('flashcardContainer');
+        const quizQuestion = document.getElementById('quizQuestion');
+        const quizFeedback = document.getElementById('quizFeedback');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const quizScoreDisplay = document.getElementById('quizScoreDisplay');
+        const flashcardDeck = document.getElementById('flashcardDeck');
+        const flashcardIndex = document.getElementById('flashcardIndex');
+        const prevCardBtn = document.getElementById('prevCardBtn');
+        const nextCardBtn = document.getElementById('nextCardBtn');
+
+        // --- 1. DATA FETCHING AND INITIALIZATION ---
+
+        async function fetchData() {
+            try {
+                const maxRetries = 3;
+                let response = null;
+
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        response = await fetch(DATA_SOURCE_URL);
+                        if (response.ok) {
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn(`Fetch attempt ${i + 1} failed. Retrying...`);
+                        await new Promise(resolve => setTimeout(resolve, 500 * (i + 1))); 
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error(`HTTP error! status: ${response ? response.status : 'N/A'}. Could not fetch data.`);
+                }
+                
+                studyData = await response.json();
+
+                if (!studyData || studyData.length === 0) {
+                    throw new Error('Data source is empty or invalid.');
+                }
+
+                initializeApp();
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                statusMessage.innerHTML = `<span class="text-2xl font-bold text-red-500">❌ Error Loading Data</span><p class="text-red-400 mt-2">Could not load study material. Check console for details.</p>`;
+                navigateTo('home');
+            }
+        }
+
+        function initializeApp() {
+            statusMessage.classList.add('hidden');
+            
+            let totalItems = 0;
+            studyData.forEach(subject => {
+                totalItems += (subject.quizQuestions ? subject.quizQuestions.length : 0);
+                totalItems += (subject.flashcards ? subject.flashcards.length : 0);
+
+                // Populate subject dropdown for the study view
+                const option = document.createElement('option');
+                option.value = subjectSelect.options.length; // Use current length as index
+                option.textContent = subject.subjectName;
+                subjectSelect.appendChild(option);
+            });
+
+            statSubjects.textContent = studyData.length;
+            statTotalItems.textContent = totalItems;
+            
+            renderSubjectCards(); // Render the interactive cards on the home page
+            navigateTo('home');
+        }
+
+        function renderSubjectCards() {
+            subjectCardContainer.innerHTML = studyData.map((subject, index) => {
+                const quizCount = subject.quizQuestions ? subject.quizQuestions.length : 0;
+                const flashcardCount = subject.flashcards ? subject.flashcards.length : 0;
+                
+                return `
+                    <div onclick="startSubject(${index})" class="subject-card p-6 rounded-2xl shadow-xl hover:shadow-2xl flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253" />
+                        </svg>
+                        <h3 class="text-2xl font-extrabold text-gray-900 mb-2">${subject.subjectName}</h3>
+                        <div class="text-sm text-gray-700 space-y-1">
+                            <p>Quiz: <span class="font-bold text-indigo-700">${quizCount} questions</span></p>
+                            <p>Flashcards: <span class="font-bold text-green-700">${flashcardCount} terms</span></p>
+                        </div>
+                        <span class="mt-4 text-indigo-500 font-semibold text-sm border-b border-indigo-500">Start Session &rarr;</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startSubject(index) {
+            currentSubjectIndex = index;
+            // Sync the dropdown in the study view with the chosen subject index
+            subjectSelect.value = index;
+            navigateTo('study');
+        }
+
+        // --- 2. GLOBAL HANDLERS ---
+        
+        function navigateTo(view) {
+            statusMessage.classList.add('hidden');
+            homeView.classList.add('hidden');
+            studyView.classList.add('hidden');
+
+            if (view === 'home') {
+                homeView.classList.remove('hidden');
+            } else if (view === 'study') {
+                studyView.classList.remove('hidden');
+                // Ensure the correct subject content is rendered based on the synced index
+                handleSubjectChange(); 
+            }
+        }
+
+        function handleSubjectChange() {
+            // Note: currentSubjectIndex is already set by startSubject or the select element's onchange
+            currentSubjectIndex = parseInt(subjectSelect.value);
+            // Reset state and re-render the current feature
+            if (currentFeature === 'quiz') {
+                resetQuiz();
+            } else {
+                resetFlashcard();
+            }
+            setFeature(currentFeature); // Re-renders the content for the new subject
+        }
+
+        function setFeature(feature) {
+            currentFeature = feature;
+
+            // Update button styles (making the active one blue)
+            const activeClass = 'text-white bg-blue-600 hover:bg-blue-700 shadow-lg';
+            const inactiveClass = 'text-gray-700 bg-gray-200 hover:bg-gray-300 shadow-md';
+
+            btnQuiz.className = `w-1/2 p-3 font-semibold rounded-lg transition ${currentFeature === 'quiz' ? activeClass : inactiveClass}`;
+            btnFlashcard.className = `w-1/2 p-3 font-semibold rounded-lg transition ${currentFeature === 'flashcard' ? activeClass : inactiveClass}`;
+
+            // Show/Hide containers
+            if (currentFeature === 'quiz') {
+                flashcardContainer.classList.add('hidden');
+                quizContainer.classList.remove('hidden');
+                renderQuizQuestion();
+            } else {
+                quizContainer.classList.add('hidden');
+                flashcardContainer.classList.remove('hidden');
+                renderFlashcard();
+            }
+        }
+
+        // --- 3. QUIZ LOGIC ---
+
+        function resetQuiz() {
+            quizState.currentQuestionIndex = 0;
+            quizState.score = 0;
+            quizState.totalAnswered = 0;
+            quizFeedback.classList.add('hidden');
+            nextQuestionBtn.disabled = true;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const subject = studyData[currentSubjectIndex];
+            const questions = subject.quizQuestions || [];
+            const currentQ = questions[quizState.currentQuestionIndex];
+            
+            if (questions.length === 0) {
+                 quizQuestion.innerHTML = `<div class="text-center p-8 bg-yellow-50 rounded-xl text-gray-600">No quiz questions available for this subject.</div>`;
+                 quizScoreDisplay.textContent = `Score: 0 / 0`;
+                 nextQuestionBtn.classList.add('hidden');
+                 return;
+            }
+
+            // Handle quiz completion
+            if (!currentQ) {
+                quizQuestion.innerHTML = `
+                    <div class="text-center p-8 bg-green-100 rounded-xl shadow-2xl">
+                        <h3 class="text-3xl font-bold text-green-700 mb-2">🎉 Quiz Complete!</h3>
+                        <p class="text-xl text-gray-600">You scored ${quizState.score} out of ${quizState.totalAnswered} questions.</p>
+                        <button onclick="resetQuiz()" class="mt-4 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md">Start New Quiz</button>
+                    </div>
+                `;
+                quizScoreDisplay.textContent = `Final Score: ${quizState.score} / ${quizState.totalAnswered}`;
+                nextQuestionBtn.classList.add('hidden');
+                return;
+            }
+
+            nextQuestionBtn.classList.remove('hidden');
+            quizFeedback.classList.add('hidden');
+            nextQuestionBtn.disabled = true;
+            quizScoreDisplay.textContent = `Score: ${quizState.score} / ${quizState.totalAnswered}`;
+
+            let optionsHtml = currentQ.options.map((option, index) => `
+                <button 
+                    onclick="checkAnswer(this, ${index})" 
+                    class="quiz-option w-full p-4 mb-3 text-left border-2 border-indigo-400 bg-indigo-50 rounded-xl shadow-md text-gray-900 focus:outline-none focus:ring-4 focus:ring-indigo-300"
+                    data-option-index="${index}"
+                >
+                    <span class="font-extrabold mr-3">${String.fromCharCode(65 + index)}</span> ${option}
+                </button>
+            `).join('');
+
+            quizQuestion.innerHTML = `
+                <p class="text-2xl font-bold text-gray-800 mb-8 text-center">${currentQ.question}</p>
+                <div id="quizOptions" class="max-w-xl mx-auto">
+                    ${optionsHtml}
+                </div>
+            `;
+        }
+
+        function checkAnswer(selectedBtn, selectedIndex) {
+            const subject = studyData[currentSubjectIndex];
+            const currentQ = subject.quizQuestions[quizState.currentQuestionIndex];
+            
+            // --- LOGIC TO USE answerIndex ---
+            const correctAnswerIndex = currentQ.answerIndex;
+            const isCorrect = selectedIndex === correctAnswerIndex;
+            const correctAnswerString = currentQ.options[correctAnswerIndex];
+            // ----------------------------------------
+
+            const optionsDiv = document.getElementById('quizOptions');
+
+            // Disable all buttons after selection
+            Array.from(optionsDiv.querySelectorAll('.quiz-option')).forEach(btn => {
+                const optionIndex = parseInt(btn.dataset.optionIndex);
+                btn.disabled = true;
+
+                if (optionIndex === correctAnswerIndex) {
+                    // Highlight the correct answer (Success/Green)
+                    btn.classList.remove('bg-indigo-50', 'border-indigo-400');
+                    btn.classList.add('bg-green-200', 'border-green-600', 'shadow-xl');
+                } else if (optionIndex === selectedIndex) {
+                    // Highlight the wrong answer (Error/Red)
+                    btn.classList.remove('bg-indigo-50', 'border-indigo-400');
+                    btn.classList.add('bg-red-200', 'border-red-600', 'shadow-xl');
+                } else {
+                    // Dim unselected wrong options
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            // Update score and total
+            quizState.totalAnswered++;
+            if (isCorrect) {
+                quizState.score++;
+                quizFeedback.textContent = '✅ Correct! Knowledge Unlocked!';
+                quizFeedback.className = 'mt-4 p-3 rounded-xl text-base font-bold bg-green-500 text-white shadow-2xl';
+            } else {
+                quizFeedback.textContent = `❌ Incorrect. The correct answer was: ${correctAnswerString}`;
+                quizFeedback.className = 'mt-4 p-3 rounded-xl text-base font-bold bg-red-500 text-white shadow-2xl';
+            }
+            
+            nextQuestionBtn.disabled = false;
+            quizFeedback.classList.remove('hidden');
+            quizScoreDisplay.textContent = `Score: ${quizState.score} / ${quizState.totalAnswered}`;
+        }
+
+        function nextQuestion() {
+            const questions = studyData[currentSubjectIndex].quizQuestions;
+            if (quizState.currentQuestionIndex < questions.length - 1) {
+                quizState.currentQuestionIndex++;
+                renderQuizQuestion();
+            } else {
+                quizState.currentQuestionIndex++;
+                renderQuizQuestion();
+            }
+        }
+
+        // --- 4. FLASHCARD LOGIC (Reel/Story Style) ---
+
+        function resetFlashcard() {
+            flashcardState.currentCardIndex = 0;
+            renderFlashcard();
+        }
+
+        function renderFlashcard() {
+            const subject = studyData[currentSubjectIndex];
+            const cards = subject.flashcards || [];
+            const currentCard = cards[flashcardState.currentCardIndex];
+
+            // If there are no cards for the subject
+            if (!currentCard) {
+                flashcardDeck.innerHTML = `
+                    <div class="flashcard-wrapper mx-auto max-w-lg flex items-center justify-center bg-gray-100 rounded-2xl shadow-inner">
+                        <p class="text-xl text-gray-500">No flashcards available for this subject.</p>
+                    </div>
+                `;
+                flashcardIndex.textContent = `Card 0 of 0`;
+                updateFlashcardNavigation(0);
+                return;
+            }
+            
+            // Render the card (starts unflipped)
+            flashcardDeck.innerHTML = `
+                <div id="currentCard" class="flashcard" onclick="flipCard()">
+                    <div class="flashcard-front">
+                        <p class="tracking-wide">${currentCard.term}</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="text-black">${currentCard.definition}</p>
+                    </div>
+                </div>
+            `;
+            
+            flashcardIndex.textContent = `Card ${flashcardState.currentCardIndex + 1} of ${cards.length}`;
+            updateFlashcardNavigation(cards.length);
+        }
+
+        function flipCard() {
+            document.getElementById('currentCard')?.classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            const cards = studyData[currentSubjectIndex].flashcards;
+            if (flashcardState.currentCardIndex < cards.length - 1) {
+                flashcardState.currentCardIndex++;
+                renderFlashcard();
+            }
+        }
+
+        function prevCard() {
+            if (flashcardState.currentCardIndex > 0) {
+                flashcardState.currentCardIndex--;
+                renderFlashcard();
+            }
+        }
+
+        function updateFlashcardNavigation(totalCards) {
+            prevCardBtn.disabled = totalCards === 0 || flashcardState.currentCardIndex === 0;
+            nextCardBtn.disabled = totalCards === 0 || flashcardState.currentCardIndex === totalCards - 1;
+        }
+
+        // --- Execute on load ---
+        fetchData();
+    </script>
+</body>
+</html>
