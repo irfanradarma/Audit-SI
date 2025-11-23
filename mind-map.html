@@ -50,7 +50,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <p class="mt-2 text-lg">Loading course data...</p>
+            <p class="mt-2 text-lg">Loading course data from Google Sheet...</p>
         </div>
         
         <div id="error-message" class="hidden bg-red-800 p-4 rounded-lg text-white font-medium">
@@ -79,9 +79,9 @@
             {
                 "id": "D3",
                 "title": "Domain 3: Information Systems Acquisition, Development, and Implementation",
-                "description": "Managing the lifecycle of IS.",
+                "description": "Content for this domain is loaded dynamically from the Google Sheet CSV.",
                 "type": "domain",
-                "children": [], // Content will be fetched from GitHub
+                "children": [], // Content will be fetched from CSV
                 "resources": []
             },
             {
@@ -102,6 +102,10 @@
             }
         ];
 
+        // --- Configuration ---
+        // New data source: Google Sheets CSV Export URL
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1-kGFWIiwrVdHqFtHpu1nYsb922rT9KsmgUeWwiEQZks/export?format=csv&gid=0'; 
+        
         // --- Core Application Logic ---
 
         const loadingDiv = document.getElementById('loading');
@@ -109,9 +113,6 @@
         const mapContainer = document.getElementById('map-container');
         const nodeList = document.getElementById('node-list');
         const tabBar = document.getElementById('tab-bar');
-        
-        // Set the external URL for Domain 3 content
-        const DATA_URL = 'https://raw.githubusercontent.com/irfanradarma/Audit-SI/main/D3.json'; 
         
         let courseData = MOCK_DATA_INITIAL;
         let activeDomainId = 'D3'; 
@@ -148,10 +149,17 @@
                 icon: '➡️',
                 padding: 'p-3'
             },
+            'leaf': { 
+                bg: 'bg-gray-900/80 hover:bg-gray-800/80',
+                text: 'text-gray-400',
+                icon: '➡️',
+                padding: 'p-3'
+            },
         };
 
-        // Helper function to map resource format to an icon
+        // Helper function to map resource format to an icon (kept for future use)
         function getResourceIcon(format) {
+            if (!format) return '🔗';
             switch (format.toLowerCase()) {
                 case 'pdf':
                     return '📄';
@@ -173,14 +181,14 @@
             return el;
         }
 
-        // Renders the list of resources for a single node
+        // Renders the list of resources for a single node (kept for future use)
         function renderResources(resources) {
             const ul = createElement('ul', 'w-full space-y-1 p-2 bg-gray-800/70 rounded-b-lg border-t border-gray-700');
             resources.forEach(res => {
                 const li = createElement('li', '');
                 const a = createElement('a', 
                     'flex items-center text-sm text-blue-300 hover:text-blue-200 transition-colors duration-150',
-                    `<span class="mr-2">${getResourceIcon(res.format)}</span> <span>${res.name}</span>`
+                    `<span class="mr-2">${getResourceIcon(res.format || 'link')}</span> <span>${res.name}</span>`
                 );
                 a.href = res.url;
                 a.target = '_blank'; // Open in a new tab
@@ -203,9 +211,239 @@
                 itemDiv.dataset.childrenExpanded = 'true';
             }
         }
+        
+        // Toggles the brief details section for leaf nodes
+        function toggleDetails(itemDiv, detailsDiv, iconSpan) {
+            const isExpanded = itemDiv.dataset.detailsExpanded === 'true';
+            if (isExpanded) {
+                detailsDiv.classList.add('hidden');
+                iconSpan.innerHTML = '+';
+                itemDiv.dataset.detailsExpanded = 'false';
+            } else {
+                detailsDiv.classList.remove('hidden');
+                iconSpan.innerHTML = '−';
+                itemDiv.dataset.detailsExpanded = 'true';
+            }
+        }
+        
+        /**
+         * Converts flat CSV text into the nested object structure expected by the app.
+         * Dynamically handles hierarchy up to the deepest populated level (Level 5).
+         */
+        function csvToNestedObject(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length <= 1) return { IS_Acquisition_and_Development: {} }; // Header only or empty
+
+            // --- Robust Header Parsing ---
+            const rawHeaders = lines[0].split(',');
+            const headers = rawHeaders.map(h => h.trim().replace(/^['"]|['"]$/g, ''));
+            const data = lines.slice(1);
+            
+            // Expected header labels based on the user's provided CSV file
+            const LEVEL_HEADERS = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+            const SUMMARY_HEADER = 'Summary';
+            const EXPECTED_HEADERS = [...LEVEL_HEADERS, SUMMARY_HEADER];
+
+            // Find dynamic indices of expected headers
+            const indices = {};
+            let allFound = true;
+            EXPECTED_HEADERS.forEach(expected => {
+                const index = headers.indexOf(expected);
+                if (index === -1) {
+                    allFound = false;
+                    console.error(`Header "${expected}" not found in CSV headers:`, headers); 
+                }
+                indices[expected] = index;
+            });
+            
+            if (!allFound) {
+                console.warn("Actual CSV headers found:", headers);
+                throw new Error(`CSV structure is unexpected. Required headers (${EXPECTED_HEADERS.join(', ')}) were not all found in the first row.`);
+            }
+
+            const root = {};
+
+            data.forEach(line => {
+                // Use a basic split for values (less robust than a dedicated CSV parser, but simple)
+                const values = line.split(','); 
+                if (values.length < EXPECTED_HEADERS.length || values.every(v => v.trim() === '')) return; // Skip incomplete or empty rows
+
+                // 1. Collect all non-empty level values and their clean keys
+                let currentLevel = root;
+                let lastPopulatedKey = null;
+                
+                const summary = values[indices[SUMMARY_HEADER]] ? values[indices[SUMMARY_HEADER]].trim() : "No summary available.";
+
+                LEVEL_HEADERS.forEach(header => {
+                    const index = indices[header];
+                    const levelValue = values[index] ? values[index].trim() : '';
+
+                    if (levelValue) {
+                        const cleanKey = levelValue.replace(/\s/g, '_');
+                        
+                        // Navigate or create the next level in the hierarchy
+                        if (!currentLevel[cleanKey]) {
+                            currentLevel[cleanKey] = {};
+                        }
+                        currentLevel = currentLevel[cleanKey];
+                        lastPopulatedKey = cleanKey; // Keep track of the deepest populated key
+                    }
+                });
+
+                // 2. Assign the summary (leaf node) to the *deepest* populated key's value.
+                // This ensures we don't try to assign summary to a parent node that is expected to contain objects.
+                // We must backtrack to the actual parent of the leaf node.
+                if (lastPopulatedKey) {
+                    // Re-run the traversal to find the parent of the lastPopulatedKey
+                    let leafContainer = root;
+                    let lastKey = null;
+
+                    LEVEL_HEADERS.forEach(header => {
+                        const index = indices[header];
+                        const levelValue = values[index] ? values[index].trim() : '';
+                        
+                        if (levelValue) {
+                            const cleanKey = levelValue.replace(/\s/g, '_');
+                            
+                            // If this is the deepest populated level for this row
+                            if (cleanKey === lastPopulatedKey) {
+                                // The final leaf node is at leafContainer[lastKey] = { summary: summary }
+                                // If Level 1 is the deepest, leafContainer is root, and lastKey is key1.
+                                
+                                // The current node must become the leaf node.
+                                // We are currently positioned at the object that will contain the summary.
+                                // Instead of creating an empty object, we replace it with the leaf.
+                                if(lastKey) {
+                                     leafContainer[lastKey] = { summary: summary };
+                                } else {
+                                    // Special case: If Level 1 is the only key (lastKey is null), 
+                                    // we set the summary directly at the root level using key1 (which is lastPopulatedKey)
+                                    root[lastPopulatedKey] = { summary: summary };
+                                }
+                                
+                                return; // Stop processing this row
+                            }
+                            
+                            // Continue traversal for the next level's parent
+                            if (leafContainer[cleanKey]) {
+                                leafContainer = leafContainer[cleanKey];
+                                lastKey = cleanKey;
+                            }
+                        }
+                    });
+                    
+                }
+
+            });
+            
+            // Note: The previous logic for Level 5 only worked if Level 5 was always the deepest.
+            // A more complex approach is needed to identify the actual deepest level and attach the summary there.
+            // Let's refine the loop to correctly assign the summary.
+
+            const finalRoot = {};
+
+            data.forEach(line => {
+                const values = line.split(','); 
+                if (values.length < EXPECTED_HEADERS.length || values.every(v => v.trim() === '')) return;
+
+                let currentNode = finalRoot;
+                const summary = values[indices[SUMMARY_HEADER]] ? values[indices[SUMMARY_HEADER]].trim() : "No summary available.";
+                
+                let deepestLevelKey = null;
+                let deepestLevelValue = null;
+
+                // 1. Find the deepest populated level for this row
+                LEVEL_HEADERS.forEach(header => {
+                    const index = indices[header];
+                    const levelValue = values[index] ? values[index].trim() : '';
+
+                    if (levelValue) {
+                        deepestLevelKey = levelValue.replace(/\s/g, '_');
+                        deepestLevelValue = levelValue;
+                    }
+                });
+
+                // 2. Traverse and build hierarchy up to the deepest level
+                if (deepestLevelKey) {
+                    LEVEL_HEADERS.forEach(header => {
+                        const index = indices[header];
+                        const levelValue = values[index] ? values[index].trim() : '';
+
+                        if (levelValue) {
+                            const cleanKey = levelValue.replace(/\s/g, '_');
+
+                            // If this is the deepest level, attach the summary object
+                            if (cleanKey === deepestLevelKey) {
+                                currentNode[cleanKey] = { summary: summary };
+                            } else {
+                                // It's a parent node, ensure it's an object
+                                currentNode[cleanKey] = currentNode[cleanKey] || {};
+                                currentNode = currentNode[cleanKey]; // Move down
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Wrap the result in the top-level key that the existing app logic expects for D3
+            return {
+                IS_Acquisition_and_Development: finalRoot
+            };
+        }
+
+        /**
+         * Helper function to convert the nested key-based object structure 
+         * (output of csvToNestedObject) to the expected array-based structure for rendering.
+         */
+        function convertNestedObjectToArray(nestedObj, parentId = 'D3', depth = 0) {
+            const result = [];
+            let count = 1;
+
+            for (const [key, value] of Object.entries(nestedObj)) {
+                // Generate a clean title from the key (e.g., "Project_Governance_and_Management" -> "Project Governance and Management")
+                const title = key.replace(/_/g, ' ');
+                // Generate a new ID based on parent ID and counter
+                const id = `${parentId}.${count++}`; 
+                
+                let node = {
+                    id: id,
+                    title: title,
+                    type: '', 
+                    resources: [], 
+                    children: [],
+                    brief: null, 
+                };
+                
+                // Check if it's a leaf node (i.e., the value contains a 'summary' property)
+                if (value && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, 'summary') && Object.keys(value).length === 1) {
+                    node.type = 'leaf';
+                    node.brief = value.summary; // Map the 'summary' field to the expected 'brief' field
+                } 
+                // Check if it's a structural node
+                else if (value && typeof value === 'object') {
+                    // Determine type based on depth (adjusting the heuristic for 5 levels of nesting)
+                    // The app has 4 structural styles: section, topic, sub-topic, sub-sub-topic
+                    if (depth === 0) node.type = 'section';        // Level 1
+                    else if (depth === 1) node.type = 'topic';     // Level 2
+                    else if (depth === 2) node.type = 'sub-topic'; // Level 3
+                    else if (depth === 3) node.type = 'sub-topic'; // Level 4 (reusing sub-topic style)
+                    else node.type = 'sub-sub-topic';              // Level 5+
+                    
+                    // Recursively process children
+                    node.children = convertNestedObjectToArray(value, id, depth + 1);
+                }
+
+                // Add the node if it was successfully typed (structural or leaf)
+                if (node.type !== '') {
+                    result.push(node);
+                }
+            }
+            return result;
+        }
 
         // Recursive function to render nodes
         function renderNode(node, depth = 0) {
+            // Use the node type, falling back to 'sub-sub-topic' if not found in styles map
             const nodeStyles = TYPE_STYLES[node.type] || TYPE_STYLES['sub-sub-topic'];
             
             // Determine indentation and border
@@ -219,7 +457,7 @@
             );
 
             const titleButton = createElement('button', 
-                `w-full text-left flex items-center justify-between ${nodeStyles.padding}`
+                `w-full text-left flex items-center justify-between ${nodeStyles.padding} focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50`
             );
 
             // Left side content (ID, Title, Description)
@@ -233,22 +471,21 @@
             `;
             titleButton.appendChild(leftContent);
 
-            // Add description if available
-            if (node.description) {
-                const desc = createElement('p', 'text-sm mt-1 text-gray-400/70', node.description);
-                leftContent.querySelector('div.flex-col').appendChild(desc);
-            }
-
             // Right side container for icons (Children toggle and Resource toggle)
             const rightIcons = createElement('div', 'flex items-center space-x-2');
             
             let childrenUl;
             let childrenIcon;
-            let resourcesUl;
-            let resourcesButton;
+            let detailsDiv;
+            let detailsIcon;
 
-            // 1. Children Collapse/Expand Logic
-            if (node.children && node.children.length > 0) {
+            const hasChildren = node.children && node.children.length > 0;
+            const hasDescription = (node.description && node.description.length > 0) || (node.brief && node.brief.length > 0);
+            const hasResources = node.resources && node.resources.length > 0;
+            const hasDetails = hasDescription || hasResources;
+
+            // 1. Children Collapse/Expand Logic (For non-leaf nodes)
+            if (hasChildren) {
                 childrenIcon = createElement('span', 'text-xl transition-transform duration-300 p-1 rounded-full hover:bg-gray-700', '▼');
                 rightIcons.appendChild(childrenIcon);
                 
@@ -260,55 +497,60 @@
                 // Attach toggle to the main button click event
                 titleButton.onclick = () => toggleChildren(itemDiv, childrenUl, childrenIcon);
 
-                // If icon exists, clicking it also toggles (for accessibility/clear target)
+                // Icon click also works
                 childrenIcon.onclick = (e) => {
-                    e.stopPropagation(); // Stop click from propagating to the parent button
+                    e.stopPropagation(); 
                     toggleChildren(itemDiv, childrenUl, childrenIcon);
                 };
-            } else {
-                // If there are no children, the main button should not be clickable for expansion
-                titleButton.onclick = (e) => e.preventDefault(); 
             }
             
-            // 2. Resources Collapse/Expand Logic
-            if (node.resources && node.resources.length > 0) {
-                const resourceCount = node.resources.length;
-                resourcesButton = createElement('button', 
-                    'px-2 py-1 bg-green-700/80 text-xs font-medium rounded-full hover:bg-green-600 transition-colors duration-150',
-                    `🔗 ${resourceCount}`
-                );
-                
-                resourcesUl = renderResources(node.resources);
-                resourcesUl.classList.add('hidden', 'mt-0'); 
+            // 2. Details Collapse/Expand Logic (For leaf nodes with description/brief or resources)
+            else if (hasDetails) {
+                detailsIcon = createElement('span', 'text-xl transition-transform duration-300 p-1 rounded-full hover:bg-gray-700 cursor-pointer', '+');
+                rightIcons.appendChild(detailsIcon);
 
-                itemDiv.dataset.resourcesExpanded = 'false';
-                resourcesButton.onclick = (e) => {
-                    e.stopPropagation(); // VERY IMPORTANT: Prevent this click from triggering the parent titleButton's children toggle
-                    const isExpanded = itemDiv.dataset.resourcesExpanded === 'true';
-                    if (isExpanded) {
-                        resourcesUl.classList.add('hidden');
-                        itemDiv.dataset.resourcesExpanded = 'false';
-                    } else {
-                        resourcesUl.classList.remove('hidden');
-                        itemDiv.dataset.resourcesExpanded = 'true';
-                    }
+                detailsDiv = createElement('div', 'hidden w-full space-y-2 p-4 bg-gray-800/80 rounded-b-lg border-t border-gray-700');
+                itemDiv.dataset.detailsExpanded = 'false';
+
+                // Use 'brief' (which now contains the 'summary' from the CSV/JSON) or 'description'
+                const descriptionText = node.brief || node.description;
+
+                // Add description/brief if available
+                if (descriptionText) {
+                    detailsDiv.appendChild(createElement('p', 'text-sm text-gray-300 italic', `Summary: ${descriptionText}`));
+                }
+
+                // Add resources if available
+                if (hasResources) {
+                    detailsDiv.appendChild(createElement('p', 'text-sm font-semibold text-teal-300 mt-2 pt-2 border-t border-gray-700', 'Related Resources:'));
+                    detailsDiv.appendChild(renderResources(node.resources));
+                }
+
+                // Attach toggle to the main button click event for leaf nodes
+                titleButton.onclick = () => toggleDetails(itemDiv, detailsDiv, detailsIcon);
+                
+                // Icon click also works
+                detailsIcon.onclick = (e) => {
+                    e.stopPropagation(); 
+                    toggleDetails(itemDiv, detailsDiv, detailsIcon);
                 };
-                rightIcons.appendChild(resourcesButton);
+
+            } else {
+                // Leaf node with no children, description, or resources - not clickable
+                titleButton.onclick = (e) => e.preventDefault(); 
             }
 
+            // Append right icons to the button
             titleButton.appendChild(rightIcons);
+            
+            // Append the button to the main div
             itemDiv.appendChild(titleButton);
 
+            // Append children list (for non-leaf nodes) or details div (for leaf nodes)
             if (childrenUl) {
                 itemDiv.appendChild(childrenUl);
-                // Auto-expand the top-level sections (depth === 0)
-                if (depth === 0) {
-                    toggleChildren(itemDiv, childrenUl, childrenIcon); 
-                }
-            }
-
-            if (resourcesUl) {
-                itemDiv.appendChild(resourcesUl);
+            } else if (detailsDiv) {
+                itemDiv.appendChild(detailsDiv);
             }
 
             li.appendChild(itemDiv);
@@ -365,37 +607,55 @@
                 tabBar.appendChild(button);
             });
         }
+        
+        // Function to fetch and process the CSV data
+        async function fetchCsvDataWithRetry() {
+            const maxRetries = 3;
+            
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    // Fetch the CSV text
+                    const response = await fetch(CSV_URL); 
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} (${response.statusText})`);
+                    }
+                    const csvText = await response.text(); 
+                    
+                    // Convert CSV to the expected nested object structure
+                    const nestedData = csvToNestedObject(csvText);
+                    return nestedData; // Success!
 
-        // Function to fetch data (for production use)
-        async function fetchData() {
-            try {
-                // 1. Fetch Domain 3 data from the external GitHub URL
-                // Implemented Exponential Backoff for robust fetching
-                let fetchedD3Data = null;
-                const maxRetries = 3;
-                for (let i = 0; i < maxRetries; i++) {
-                    try {
-                        const response = await fetch(DATA_URL); 
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} (${response.statusText})`);
-                        fetchedD3Data = await response.json(); 
-                        break; // Success! Exit the loop
-                    } catch (e) {
-                        if (i < maxRetries - 1) {
-                            const delay = Math.pow(2, i) * 1000;
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                        } else {
-                            throw e; // Re-throw the error on the last attempt
-                        }
+                } catch (e) {
+                    console.warn(`Attempt ${i + 1} failed:`, e.message);
+                    if (i < maxRetries - 1) {
+                        const delay = Math.pow(2, i) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        throw e; // Re-throw the error on the last attempt
                     }
                 }
+            }
+        }
 
-                // 2. Locate the D3 placeholder in the courseData structure
+        // Main function to fetch data and initialize the app
+        async function fetchData() {
+            try {
+                // Fetch the structured data from the CSV source
+                const fetchedD3Data = await fetchCsvDataWithRetry();
+
+                // Locate the D3 placeholder in the courseData structure
                 const d3Index = courseData.findIndex(d => d.id === 'D3');
 
                 if (d3Index !== -1) {
-                    // 3. Update the D3 domain with the fetched content
-                    courseData[d3Index].children = fetchedD3Data;
-                    courseData[d3Index].description = "Managing the lifecycle of IS. (Data loaded successfully from GitHub)";
+                    // Extract the top-level content object
+                    const d3Content = fetchedD3Data.IS_Acquisition_and_Development; 
+
+                    if (d3Content) {
+                        // Convert the nested object structure into the expected array structure
+                        courseData[d3Index].children = convertNestedObjectToArray(d3Content, 'D3', 0);
+                    } else {
+                         throw new Error("Invalid structure returned from CSV conversion. Expected 'IS_Acquisition_and_Development' field at the top level.");
+                    }
                 } 
                 
                 // Render tabs and content, defaulting to D3
@@ -407,9 +667,9 @@
                 mapContainer.classList.remove('hidden');
 
             } catch (error) {
-                console.error("Failed to load map data from GitHub:", error);
+                console.error("Failed to load map data from Google Sheet:", error);
                 loadingDiv.classList.add('hidden');
-                errorDiv.innerHTML = `Error loading Domain 3 data from GitHub. Please check the URL and network connection. Details: ${error.message}`;
+                errorDiv.innerHTML = `Error loading Domain 3 data from Google Sheet. Details: ${error.message}`;
                 errorDiv.classList.remove('hidden');
                 
                 // Fallback: If D3 fails to load, still render the tabs, but default to D2
