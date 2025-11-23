@@ -9,76 +9,480 @@
         "title": "Project Governance and Management",
         "level": 1,
         "children": [
-          { "id": "IS1.1.1", "title": "Project Management Practices", "level": 2, "summary": "Defined policies and procedures used to plan, execute, and control IS projects." },
-          { "id": "IS1.1.2", "title": "Project Management Structure", "level": 2, "summary": "Organizational framework defining how project teams interact and report." },
-          { "id": "IS1.1.3", "title": "Project Management Roles and Responsibility", "level": 2, "summary": "Clear definition of duties for all personnel involved in the project." },
-          { "id": "IS1.1.4", "title": "Project Management Techniques", "level": 2, "summary": "Tools and methods like PERT, Gantt charts, or critical path analysis." },
-          { "id": "IS1.1.5", "title": "Portfolio/Program Management", "level": 2, "summary": "Oversight of multiple related projects (program) or strategic selection of projects (portfolio)." },
-          { "id": "IS1.1.6", "title": "Project Management Office", "level": 2, "summary": "Centralized department that standardizes project governance and processes." },
-          { "id": "IS1.1.7", "title": "Project Benefit Realization", "level": 2, "summary": "Ensuring the project delivers the intended business value and measurable outcomes." },
-          { "id": "IS1.1.8", "title": "Project Initiation", "level": 2, "summary": "The formal process of starting a new project or phase." },
-          { "id": "IS1.1.9", "title": "Project Objectives", "level": 2, "summary": "Specific, measurable, achievable, relevant, and time-bound goals for the project." },
-          { 
-            "id": "IS1.1.10", 
-            "title": "Project Planning", 
-            "level": 2, 
+          {
+            "id": "IS1.1.1",
+            "title": "Project Management Practices",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.1.1",
+                "title": "Definition and Scope",
+                "level": 3,
+                "summary": "Defined policies and procedures used to plan, execute, and control IS projects."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.2",
+            "title": "Project Management Structure",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.2.1",
+                "title": "Organizational Framework",
+                "level": 3,
+                "summary": "Organizational framework defining how project teams interact and report."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.3",
+            "title": "Project Management Roles and Responsibility",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.3.1",
+                "title": "Duty Definition",
+                "level": 3,
+                "summary": "Clear definition of duties for all personnel involved in the project."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.4",
+            "title": "Project Management Techniques",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.4.1",
+                "title": "Common Tools and Methods",
+                "level": 3,
+                "summary": "Tools and methods like PERT, Gantt charts, or critical path analysis."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.5",
+            "title": "Portfolio/Program Management",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.5.1",
+                "title": "Portfolio Oversight",
+                "level": 3,
+                "summary": "Strategic selection of projects aligned with organizational goals (portfolio)."
+              },
+              {
+                "id": "IS1.1.5.2",
+                "title": "Program Oversight",
+                "level": 3,
+                "summary": "Oversight of multiple related projects (program)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.6",
+            "title": "Project Management Office (PMO)",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.6.1",
+                "title": "Function and Standardization",
+                "level": 3,
+                "summary": "Centralized department that standardizes project governance and processes."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.7",
+            "title": "Project Benefit Realization",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.7.1",
+                "title": "Value Assurance",
+                "level": 3,
+                "summary": "Ensuring the project delivers the intended business value and measurable outcomes."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.8",
+            "title": "Project Initiation",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.8.1",
+                "title": "Formal Start",
+                "level": 3,
+                "summary": "The formal process of starting a new project or phase."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.9",
+            "title": "Project Objectives",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.9.1",
+                "title": "SMART Goals",
+                "level": 3,
+                "summary": "Specific, measurable, achievable, relevant, and time-bound goals for the project."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.10",
+            "title": "Project Planning",
+            "level": 2,
             "summary": "Developing the project management plan, scope, schedule, and resource allocation.",
             "children": [
-              { 
-                "id": "IS1.1.10.1", 
-                "title": "Schedule Development", 
-                "level": 3, 
+              {
+                "id": "IS1.1.10.1",
+                "title": "Schedule Development",
+                "level": 3,
                 "summary": "The process of determining task sequences and durations.",
                 "children": [
-                  { "id": "IS1.1.10.1.1", "title": "Gantt Chart Creation (L4 Example)", "level": 4, "summary": "A specific tool used for visualizing the project timeline and dependencies." }
+                  {
+                    "id": "IS1.1.10.1.1",
+                    "title": "Gantt Chart Creation (L4 Example)",
+                    "level": 4,
+                    "summary": "A specific tool used for visualizing the project timeline and dependencies."
+                  }
                 ]
               }
             ]
           },
-          { "id": "IS1.1.11", "title": "Project Execution", "level": 2, "summary": "Carrying out the planned tasks and producing the deliverables." },
-          { "id": "IS1.1.12", "title": "Project Controlling and Monitoring", "level": 2, "summary": "Tracking, reviewing, and regulating the progress and performance of the project." },
-          { "id": "IS1.1.13", "title": "Project Closing", "level": 2, "summary": "Formal completion of the project, including delivery, review, and documentation." }
+          {
+            "id": "IS1.1.11",
+            "title": "Project Execution",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.11.1",
+                "title": "Task Implementation",
+                "level": 3,
+                "summary": "Carrying out the planned tasks and producing the deliverables."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.12",
+            "title": "Project Controlling and Monitoring",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.12.1",
+                "title": "Performance Tracking",
+                "level": 3,
+                "summary": "Tracking, reviewing, and regulating the progress and performance of the project."
+              }
+            ]
+          },
+          {
+            "id": "IS1.1.13",
+            "title": "Project Closing",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.1.13.1",
+                "title": "Formal Completion",
+                "level": 3,
+                "summary": "Formal completion of the project, including delivery, review, and documentation."
+              }
+            ]
+          }
         ]
       },
+      ---
       {
         "id": "IS1.2",
         "title": "Business Case and Feasibility Analysis",
         "level": 1,
         "children": [
-          { "id": "IS1.2.1", "title": "Project Scope", "level": 2, "summary": "The boundaries and limits of the project, defining what is and is not included." },
-          { "id": "IS1.2.2", "title": "Current Analysis", "level": 2, "summary": "Assessment of the existing system or process to identify weaknesses and opportunities." },
-          { "id": "IS1.2.3", "title": "Requirements", "level": 2, "summary": "Detailed needs and constraints that the new system must satisfy (functional and non-functional)." },
-          { "id": "IS1.2.4", "title": "Approach", "level": 2, "summary": "The planned method or strategy for system development (e.g., in-house, purchase, outsourcing)." },
-          { "id": "IS1.2.5", "title": "Evaluation", "level": 2, "summary": "Analyzing costs, benefits, and risks across different solution alternatives." },
-          { "id": "IS1.2.6", "title": "Review", "level": 2, "summary": "Formal assessment of the business case before approval to proceed." }
+          {
+            "id": "IS1.2.1",
+            "title": "Project Scope",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.1.1",
+                "title": "Defining Boundaries",
+                "level": 3,
+                "summary": "The boundaries and limits of the project, defining what is and is not included (scope management)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.2.2",
+            "title": "Current Analysis",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.2.1",
+                "title": "System Assessment",
+                "level": 3,
+                "summary": "Assessment of the existing system or process to identify weaknesses and opportunities."
+              }
+            ]
+          },
+          {
+            "id": "IS1.2.3",
+            "title": "Requirements",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.3.1",
+                "title": "Functional Requirements",
+                "level": 3,
+                "summary": "Detailed needs describing what the system must do."
+              },
+              {
+                "id": "IS1.2.3.2",
+                "title": "Non-Functional Requirements",
+                "level": 3,
+                "summary": "Detailed constraints on how the system must perform (e.g., security, performance, reliability)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.2.4",
+            "title": "Approach",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.4.1",
+                "title": "Development Strategy",
+                "level": 3,
+                "summary": "The planned method or strategy for system development (e.g., in-house, purchase, outsourcing)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.2.5",
+            "title": "Evaluation",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.5.1",
+                "title": "Alternative Analysis",
+                "level": 3,
+                "summary": "Analyzing costs, benefits, and risks across different solution alternatives."
+              }
+            ]
+          },
+          {
+            "id": "IS1.2.6",
+            "title": "Review",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.2.6.1",
+                "title": "Business Case Approval",
+                "level": 3,
+                "summary": "Formal assessment of the business case before approval to proceed."
+              }
+            ]
+          }
         ]
       },
+      ---
       {
         "id": "IS1.3",
         "title": "System Development Methodologies",
         "level": 1,
         "children": [
-          { "id": "IS1.3.1", "title": "Business Application Development", "level": 2, "summary": "The process of creating software or applications to meet specific business needs." },
-          { "id": "IS1.3.2", "title": "SDLC Models", "level": 2, "summary": "Different frameworks for system development, such as Waterfall, Agile, or V-model." },
-          { "id": "IS1.3.3", "title": "SDLC Phases", "level": 2, "summary": "Sequential steps in the System Development Life Cycle (e.g., Planning, Analysis, Design, Implementation, Maintenance)." },
-          { "id": "IS1.3.4", "title": "Software Development Methods", "level": 2, "summary": "Specific techniques used in coding and testing, like object-oriented programming or structured programming." },
-          { "id": "IS1.3.5", "title": "System Development Tools and Productivity Aids", "level": 2, "summary": "CASE tools, code generators, debuggers, and other tools that enhance development efficiency." },
-          { "id": "IS1.3.6", "title": "Infrastructure Development/Acquisition Practices", "level": 2, "summary": "The process of planning, designing, and acquiring the necessary hardware, network, and operating systems." },
-          { "id": "IS1.3.7", "title": "Hardware/Software Acquisition", "level": 2, "summary": "Procedures for procurement, testing, and implementation of new technology components." },
-          { "id": "IS1.3.8", "title": "System Software Acquisition", "level": 2, "summary": "Acquiring operating systems, database management systems, and other foundational software." }
+          {
+            "id": "IS1.3.1",
+            "title": "Business Application Development",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.1.1",
+                "title": "Software Creation",
+                "level": 3,
+                "summary": "The process of creating software or applications to meet specific business needs."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.2",
+            "title": "SDLC Models",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.2.1",
+                "title": "Framework Examples",
+                "level": 3,
+                "summary": "Different frameworks for system development, such as Waterfall, Agile, or V-model."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.3",
+            "title": "SDLC Phases",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.3.1",
+                "title": "Sequential Steps",
+                "level": 3,
+                "summary": "Sequential steps in the System Development Life Cycle (e.g., Planning, Analysis, Design, Implementation, Maintenance)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.4",
+            "title": "Software Development Methods",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.4.1",
+                "title": "Coding and Testing Techniques",
+                "level": 3,
+                "summary": "Specific techniques used in coding and testing, like object-oriented programming or structured programming."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.5",
+            "title": "System Development Tools and Productivity Aids",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.5.1",
+                "title": "Efficiency Tools",
+                "level": 3,
+                "summary": "CASE tools, code generators, debuggers, and other tools that enhance development efficiency."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.6",
+            "title": "Infrastructure Development/Acquisition Practices",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.6.1",
+                "title": "Planning and Design",
+                "level": 3,
+                "summary": "The process of planning, designing, and acquiring the necessary hardware, network, and operating systems."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.7",
+            "title": "Hardware/Software Acquisition",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.7.1",
+                "title": "Procurement and Testing",
+                "level": 3,
+                "summary": "Procedures for procurement, testing, and implementation of new technology components."
+              }
+            ]
+          },
+          {
+            "id": "IS1.3.8",
+            "title": "System Software Acquisition",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.3.8.1",
+                "title": "Foundational Software",
+                "level": 3,
+                "summary": "Acquiring operating systems, database management systems, and other foundational software."
+              }
+            ]
+          }
         ]
       },
+      ---
       {
         "id": "IS1.4",
         "title": "Control Identification and Design",
         "level": 1,
         "children": [
-          { "id": "IS1.4.1", "title": "Input/Origination Controls", "level": 2, "summary": "Controls ensuring data is accurately captured and authorized at the source (e.g., validation checks, sequence checks)." },
-          { "id": "IS1.4.2", "title": "Processing Procedures and Controls", "level": 2, "summary": "Controls ensuring data is correctly processed (e.g., batch totals, cross-footing, limit checks)." },
-          { "id": "IS1.4.3", "title": "Output Controls", "level": 2, "summary": "Controls ensuring output is accurate, secure, and delivered only to authorized recipients (e.g., review procedures, reconciliation)." },
-          { "id": "IS1.4.4", "title": "Application Controls", "level": 2, "summary": "Controls embedded within the application software itself to ensure data integrity and security (e.g., access controls, audit trails)." },
-          { "id": "IS1.4.5", "title": "User Procedures", "level": 2, "summary": "Manual steps and policies users follow to operate the system securely and correctly." },
-          { "id": "IS1.4.6", "title": "Decision Support System", "level": 2, "summary": "System designed to support decision-making activities, often requiring specific controls over data quality and models." }
+          {
+            "id": "IS1.4.1",
+            "title": "Input/Origination Controls",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.1.1",
+                "title": "Data Capture and Authorization",
+                "level": 3,
+                "summary": "Controls ensuring data is accurately captured and authorized at the source (e.g., validation checks, sequence checks)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.4.2",
+            "title": "Processing Procedures and Controls",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.2.1",
+                "title": "Data Integrity in Processing",
+                "level": 3,
+                "summary": "Controls ensuring data is correctly processed (e.g., batch totals, cross-footing, limit checks)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.4.3",
+            "title": "Output Controls",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.3.1",
+                "title": "Accuracy, Security, and Distribution",
+                "level": 3,
+                "summary": "Controls ensuring output is accurate, secure, and delivered only to authorized recipients (e.g., review procedures, reconciliation)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.4.4",
+            "title": "Application Controls",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.4.1",
+                "title": "Embedded Software Controls",
+                "level": 3,
+                "summary": "Controls embedded within the application software itself to ensure data integrity and security (e.g., access controls, audit trails)."
+              }
+            ]
+          },
+          {
+            "id": "IS1.4.5",
+            "title": "User Procedures",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.5.1",
+                "title": "Manual Operations and Policies",
+                "level": 3,
+                "summary": "Manual steps and policies users follow to operate the system securely and correctly."
+              }
+            ]
+          },
+          {
+            "id": "IS1.4.6",
+            "title": "Decision Support System (DSS)",
+            "level": 2,
+            "children": [
+              {
+                "id": "IS1.4.6.1",
+                "title": "Data Quality and Model Controls",
+                "level": 3,
+                "summary": "System designed to support decision-making activities, often requiring specific controls over data quality and models."
+              }
+            ]
+          }
         ]
       }
     ]
