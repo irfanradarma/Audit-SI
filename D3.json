@@ -14,25 +14,84 @@
             "id": "D3.1.1",
             "title": "Project Management Practices",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.1.a",
+                "title": "Project Life Cycle Models",
+                "type": "subtopic",
+                "brief": "this is dummy brief explanation"
+              },
+              {
+                "id": "D3.1.1.b",
+                "title": "Governance Alignment",
+                "type": "subtopic",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.2",
             "title": "Project Management Structure",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.2.a",
+                "title": "Organizational Models",
+                "type": "subtopic",
+                "children": [
+                  {
+                    "id": "D3.1.2.a.1",
+                    "title": "Functional Structure",
+                    "type": "leaf",
+                    "brief": "this is dummy brief explanation"
+                  },
+                  {
+                    "id": "D3.1.2.a.2",
+                    "title": "Matrix Structure",
+                    "type": "leaf",
+                    "brief": "this is dummy brief explanation"
+                  }
+                ]
+              }
+            ]
           },
           {
             "id": "D3.1.3",
             "title": "Project Management Roles and Responsibility",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.3.a",
+                "title": "Project Sponsor",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              },
+              {
+                "id": "D3.1.3.b",
+                "title": "Project Manager",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.4",
             "title": "Project Management Techniques",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.4.a",
+                "title": "Critical Path Method (CPM)",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              },
+              {
+                "id": "D3.1.4.b",
+                "title": "Gantt Charts",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.5",
@@ -42,9 +101,16 @@
           },
           {
             "id": "D3.1.6",
-            "title": "Project Management Office",
+            "title": "Project Management Office (PMO)",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.6.a",
+                "title": "PMO Types",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.7",
@@ -56,7 +122,14 @@
             "id": "D3.1.8",
             "title": "Project Initiation",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.8.a",
+                "title": "Project Charter",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.9",
@@ -68,7 +141,20 @@
             "id": "D3.1.10",
             "title": "Project Planning",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.1.10.a",
+                "title": "Work Breakdown Structure (WBS)",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              },
+              {
+                "id": "D3.1.10.b",
+                "title": "Schedule Estimation",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.1.11",
@@ -90,6 +176,8 @@
           }
         ]
       },
+
+
       {
         "id": "D3.2",
         "title": "Business Case and Feasibility Analysis",
@@ -105,7 +193,14 @@
             "id": "D3.2.2",
             "title": "Current Analysis",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.2.2.a",
+                "title": "Existing System Capabilities",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.2.3",
@@ -123,7 +218,14 @@
             "id": "D3.2.5",
             "title": "Evaluation",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.2.5.a",
+                "title": "Cost-Benefit Analysis",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.2.6",
@@ -133,6 +235,8 @@
           }
         ]
       },
+
+
       {
         "id": "D3.3",
         "title": "System Development Methodologies",
@@ -148,13 +252,33 @@
             "id": "D3.3.2",
             "title": "SDLC Models",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.3.2.a",
+                "title": "Waterfall Model",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              },
+              {
+                "id": "D3.3.2.b",
+                "title": "Agile Model",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.3.3",
             "title": "SDLC Phases",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.3.3.a",
+                "title": "Requirements",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.3.4",
@@ -188,6 +312,8 @@
           }
         ]
       },
+
+
       {
         "id": "D3.4",
         "title": "Control Identification and Design",
@@ -197,7 +323,14 @@
             "id": "D3.4.1",
             "title": "Input/Origination Controls",
             "type": "topic",
-            "brief": "this is dummy brief explanation"
+            "children": [
+              {
+                "id": "D3.4.1.a",
+                "title": "Field Validation",
+                "type": "leaf",
+                "brief": "this is dummy brief explanation"
+              }
+            ]
           },
           {
             "id": "D3.4.2",
