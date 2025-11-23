@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CISA Domain Navigation Map</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* GitHub Dark Background */
+        }
+        /* Custom scrollbar style for the content area */
+        .content-area {
+            max-height: 70vh; /* Set a max height for content */
+            overflow-y: auto;
+            padding-right: 1rem; /* Space for scrollbar */
+        }
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background-color: #115e59;
+            border-radius: 4px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div id="app" class="max-w-4xl mx-auto">
+        <header class="text-center mb-8 p-4 rounded-xl bg-gray-800 shadow-2xl">
+            <h1 class="text-3xl font-extrabold text-teal-400 sm:text-4xl">CISA Course Navigation Map</h1>
+            <p class="text-lg text-gray-400 mt-2">Interactive Outline of IS Audit and Assurance Domains</p>
+        </header>
+
+        <!-- Domain Tab Bar -->
+        <div id="tab-bar" class="flex flex-wrap justify-center gap-2 mb-6 p-2 rounded-xl bg-gray-800 shadow-lg">
+            <!-- Tab buttons will be rendered here -->
+        </div>
+
+        <!-- Loading and Error States -->
+        <div id="loading" class="text-center text-teal-400 mt-10">
+            <svg class="animate-spin h-8 w-8 text-teal-400 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-2 text-lg">Loading course data...</p>
+        </div>
+        
+        <div id="error-message" class="hidden bg-red-800 p-4 rounded-lg text-white font-medium">
+            Error loading data. Check the console for details.
+        </div>
+
+        <!-- Mind Map / Navigation Container (Content Area) -->
+        <div id="map-container" class="hidden p-4 bg-gray-900 rounded-xl shadow-inner content-area">
+            <div id="node-list" class="space-y-4">
+                <!-- Domain-specific content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Static structure for all domains. Domain 3's content (children) will be loaded externally.
+        const MOCK_DATA_INITIAL = [
+            {
+                "id": "D2",
+                "title": "Domain 2: IT Governance and Management",
+                "description": "Ensuring IT alignment with business strategy. (Content placeholder)",
+                "type": "domain",
+                "children": [], // No detailed sections yet
+                "resources": []
+            },
+            {
+                "id": "D3",
+                "title": "Domain 3: Information Systems Acquisition, Development, and Implementation",
+                "description": "Managing the lifecycle of IS.",
+                "type": "domain",
+                "children": [], // Content will be fetched from GitHub
+                "resources": []
+            },
+            {
+                "id": "D4",
+                "title": "Domain 4: Information Systems Operations and Business Resilience",
+                "description": "Maintaining the continuity of IS. (Content placeholder)",
+                "type": "domain",
+                "children": [],
+                "resources": []
+            },
+            {
+                "id": "D5",
+                "title": "Domain 5: Protection of Information Assets",
+                "description": "Security policies, controls, and compliance. (Content placeholder)",
+                "type": "domain",
+                "children": [],
+                "resources": []
+            }
+        ];
+
+        // --- Core Application Logic ---
+
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error-message');
+        const mapContainer = document.getElementById('map-container');
+        const nodeList = document.getElementById('node-list');
+        const tabBar = document.getElementById('tab-bar');
+        
+        // Set the external URL for Domain 3 content
+        const DATA_URL = 'https://raw.githubusercontent.com/irfanradarma/Audit-SI/main/D3.json'; 
+        
+        let courseData = MOCK_DATA_INITIAL;
+        let activeDomainId = 'D3'; 
+
+        // Mapping node types to visual styles
+        const TYPE_STYLES = {
+            'domain': {
+                bg: 'bg-teal-700 hover:bg-teal-600',
+                text: 'text-white font-bold',
+                icon: '📚',
+                padding: 'p-3'
+            },
+            'section': {
+                bg: 'bg-indigo-700/80 hover:bg-indigo-600/80',
+                text: 'text-white font-semibold',
+                icon: '📖',
+                padding: 'p-3'
+            },
+            'topic': {
+                bg: 'bg-gray-700/80 hover:bg-gray-600/80',
+                text: 'text-gray-200 font-medium',
+                icon: '📌',
+                padding: 'p-3'
+            },
+            'sub-topic': {
+                bg: 'bg-gray-800/80 hover:bg-gray-700/80',
+                text: 'text-gray-300',
+                icon: '💡',
+                padding: 'p-3'
+            },
+            'sub-sub-topic': { 
+                bg: 'bg-gray-900/80 hover:bg-gray-800/80',
+                text: 'text-gray-400',
+                icon: '➡️',
+                padding: 'p-3'
+            },
+        };
+
+        // Helper function to map resource format to an icon
+        function getResourceIcon(format) {
+            switch (format.toLowerCase()) {
+                case 'pdf':
+                    return '📄';
+                case 'video':
+                    return '📺';
+                case 'article':
+                    return '📰';
+                case 'link':
+                default:
+                    return '🔗';
+            }
+        }
+
+        // Function to create an HTML element with classes and content
+        function createElement(tag, classes, content = '') {
+            const el = document.createElement(tag);
+            el.className = classes;
+            el.innerHTML = content;
+            return el;
+        }
+
+        // Renders the list of resources for a single node
+        function renderResources(resources) {
+            const ul = createElement('ul', 'w-full space-y-1 p-2 bg-gray-800/70 rounded-b-lg border-t border-gray-700');
+            resources.forEach(res => {
+                const li = createElement('li', '');
+                const a = createElement('a', 
+                    'flex items-center text-sm text-blue-300 hover:text-blue-200 transition-colors duration-150',
+                    `<span class="mr-2">${getResourceIcon(res.format)}</span> <span>${res.name}</span>`
+                );
+                a.href = res.url;
+                a.target = '_blank'; // Open in a new tab
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            return ul;
+        }
+
+        // Toggles the children list and updates the icon
+        function toggleChildren(itemDiv, ul, iconSpan) {
+            const isExpanded = itemDiv.dataset.childrenExpanded === 'true';
+            if (isExpanded) {
+                ul.classList.add('hidden');
+                iconSpan.innerHTML = '▼';
+                itemDiv.dataset.childrenExpanded = 'false';
+            } else {
+                ul.classList.remove('hidden');
+                iconSpan.innerHTML = '▲';
+                itemDiv.dataset.childrenExpanded = 'true';
+            }
+        }
+
+        // Recursive function to render nodes
+        function renderNode(node, depth = 0) {
+            const nodeStyles = TYPE_STYLES[node.type] || TYPE_STYLES['sub-sub-topic'];
+            
+            // Determine indentation and border
+            const indentationClass = depth > 0 ? 'border-l-4 border-gray-600 ml-4 pl-4' : '';
+            
+            const li = createElement('li', `mb-1 ${indentationClass}`);
+            
+            const itemDiv = createElement('div', 
+                `w-full text-left rounded-lg transition duration-150 ease-in-out shadow-md
+                 flex flex-col items-start justify-between ${nodeStyles.bg} ${nodeStyles.text}`
+            );
+
+            const titleButton = createElement('button', 
+                `w-full text-left flex items-center justify-between ${nodeStyles.padding}`
+            );
+
+            // Left side content (ID, Title, Description)
+            const leftContent = createElement('div', 'flex items-center overflow-hidden');
+            leftContent.innerHTML = `
+                <span class="mr-3 text-xl">${nodeStyles.icon}</span>
+                <div class="truncate flex flex-col items-start">
+                    <span class="font-mono text-xs opacity-75 mr-2">${node.id}</span>
+                    <span class="text-base font-semibold">${node.title}</span>
+                </div>
+            `;
+            titleButton.appendChild(leftContent);
+
+            // Add description if available
+            if (node.description) {
+                const desc = createElement('p', 'text-sm mt-1 text-gray-400/70', node.description);
+                leftContent.querySelector('div.flex-col').appendChild(desc);
+            }
+
+            // Right side container for icons (Children toggle and Resource toggle)
+            const rightIcons = createElement('div', 'flex items-center space-x-2');
+            
+            let childrenUl;
+            let childrenIcon;
+            let resourcesUl;
+            let resourcesButton;
+
+            // 1. Children Collapse/Expand Logic
+            if (node.children && node.children.length > 0) {
+                childrenIcon = createElement('span', 'text-xl transition-transform duration-300 p-1 rounded-full hover:bg-gray-700', '▼');
+                rightIcons.appendChild(childrenIcon);
+                
+                childrenUl = createElement('ul', 'hidden w-full space-y-1 p-2 bg-gray-900/50 rounded-b-lg');
+                node.children.forEach(child => childrenUl.appendChild(renderNode(child, depth + 1)));
+
+                itemDiv.dataset.childrenExpanded = 'false';
+                
+                // Attach toggle to the main button click event
+                titleButton.onclick = () => toggleChildren(itemDiv, childrenUl, childrenIcon);
+
+                // If icon exists, clicking it also toggles (for accessibility/clear target)
+                childrenIcon.onclick = (e) => {
+                    e.stopPropagation(); // Stop click from propagating to the parent button
+                    toggleChildren(itemDiv, childrenUl, childrenIcon);
+                };
+            } else {
+                // If there are no children, the main button should not be clickable for expansion
+                titleButton.onclick = (e) => e.preventDefault(); 
+            }
+            
+            // 2. Resources Collapse/Expand Logic
+            if (node.resources && node.resources.length > 0) {
+                const resourceCount = node.resources.length;
+                resourcesButton = createElement('button', 
+                    'px-2 py-1 bg-green-700/80 text-xs font-medium rounded-full hover:bg-green-600 transition-colors duration-150',
+                    `🔗 ${resourceCount}`
+                );
+                
+                resourcesUl = renderResources(node.resources);
+                resourcesUl.classList.add('hidden', 'mt-0'); 
+
+                itemDiv.dataset.resourcesExpanded = 'false';
+                resourcesButton.onclick = (e) => {
+                    e.stopPropagation(); // VERY IMPORTANT: Prevent this click from triggering the parent titleButton's children toggle
+                    const isExpanded = itemDiv.dataset.resourcesExpanded === 'true';
+                    if (isExpanded) {
+                        resourcesUl.classList.add('hidden');
+                        itemDiv.dataset.resourcesExpanded = 'false';
+                    } else {
+                        resourcesUl.classList.remove('hidden');
+                        itemDiv.dataset.resourcesExpanded = 'true';
+                    }
+                };
+                rightIcons.appendChild(resourcesButton);
+            }
+
+            titleButton.appendChild(rightIcons);
+            itemDiv.appendChild(titleButton);
+
+            if (childrenUl) {
+                itemDiv.appendChild(childrenUl);
+                // Auto-expand the top-level sections (depth === 0)
+                if (depth === 0) {
+                    toggleChildren(itemDiv, childrenUl, childrenIcon); 
+                }
+            }
+
+            if (resourcesUl) {
+                itemDiv.appendChild(resourcesUl);
+            }
+
+            li.appendChild(itemDiv);
+            return li;
+        }
+
+        // Function to switch and render the domain content
+        function setActiveDomain(domainId) {
+            activeDomainId = domainId;
+            nodeList.innerHTML = ''; // Clear existing content
+
+            // Find the active domain object
+            const domain = courseData.find(d => d.id === domainId);
+
+            if (domain && domain.children && domain.children.length > 0) {
+                // Render the main description of the Domain first
+                const domainHeader = createElement('h2', 'text-2xl text-teal-400 font-bold mb-4 border-b border-gray-700 pb-2', domain.title);
+                const domainDesc = createElement('p', 'text-gray-400 mb-6 italic', domain.description);
+                nodeList.appendChild(domainHeader);
+                nodeList.appendChild(domainDesc);
+
+                domain.children.forEach(node => nodeList.appendChild(renderNode(node, 0)));
+            } else if (domain) {
+                nodeList.innerHTML = `
+                    <h2 class="text-2xl text-teal-400 font-bold mb-4 border-b border-gray-700 pb-2">${domain.title}</h2>
+                    <p class="text-gray-400 p-4">${domain.description || 'No detailed sections available yet for this domain. Please check back later.'}</p>`;
+            } else {
+                nodeList.innerHTML = `<p class="text-red-400 p-4">Error: Domain content not found.</p>`;
+            }
+
+            // Update tab button styles
+            tabBar.querySelectorAll('button').forEach(button => {
+                if (button.dataset.domainId === domainId) {
+                    button.classList.add('bg-teal-500', 'text-gray-900', 'shadow-xl');
+                    button.classList.remove('bg-gray-700', 'text-gray-200');
+                } else {
+                    button.classList.remove('bg-teal-500', 'text-gray-900', 'shadow-xl');
+                    button.classList.add('bg-gray-700', 'text-gray-200');
+                }
+            });
+        }
+
+        // Function to render the top-level domain tabs
+        function renderTabs(data) {
+            tabBar.innerHTML = ''; // Clear tabs
+            data.forEach(domain => {
+                const button = createElement('button', 
+                    `px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ease-in-out whitespace-nowrap
+                     ${domain.id === activeDomainId ? 'bg-teal-500 text-gray-900 shadow-xl' : 'bg-gray-700 text-gray-200 hover:bg-gray-600'}`
+                );
+                button.dataset.domainId = domain.id;
+                button.innerHTML = `<span>${domain.id}</span>`;
+                button.onclick = () => setActiveDomain(domain.id);
+                tabBar.appendChild(button);
+            });
+        }
+
+        // Function to fetch data (for production use)
+        async function fetchData() {
+            try {
+                // 1. Fetch Domain 3 data from the external GitHub URL
+                // Implemented Exponential Backoff for robust fetching
+                let fetchedD3Data = null;
+                const maxRetries = 3;
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        const response = await fetch(DATA_URL); 
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} (${response.statusText})`);
+                        fetchedD3Data = await response.json(); 
+                        break; // Success! Exit the loop
+                    } catch (e) {
+                        if (i < maxRetries - 1) {
+                            const delay = Math.pow(2, i) * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        } else {
+                            throw e; // Re-throw the error on the last attempt
+                        }
+                    }
+                }
+
+                // 2. Locate the D3 placeholder in the courseData structure
+                const d3Index = courseData.findIndex(d => d.id === 'D3');
+
+                if (d3Index !== -1) {
+                    // 3. Update the D3 domain with the fetched content
+                    courseData[d3Index].children = fetchedD3Data;
+                    courseData[d3Index].description = "Managing the lifecycle of IS. (Data loaded successfully from GitHub)";
+                } 
+                
+                // Render tabs and content, defaulting to D3
+                renderTabs(courseData);
+                setActiveDomain(activeDomainId);
+
+                // Show the map and hide loading
+                loadingDiv.classList.add('hidden');
+                mapContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Failed to load map data from GitHub:", error);
+                loadingDiv.classList.add('hidden');
+                errorDiv.innerHTML = `Error loading Domain 3 data from GitHub. Please check the URL and network connection. Details: ${error.message}`;
+                errorDiv.classList.remove('hidden');
+                
+                // Fallback: If D3 fails to load, still render the tabs, but default to D2
+                activeDomainId = 'D2';
+                renderTabs(courseData);
+                setActiveDomain(activeDomainId);
+            }
+        }
+
+        // Start the application
+        window.onload = fetchData;
+    </script>
+</body>
+</html>

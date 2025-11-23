@@ -2,7 +2,7 @@
   {
     "id": "D3",
     "title": "Domain 3: Information Systems Acquisition, Development, and Implementation",
-    "description": "Managing the lifecycle of information systems including acquisition, development, governance, and implementation.",
+    "description": "Managing the lifecycle of IS.",
     "type": "domain",
     "children": [
       {
@@ -14,181 +14,82 @@
             "id": "D3.1.1",
             "title": "Project Management Practices",
             "type": "topic",
-            "children": [
-              {
-                "id": "D3.1.1.1",
-                "title": "Project Methodologies",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.1.1.1.1", "title": "Waterfall", "type": "concept" },
-                  { "id": "D3.1.1.1.2", "title": "Agile", "type": "concept" },
-                  { "id": "D3.1.1.1.3", "title": "Hybrid Approaches", "type": "concept" }
-                ]
-              },
-              {
-                "id": "D3.1.1.2",
-                "title": "Project Success Criteria",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.1.1.2.1", "title": "Scope Compliance", "type": "concept" },
-                  { "id": "D3.1.1.2.2", "title": "Budget Adherence", "type": "concept" },
-                  { "id": "D3.1.1.2.3", "title": "Timeline Delivery", "type": "concept" }
-                ]
-              }
-            ],
-            "resources": [
-              {
-                "name": "ISACA: Project Management for Auditors",
-                "url": "https://www.isaca.org/resources/example",
-                "format": "Article"
-              }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.2",
             "title": "Project Management Structure",
             "type": "topic",
-            "children": [
-              {
-                "id": "D3.1.2.1",
-                "title": " Organizational Structures",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.1.2.1.1", "title": "Functional", "type": "concept" },
-                  { "id": "D3.1.2.1.2", "title": "Matrix", "type": "concept" },
-                  { "id": "D3.1.2.1.3", "title": "Projectized", "type": "concept" }
-                ]
-              }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.3",
             "title": "Project Management Roles and Responsibility",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.3.1", "title": "Project Sponsor", "type": "concept" },
-              { "id": "D3.1.3.2", "title": "Project Manager", "type": "concept" },
-              { "id": "D3.1.3.3", "title": "Steering Committee", "type": "concept" },
-              { "id": "D3.1.3.4", "title": "Business Analyst", "type": "concept" },
-              { "id": "D3.1.3.5", "title": "Technical Lead", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.4",
             "title": "Project Management Techniques",
             "type": "topic",
-            "children": [
-              {
-                "id": "D3.1.4.1",
-                "title": "Scheduling Techniques",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.1.4.1.1", "title": "Gantt Charts", "type": "concept" },
-                  { "id": "D3.1.4.1.2", "title": "Critical Path Method", "type": "concept" },
-                  { "id": "D3.1.4.1.3", "title": "PERT Charts", "type": "concept" }
-                ]
-              },
-              {
-                "id": "D3.1.4.2",
-                "title": "Risk Analysis Techniques",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.1.4.2.1", "title": "Qualitative Risk Assessment", "type": "concept" },
-                  { "id": "D3.1.4.2.2", "title": "Quantitative Risk Assessment", "type": "concept" }
-                ]
-              }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.5",
             "title": "Portfolio/Program Management",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.5.1", "title": "Portfolio Alignment with Strategy", "type": "concept" },
-              { "id": "D3.1.5.2", "title": "Program Governance", "type": "concept" },
-              { "id": "D3.1.5.3", "title": "Value Delivery", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.6",
             "title": "Project Management Office",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.6.1", "title": "PMO Types", "type": "concept" },
-              { "id": "D3.1.6.2", "title": "PMO Standards and Templates", "type": "concept" },
-              { "id": "D3.1.6.3", "title": "PMO Governance Role", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.7",
             "title": "Project Benefit Realization",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.7.1", "title": "Benefit Identification", "type": "concept" },
-              { "id": "D3.1.7.2", "title": "Benefit Tracking", "type": "concept" },
-              { "id": "D3.1.7.3", "title": "Post-Implementation Review", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.8",
             "title": "Project Initiation",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.8.1", "title": "Project Charter", "type": "concept" },
-              { "id": "D3.1.8.2", "title": "Stakeholder Identification", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.9",
             "title": "Project Objectives",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.9.1", "title": "SMART Objectives", "type": "concept" },
-              { "id": "D3.1.9.2", "title": "Business Alignment", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.10",
             "title": "Project Planning",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.10.1", "title": "Work Breakdown Structure", "type": "concept" },
-              { "id": "D3.1.10.2", "title": "Resource Planning", "type": "concept" },
-              { "id": "D3.1.10.3", "title": "Budget Planning", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.11",
             "title": "Project Execution",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.11.1", "title": "Task Coordination", "type": "concept" },
-              { "id": "D3.1.11.2", "title": "Vendor Management", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.12",
             "title": "Project Controlling and Monitoring",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.12.1", "title": "KPIs/Performance Tracking", "type": "concept" },
-              { "id": "D3.1.12.2", "title": "Variance Analysis", "type": "concept" },
-              { "id": "D3.1.12.3", "title": "Quality Assurance", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.1.13",
             "title": "Project Closing",
             "type": "topic",
-            "children": [
-              { "id": "D3.1.13.1", "title": "Final Deliverables Acceptance", "type": "concept" },
-              { "id": "D3.1.13.2", "title": "Project Documentation", "type": "concept" },
-              { "id": "D3.1.13.3", "title": "Lessons Learned", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           }
         ]
       },
-
       {
         "id": "D3.2",
         "title": "Business Case and Feasibility Analysis",
@@ -198,60 +99,40 @@
             "id": "D3.2.1",
             "title": "Project Scope",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.1.1", "title": "In-Scope Definition", "type": "concept" },
-              { "id": "D3.2.1.2", "title": "Out-of-Scope Definition", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.2.2",
             "title": "Current Analysis",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.2.1", "title": "Current State Assessment", "type": "concept" },
-              { "id": "D3.2.2.2", "title": "Gap Analysis", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.2.3",
             "title": "Requirements",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.3.1", "title": "Functional Requirements", "type": "concept" },
-              { "id": "D3.2.3.2", "title": "Non-Functional Requirements", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.2.4",
             "title": "Approach",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.4.1", "title": "Build vs Buy Decision", "type": "concept" },
-              { "id": "D3.2.4.2", "title": "Implementation Approach", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.2.5",
             "title": "Evaluation",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.5.1", "title": "Cost-Benefit Analysis", "type": "concept" },
-              { "id": "D3.2.5.2", "title": "ROI Analysis", "type": "concept" },
-              { "id": "D3.2.5.3", "title": "Risk Evaluation", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.2.6",
             "title": "Review",
             "type": "topic",
-            "children": [
-              { "id": "D3.2.6.1", "title": "Business Case Approval", "type": "concept" },
-              { "id": "D3.2.6.2", "title": "Feasibility Validation", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           }
         ]
       },
-
       {
         "id": "D3.3",
         "title": "System Development Methodologies",
@@ -261,86 +142,52 @@
             "id": "D3.3.1",
             "title": "Business Application Development",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.1.1", "title": "Requirements Gathering", "type": "concept" },
-              { "id": "D3.3.1.2", "title": "Application Design Principles", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.2",
             "title": "SDLC Models",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.2.1", "title": "Waterfall", "type": "concept" },
-              { "id": "D3.3.2.2", "title": "Iterative", "type": "concept" },
-              { "id": "D3.3.2.3", "title": "Spiral", "type": "concept" },
-              { "id": "D3.3.2.4", "title": "Agile/Adaptive", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.3",
             "title": "SDLC Phases",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.3.1", "title": "Planning", "type": "concept" },
-              { "id": "D3.3.3.2", "title": "Analysis", "type": "concept" },
-              { "id": "D3.3.3.3", "title": "Design", "type": "concept" },
-              { "id": "D3.3.3.4", "title": "Development", "type": "concept" },
-              { "id": "D3.3.3.5", "title": "Testing", "type": "concept" },
-              { "id": "D3.3.3.6", "title": "Implementation", "type": "concept" },
-              { "id": "D3.3.3.7", "title": "Maintenance", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.4",
             "title": "Software Development Methods",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.4.1", "title": "Object-Oriented Development", "type": "concept" },
-              { "id": "D3.3.4.2", "title": "Rapid Application Development", "type": "concept" },
-              { "id": "D3.3.4.3", "title": "Prototyping", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.5",
             "title": "System Development Tools and Productivity Aids",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.5.1", "title": "CASE Tools", "type": "concept" },
-              { "id": "D3.3.5.2", "title": "Modeling Tools", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.6",
             "title": "Infrastructure Development/Acquisition Practices",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.6.1", "title": "Capacity Planning", "type": "concept" },
-              { "id": "D3.3.6.2", "title": "Technology Selection", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.7",
             "title": "Hardware/Software Acquisition",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.7.1", "title": "Vendor Proposals", "type": "concept" },
-              { "id": "D3.3.7.2", "title": "Vendor Evaluation", "type": "concept" },
-              { "id": "D3.3.7.3", "title": "Procurement Controls", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.3.8",
             "title": "System Software Acquisition",
             "type": "topic",
-            "children": [
-              { "id": "D3.3.8.1", "title": "System Software Requirements", "type": "concept" },
-              { "id": "D3.3.8.2", "title": "Licensing Models", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           }
         ]
       },
-
       {
         "id": "D3.4",
         "title": "Control Identification and Design",
@@ -350,56 +197,37 @@
             "id": "D3.4.1",
             "title": "Input/Origination Controls",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.1.1", "title": "Edit Checks", "type": "concept" },
-              { "id": "D3.4.1.2", "title": "Validation Controls", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.4.2",
             "title": "Processing Procedures and Controls",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.2.1", "title": "Run-to-Run Controls", "type": "concept" },
-              { "id": "D3.4.2.2", "title": "Reconciliation", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.4.3",
             "title": "Output Controls",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.3.1", "title": "Distribution Controls", "type": "concept" },
-              { "id": "D3.4.3.2", "title": "Output Validation", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.4.4",
             "title": "Application Controls",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.4.1", "title": "Authorization Controls", "type": "concept" },
-              { "id": "D3.4.4.2", "title": "Data Integrity Controls", "type": "concept" },
-              { "id": "D3.4.4.3", "title": "Configuration Controls", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.4.5",
             "title": "User Procedures",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.5.1", "title": "User Manuals", "type": "concept" },
-              { "id": "D3.4.5.2", "title": "End-User Training", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           },
           {
             "id": "D3.4.6",
             "title": "Decision Support System",
             "type": "topic",
-            "children": [
-              { "id": "D3.4.6.1", "title": "Model Management", "type": "concept" },
-              { "id": "D3.4.6.2", "title": "Data-Driven Decision Controls", "type": "concept" }
-            ]
+            "brief": "this is dummy brief explanation"
           }
         ]
       }
