@@ -1,156 +1,157 @@
-[
-  {
-    "id": "D3",
-    "title": "Domain 3: Information Systems Acquisition, Development, and Implementation",
-    "description": "Managing the lifecycle of IS.",
-    "type": "domain",
-    "children": [
-      {
-        "id": "D3.1",
-        "title": "Project Governance and Management",
-        "type": "section",
-        "children": [
-          { "id": "D3.1.1", "title": "Project Management Practices", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.2", "title": "Project Management Structure", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.3", "title": "Project Management Roles and Responsibility", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.4", "title": "Project Management Techniques", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.5", "title": "Portfolio/Program Management", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.6", "title": "Project Management Office", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.7", "title": "Project Benefit Realization", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.8", "title": "Project Initiation", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.9", "title": "Project Objectives", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.10", "title": "Project Planning", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.11", "title": "Project Execution", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.12", "title": "Project Controlling and Monitoring", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.1.13", "title": "Project Closing", "type": "topic", "summary": "this is dummy brief explanation" }
-        ]
+{
+  "IS_Acquisition_and_Development": {
+    "Project_Governance_and_Management": {
+      "Project_Initiation": {
+        "Definition_Project_Scope": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Stakeholder_Identification": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Project_Charter_Creation": {
+          "summary": "this is dummy brief explanation"
+        }
       },
-
-      {
-        "id": "D3.2",
-        "title": "Business Case and Feasibility Analysis",
-        "type": "section",
-        "children": [
-          { "id": "D3.2.1", "title": "Project Scope", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.2.2", "title": "Current Analysis", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.2.3", "title": "Requirements", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.2.4", "title": "Approach", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.2.5", "title": "Evaluation", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.2.6", "title": "Review", "type": "topic", "summary": "this is dummy brief explanation" }
-        ]
+      "Project_Planning": {
+        "Resource_Planning": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Budgeting_and_Cost_Estimation": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Risk_Management_Planning": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Scheduling_and_Timeline": {
+          "summary": "this is dummy brief explanation"
+        }
       },
-
-      {
-        "id": "D3.3",
-        "title": "System Development Methodologies",
-        "type": "section",
-        "children": [
-          { "id": "D3.3.1", "title": "Business Application Development", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.3.2", "title": "SDLC Models", "type": "topic", "summary": "this is dummy brief explanation" },
-
-          {
-            "id": "D3.3.3",
-            "title": "SDLC Phases",
-            "type": "topic",
-            "children": [
-              {
-                "id": "D3.3.3.1",
-                "title": "Phase 1: Initiation",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.1.a", "title": "Identify Business Need", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.1.b", "title": "Preliminary Feasibility Assessment", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.1.c", "title": "Assign Project Sponsor", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.2",
-                "title": "Phase 2: Requirements",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.2.a", "title": "Gather Functional Requirements", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.2.b", "title": "Gather Non-Functional Requirements", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.2.c", "title": "Requirements Validation", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.2.d", "title": "Requirements Traceability Matrix", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.3",
-                "title": "Phase 3: Design",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.3.a", "title": "System Architecture Design", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.3.b", "title": "Database Design", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.3.c", "title": "Interface and UX Design", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.3.d", "title": "Security Design Considerations", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.4",
-                "title": "Phase 4: Development",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.4.a", "title": "Code Development", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.4.b", "title": "Unit Testing", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.4.c", "title": "Version Control Management", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.5",
-                "title": "Phase 5: Testing",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.5.a", "title": "Functional Testing", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.5.b", "title": "Integration Testing", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.5.c", "title": "User Acceptance Testing (UAT)", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.5.d", "title": "Defect Logging and Resolution", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.6",
-                "title": "Phase 6: Implementation",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.6.a", "title": "Deployment to Production", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.6.b", "title": "Data Migration", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.6.c", "title": "Training and Documentation", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              },
-              {
-                "id": "D3.3.3.7",
-                "title": "Phase 7: Maintenance",
-                "type": "subtopic",
-                "children": [
-                  { "id": "D3.3.3.7.a", "title": "Bug Fixes and Enhancements", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.7.b", "title": "Performance Monitoring", "type": "concept", "summary": "this is dummy brief explanation" },
-                  { "id": "D3.3.3.7.c", "title": "Patch and Update Management", "type": "concept", "summary": "this is dummy brief explanation" }
-                ]
-              }
-            ]
-          },
-
-          { "id": "D3.3.4", "title": "Software Development Methods", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.3.5", "title": "System Development Tools and Productivity Aids", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.3.6", "title": "Infrastructure Development/Acquisition Practices", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.3.7", "title": "Hardware/Software Acquisition", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.3.8", "title": "System Software Acquisition", "type": "topic", "summary": "this is dummy brief explanation" }
-        ]
-      },
-
-      {
-        "id": "D3.4",
-        "title": "Control Identification and Design",
-        "type": "section",
-        "children": [
-          { "id": "D3.4.1", "title": "Input/Origination Controls", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.4.2", "title": "Processing Procedures and Controls", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.4.3", "title": "Output Controls", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.4.4", "title": "Application Controls", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.4.5", "title": "User Procedures", "type": "topic", "summary": "this is dummy brief explanation" },
-          { "id": "D3.4.6", "title": "Decision Support System", "type": "topic", "summary": "this is dummy brief explanation" }
-        ]
+      "Project_Execution_and_Control": {
+        "Performance_Monitoring": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Change_Management": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Quality_Assurance": {
+          "summary": "this is dummy brief explanation"
+        }
       }
-    ],
-    "resources": []
+    },
+
+    "Business_Case_and_Feasibility_Analysis": {
+      "Business_Need_Identification": {
+        "summary": "this is dummy brief explanation"
+      },
+      "Cost_Benefit_Analysis": {
+        "summary": "this is dummy brief explanation"
+      },
+      "Technical_Feasibility": {
+        "summary": "this is dummy brief explanation"
+      },
+      "Operational_Feasibility": {
+        "summary": "this is dummy brief explanation"
+      },
+      "Legal_and_Regulatory_Feasibility": {
+        "summary": "this is dummy brief explanation"
+      }
+    },
+
+    "System_Development_Methodologies": {
+      "Waterfall": {
+        "summary": "this is dummy brief explanation"
+      },
+      "Agile": {
+        "summary": "this is dummy brief explanation"
+      },
+      "DevOps": {
+        "summary": "this is dummy brief explanation"
+      },
+
+      "SDLC_Phases": {
+        "Requirements": {
+          "Gathering": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Validation": {
+            "summary": "this is dummy brief explanation"
+          }
+        },
+        "Design": {
+          "High_Level_Design": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Low_Level_Design": {
+            "summary": "this is dummy brief explanation"
+          },
+          "User_Interface_Design": {
+            "summary": "this is dummy brief explanation"
+          }
+        },
+        "Development": {
+          "Coding": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Unit_Testing": {
+            "summary": "this is dummy brief explanation"
+          }
+        },
+        "Testing": {
+          "Integration_Testing": {
+            "summary": "this is dummy brief explanation"
+          },
+          "System_Testing": {
+            "summary": "this is dummy brief explanation"
+          },
+          "User_Acceptance_Testing": {
+            "summary": "this is dummy brief explanation"
+          }
+        },
+        "Deployment": {
+          "Release_Management": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Migration_and_Transition": {
+            "summary": "this is dummy brief explanation"
+          }
+        },
+        "Maintenance": {
+          "Bug_Fixing": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Enhancements": {
+            "summary": "this is dummy brief explanation"
+          },
+          "Performance_Optimization": {
+            "summary": "this is dummy brief explanation"
+          }
+        }
+      }
+    },
+
+    "Control_Identification_and_Design": {
+      "General_Controls": {
+        "Change_Management_Controls": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Access_Controls": {
+          "summary": "this is dummy brief explanation"
+        },
+        "IT_Operations_Controls": {
+          "summary": "this is dummy brief explanation"
+        }
+      },
+      "Application_Controls": {
+        "Input_Controls": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Processing_Controls": {
+          "summary": "this is dummy brief explanation"
+        },
+        "Output_Controls": {
+          "summary": "this is dummy brief explanation"
+        }
+      }
+    }
   }
-]
+}
