@@ -79,9 +79,9 @@
             {
                 "id": "D3",
                 "title": "Domain 3: Information Systems Acquisition, Development, and Implementation",
-                "description": "Content for this domain is loaded dynamically from the Google Sheet CSV.",
+                "description": "Content for this domain is loaded dynamically from the Google Sheet TSV export.",
                 "type": "domain",
-                "children": [], // Content will be fetched from CSV
+                "children": [], // Content will be fetched from TSV
                 "resources": []
             },
             {
@@ -103,8 +103,8 @@
         ];
 
         // --- Configuration ---
-        // New data source: Google Sheets CSV Export URL
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1-kGFWIiwrVdHqFtHpu1nYsb922rT9KsmgUeWwiEQZks/export?format=csv&gid=0'; 
+        // CHANGED: Using 'format=tsv' to force a TAB (\t) delimiter, preventing commas in the data from breaking the columns.
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1-kGFWIiwrVdHqFtHpu1nYsb922rT9KsmgUeWwiEQZks/export?format=tsv&gid=0'; 
         
         // --- Core Application Logic ---
 
@@ -227,19 +227,23 @@
         }
         
         /**
-         * Converts flat CSV text into the nested object structure expected by the app.
-         * Dynamically handles hierarchy up to the deepest populated level (Level 5).
+         * Converts flat CSV/TSV text into the nested object structure expected by the app.
+         * NOTE: Assumes a TAB (\t) delimiter due to using format=tsv in the URL.
          */
         function csvToNestedObject(csvText) {
             const lines = csvText.trim().split('\n');
             if (lines.length <= 1) return { IS_Acquisition_and_Development: {} }; // Header only or empty
 
+            // CHANGED: Use TAB as the delimiter
+            const DELIMITER = '\t'; 
+
             // --- Robust Header Parsing ---
-            const rawHeaders = lines[0].split(',');
-            const headers = rawHeaders.map(h => h.trim().replace(/^['"]|['"]$/g, ''));
+            const rawHeaders = lines[0].split(DELIMITER); 
+            // Also clean up potential quotes/spaces around headers
+            const headers = rawHeaders.map(h => h.trim().replace(/^['"]|['"]$/g, '')); 
             const data = lines.slice(1);
             
-            // Expected header labels based on the user's provided CSV file
+            // Expected header labels based on the user's provided spreadsheet
             const LEVEL_HEADERS = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
             const SUMMARY_HEADER = 'Summary';
             const EXPECTED_HEADERS = [...LEVEL_HEADERS, SUMMARY_HEADER];
@@ -251,115 +255,39 @@
                 const index = headers.indexOf(expected);
                 if (index === -1) {
                     allFound = false;
-                    console.error(`Header "${expected}" not found in CSV headers:`, headers); 
+                    console.error(`Header "${expected}" not found in TSV headers:`, headers); 
                 }
                 indices[expected] = index;
             });
             
             if (!allFound) {
-                console.warn("Actual CSV headers found:", headers);
-                throw new Error(`CSV structure is unexpected. Required headers (${EXPECTED_HEADERS.join(', ')}) were not all found in the first row.`);
+                console.warn("Actual TSV headers found:", headers);
+                throw new Error(`TSV structure is unexpected. Required headers (${EXPECTED_HEADERS.join(', ')}) were not all found in the first row.`);
             }
-
-            const root = {};
-
-            data.forEach(line => {
-                // Use a basic split for values (less robust than a dedicated CSV parser, but simple)
-                const values = line.split(','); 
-                if (values.length < EXPECTED_HEADERS.length || values.every(v => v.trim() === '')) return; // Skip incomplete or empty rows
-
-                // 1. Collect all non-empty level values and their clean keys
-                let currentLevel = root;
-                let lastPopulatedKey = null;
-                
-                const summary = values[indices[SUMMARY_HEADER]] ? values[indices[SUMMARY_HEADER]].trim() : "No summary available.";
-
-                LEVEL_HEADERS.forEach(header => {
-                    const index = indices[header];
-                    const levelValue = values[index] ? values[index].trim() : '';
-
-                    if (levelValue) {
-                        const cleanKey = levelValue.replace(/\s/g, '_');
-                        
-                        // Navigate or create the next level in the hierarchy
-                        if (!currentLevel[cleanKey]) {
-                            currentLevel[cleanKey] = {};
-                        }
-                        currentLevel = currentLevel[cleanKey];
-                        lastPopulatedKey = cleanKey; // Keep track of the deepest populated key
-                    }
-                });
-
-                // 2. Assign the summary (leaf node) to the *deepest* populated key's value.
-                // This ensures we don't try to assign summary to a parent node that is expected to contain objects.
-                // We must backtrack to the actual parent of the leaf node.
-                if (lastPopulatedKey) {
-                    // Re-run the traversal to find the parent of the lastPopulatedKey
-                    let leafContainer = root;
-                    let lastKey = null;
-
-                    LEVEL_HEADERS.forEach(header => {
-                        const index = indices[header];
-                        const levelValue = values[index] ? values[index].trim() : '';
-                        
-                        if (levelValue) {
-                            const cleanKey = levelValue.replace(/\s/g, '_');
-                            
-                            // If this is the deepest populated level for this row
-                            if (cleanKey === lastPopulatedKey) {
-                                // The final leaf node is at leafContainer[lastKey] = { summary: summary }
-                                // If Level 1 is the deepest, leafContainer is root, and lastKey is key1.
-                                
-                                // The current node must become the leaf node.
-                                // We are currently positioned at the object that will contain the summary.
-                                // Instead of creating an empty object, we replace it with the leaf.
-                                if(lastKey) {
-                                     leafContainer[lastKey] = { summary: summary };
-                                } else {
-                                    // Special case: If Level 1 is the only key (lastKey is null), 
-                                    // we set the summary directly at the root level using key1 (which is lastPopulatedKey)
-                                    root[lastPopulatedKey] = { summary: summary };
-                                }
-                                
-                                return; // Stop processing this row
-                            }
-                            
-                            // Continue traversal for the next level's parent
-                            if (leafContainer[cleanKey]) {
-                                leafContainer = leafContainer[cleanKey];
-                                lastKey = cleanKey;
-                            }
-                        }
-                    });
-                    
-                }
-
-            });
-            
-            // Note: The previous logic for Level 5 only worked if Level 5 was always the deepest.
-            // A more complex approach is needed to identify the actual deepest level and attach the summary there.
-            // Let's refine the loop to correctly assign the summary.
 
             const finalRoot = {};
 
             data.forEach(line => {
-                const values = line.split(','); 
+                // CHANGED: Split the line using the TAB delimiter
+                const values = line.split(DELIMITER); 
                 if (values.length < EXPECTED_HEADERS.length || values.every(v => v.trim() === '')) return;
 
                 let currentNode = finalRoot;
-                const summary = values[indices[SUMMARY_HEADER]] ? values[indices[SUMMARY_HEADER]].trim() : "No summary available.";
+                
+                // Trim the summary value and remove potential surrounding quotes
+                const rawSummary = values[indices[SUMMARY_HEADER]] || '';
+                const summary = rawSummary.trim().replace(/^["']|["']$/g, '');
                 
                 let deepestLevelKey = null;
-                let deepestLevelValue = null;
 
                 // 1. Find the deepest populated level for this row
                 LEVEL_HEADERS.forEach(header => {
                     const index = indices[header];
-                    const levelValue = values[index] ? values[index].trim() : '';
+                    const levelValue = values[index] ? values[index].trim().replace(/^["']|["']$/g, '') : '';
 
                     if (levelValue) {
-                        deepestLevelKey = levelValue.replace(/\s/g, '_');
-                        deepestLevelValue = levelValue;
+                        // Use a safe key for object properties
+                        deepestLevelKey = levelValue.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
                     }
                 });
 
@@ -367,18 +295,18 @@
                 if (deepestLevelKey) {
                     LEVEL_HEADERS.forEach(header => {
                         const index = indices[header];
-                        const levelValue = values[index] ? values[index].trim() : '';
+                        const levelValue = values[index] ? values[index].trim().replace(/^["']|["']$/g, '') : '';
 
                         if (levelValue) {
-                            const cleanKey = levelValue.replace(/\s/g, '_');
+                            const cleanKey = levelValue.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
 
-                            // If this is the deepest level, attach the summary object
+                            // If this is the deepest level, attach the summary object (leaf node)
                             if (cleanKey === deepestLevelKey) {
                                 currentNode[cleanKey] = { summary: summary };
                             } else {
-                                // It's a parent node, ensure it's an object
+                                // It's a parent node, ensure it's an object and move down
                                 currentNode[cleanKey] = currentNode[cleanKey] || {};
-                                currentNode = currentNode[cleanKey]; // Move down
+                                currentNode = currentNode[cleanKey]; 
                             }
                         }
                     });
@@ -512,7 +440,7 @@
                 detailsDiv = createElement('div', 'hidden w-full space-y-2 p-4 bg-gray-800/80 rounded-b-lg border-t border-gray-700');
                 itemDiv.dataset.detailsExpanded = 'false';
 
-                // Use 'brief' (which now contains the 'summary' from the CSV/JSON) or 'description'
+                // Use 'brief' (which now contains the 'summary' from the TSV/JSON) or 'description'
                 const descriptionText = node.brief || node.description;
 
                 // Add description/brief if available
@@ -614,14 +542,14 @@
             
             for (let i = 0; i < maxRetries; i++) {
                 try {
-                    // Fetch the CSV text
+                    // Fetch the TSV text
                     const response = await fetch(CSV_URL); 
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status} (${response.statusText})`);
                     }
                     const csvText = await response.text(); 
                     
-                    // Convert CSV to the expected nested object structure
+                    // Convert TSV to the expected nested object structure
                     const nestedData = csvToNestedObject(csvText);
                     return nestedData; // Success!
 
@@ -640,7 +568,7 @@
         // Main function to fetch data and initialize the app
         async function fetchData() {
             try {
-                // Fetch the structured data from the CSV source
+                // Fetch the structured data from the TSV source
                 const fetchedD3Data = await fetchCsvDataWithRetry();
 
                 // Locate the D3 placeholder in the courseData structure
@@ -654,7 +582,7 @@
                         // Convert the nested object structure into the expected array structure
                         courseData[d3Index].children = convertNestedObjectToArray(d3Content, 'D3', 0);
                     } else {
-                         throw new Error("Invalid structure returned from CSV conversion. Expected 'IS_Acquisition_and_Development' field at the top level.");
+                         throw new Error("Invalid structure returned from TSV conversion. Expected 'IS_Acquisition_and_Development' field at the top level.");
                     }
                 } 
                 
