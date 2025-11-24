@@ -445,7 +445,8 @@
 
                 // Add description/brief if available
                 if (descriptionText) {
-                    detailsDiv.appendChild(createElement('p', 'text-sm text-gray-300 italic', `Summary: ${descriptionText}`));
+                    // MODIFIED: Removed "Summary: " prefix from the text output
+                    detailsDiv.appendChild(createElement('p', 'text-sm text-gray-300 italic', descriptionText));
                 }
 
                 // Add resources if available
