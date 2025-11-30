@@ -65,7 +65,7 @@ by Teuku Raja Irfan Radarma
     <td>IS Acquisition, Development & Implementation II</td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/04%20-%20IS%20Implementation.pptx" target="_blank">04 - IS Implementation</a></td>
     <td>quiz through LMS</td>
-    <td>CISA Review Manual (same as previous)</td>
+    <td><a href="https://irfanradarma.github.io/Audit-SI/exercise.html" target="_blank">Try Out</a></td>
   </tr>
   <tr>
     <td>5</td>
