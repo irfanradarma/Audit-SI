@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grouping Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        /* Custom class to easily identify tab buttons and content panes */
+        .tab-button.active {
+            border-color: #2563eb; /* blue-600 */
+            color: #1e40af; /* blue-800 */
+            background-color: #eff6ff; /* blue-50 */
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <div id="app" class="max-w-4xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-blue-800 tracking-tight">Balanced Group Generator</h1>
+            <p class="mt-2 text-lg text-gray-600">Automatically creates balanced groups (High-Low pairing) for multiple rounds using data fetched from Google Sheets.</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="bg-white p-2 rounded-t-xl shadow-lg border-b border-gray-200 flex space-x-2">
+            <button id="tabRound1" onclick="showRound('round1')" class="tab-button px-4 py-2 text-lg font-semibold border-b-2 border-transparent text-gray-500 hover:text-blue-600 transition duration-150 rounded-lg">
+                Round 1 Groups
+            </button>
+            <button id="tabRound2" onclick="showRound('round2')" class="tab-button px-4 py-2 text-lg font-semibold border-b-2 border-transparent text-gray-500 hover:text-blue-600 transition duration-150 rounded-lg hidden">
+                Round 2 Groups
+            </button>
+        </div>
+
+        <!-- Grouping Output Containers -->
+        <div class="bg-white p-6 rounded-b-xl shadow-xl border border-t-0 border-gray-200">
+            <div id="round1Content" class="grouping-content">
+                <div id="groupingOutputRound1" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-gray-500">Fetching Round 1 data...</p>
+                </div>
+            </div>
+
+            <div id="round2Content" class="grouping-content hidden">
+                <div id="groupingOutputRound2" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-gray-500">Fetching Round 2 data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const SHEET_ID = '1wMRCUueUJ-dch32bWBceNuxp9-44Q7zNNC1tLkTuZLw';
+        
+        // GID 0 is usually the first sheet (Round 1) - Uses Google Visualization API to export as CSV
+        const ROUND_1_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=0`;
+        
+        // Round 2 URL uses the GID provided by the user.
+        const ROUND_2_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=1559113839`; 
+
+        // --- Core Utility Functions ---
+
+        /**
+         * Converts a time string (e.g., "13 mins 29 secs") into total seconds.
+         */
+        function timeToSeconds(timeStr) {
+            let totalSeconds = 0;
+            const parts = timeStr.match(/(\d+)\s*(mins?|secs?)/gi);
+            if (!parts) return 0;
+
+            parts.forEach(part => {
+                const [value, unit] = part.split(/\s+/);
+                const num = parseInt(value);
+                if (unit.startsWith('min')) {
+                    totalSeconds += num * 60;
+                } else if (unit.startsWith('sec')) {
+                    totalSeconds += num;
+                }
+            });
+            return totalSeconds;
+        }
+
+        /**
+         * Parses CSV data string (Last Name, First Name, Time Taken, Grade) 
+         * and converts it into structured student objects.
+         */
+        function parseCSVData(csvText) {
+            const lines = csvText.trim().split('\n').filter(line => line.trim() !== '');
+            // Skip header row if present (assuming the first line is headers)
+            const dataLines = lines.slice(1); 
+
+            return dataLines.map(line => {
+                // Use a simple split by comma, handling potential quotes by trimming
+                const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+                if (parts.length < 4) return null;
+
+                // Strip quotes and trim whitespace from parts
+                const sanitize = (s) => s ? s.replace(/"/g, '').trim() : '';
+
+                const lastName = sanitize(parts[0]);
+                const firstName = sanitize(parts[1]);
+                const timeStr = sanitize(parts[2]);
+                const grade = parseFloat(sanitize(parts[3]));
+
+                if (isNaN(grade) || !firstName || !lastName || !timeStr) return null;
+
+                return { 
+                    // Combine into Full Name: First Name + Last Name
+                    name: `${firstName} ${lastName}`, 
+                    grade: grade, 
+                    timeStr: timeStr
+                };
+            }).filter(student => student !== null);
+        }
+
+        /**
+         * Simulates the back-end logic: calculates final grades and ranks students.
+         */
+        function calculateAndRank(studentData) {
+            if (!studentData || studentData.length === 0) return [];
+
+            let students = studentData.map(s => ({
+                name: s.name,
+                grade: s.grade,
+                timeSeconds: timeToSeconds(s.timeStr)
+            }));
+            
+            // Find the fastest time
+            const fastestTimeSeconds = Math.min(...students.map(s => s.timeSeconds));
+
+            students = students.map(student => {
+                const timeDifference = student.timeSeconds - fastestTimeSeconds;
+                
+                // Deduction: 0.1 points deducted from the max 15 points per second delay.
+                const rawDeduction = timeDifference * 0.1;
+                const deduction = Math.min(rawDeduction, 15); // Capped at 15 points
+
+                const timeComponent = 15 - deduction;
+
+                // Initial grade weight: 85%
+                const gradeComponent = student.grade * 0.85;
+
+                // Final grade (Max 100)
+                const finalGrade = gradeComponent + timeComponent;
+
+                return {
+                    ...student,
+                    finalGrade: finalGrade // Stored internally for sorting
+                };
+            });
+
+            // Rank Students by finalGrade descending
+            students.sort((a, b) => b.finalGrade - a.finalGrade);
+            return students;
+        }
+
+        /**
+         * Generates high-low paired groups.
+         */
+        function generateGrouping(rankedStudents) {
+            let groups = [];
+            let tempStudents = [...rankedStudents]; 
+            
+            // Form pairs (Top vs Bottom)
+            while (tempStudents.length > 3 || (tempStudents.length === 2 && tempStudents.length % 2 === 0)) {
+                const topStudent = tempStudents.shift(); 
+                const bottomStudent = tempStudents.pop(); 
+                groups.push([topStudent, bottomStudent]);
+            }
+            
+            // Handle remaining students (0, 1, 2, or 3)
+            if (tempStudents.length > 0) {
+                 groups.push(tempStudents);
+            }
+            return groups;
+        }
+
+
+        // --- Data Fetching and Processing ---
+
+        /**
+         * Fetches CSV data from a URL and parses it.
+         * Implements exponential backoff for resilience.
+         */
+        async function fetchStudentData(url, outputId, maxRetries = 5) {
+            if (!url) return null;
+            let lastError = null;
+            const outputElement = document.getElementById(outputId);
+            
+            outputElement.innerHTML = '<p class="text-blue-500 animate-pulse">Fetching and processing data...</p>';
+
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    const csvText = await response.text();
+                    return parseCSVData(csvText);
+                } catch (error) {
+                    lastError = error;
+                    const delay = Math.pow(2, i) * 1000; // Exponential backoff: 1s, 2s, 4s...
+                    console.warn(`Fetch attempt ${i + 1} failed for ${url}. Retrying in ${delay / 1000}s...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            console.error(`Failed to fetch and parse data from ${url} after ${maxRetries} attempts.`, lastError);
+            outputElement.innerHTML = `
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                    <p class="font-bold">Data Fetch Failed!</p>
+                    <p>Could not load data from Google Sheet. Please ensure the sheet's sharing setting is set to "Anyone with the link can view".</p>
+                </div>
+            `;
+            return null;
+        }
+
+        /**
+         * Renders the generated groups to the specified output container.
+         */
+        function renderGrouping(groups, outputElementId) {
+            const groupingOutput = document.getElementById(outputElementId);
+            if (!groups || groups.length === 0) {
+                groupingOutput.innerHTML = '<p class="text-red-500">No valid student data found or group formation failed.</p>';
+                return;
+            }
+
+            let html = '';
+            groups.forEach((group, index) => {
+                const groupNumber = index + 1;
+                const isOddGroup = group.length === 3;
+                
+                const groupHeaderClass = isOddGroup 
+                    ? 'bg-red-100 text-red-800 border-red-300' 
+                    : 'bg-purple-100 text-purple-800 border-purple-300';
+
+                html += `
+                    <div class="p-4 rounded-xl border-2 ${groupHeaderClass}">
+                        <h4 class="text-lg font-bold mb-2">
+                            Group ${groupNumber} 
+                            ${isOddGroup ? '<span class="text-sm font-normal">(3 Members)</span>' : ''}
+                        </h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            ${group.map(s => `
+                                <li class="text-gray-700 ml-2 font-semibold">${s.name}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            groupingOutput.innerHTML = html;
+        }
+
+        /**
+         * Manages tab visibility and active state.
+         */
+        function showRound(round) {
+            // Hide all content and reset all tabs
+            document.querySelectorAll('.grouping-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+            // Show selected content and set active tab
+            document.getElementById(round + 'Content').classList.remove('hidden');
+            document.getElementById('tab' + round.charAt(0).toUpperCase() + round.slice(1)).classList.add('active');
+        }
+
+
+        /**
+         * Initialization function, called on page load.
+         */
+        async function initializeApp() {
+            // --- Round 1 Processing ---
+            const studentDataRound1 = await fetchStudentData(ROUND_1_URL, 'groupingOutputRound1');
+            const rankedRound1 = calculateAndRank(studentDataRound1);
+            const groupsRound1 = generateGrouping(rankedRound1);
+            renderGrouping(groupsRound1, 'groupingOutputRound1');
+
+            // --- Round 2 Processing ---
+            let hasRound2Data = false;
+            if (ROUND_2_URL) {
+                const studentDataRound2 = await fetchStudentData(ROUND_2_URL, 'groupingOutputRound2');
+                if (studentDataRound2 && studentDataRound2.length > 0) {
+                    const rankedRound2 = calculateAndRank(studentDataRound2);
+                    const groupsRound2 = generateGrouping(rankedRound2);
+                    renderGrouping(groupsRound2, 'groupingOutputRound2');
+                    hasRound2Data = true;
+                }
+            }
+
+            // Show/Hide Round 2 Tab based on data availability
+            const tabRound2 = document.getElementById('tabRound2');
+            if (hasRound2Data) {
+                tabRound2.classList.remove('hidden');
+            } else {
+                tabRound2.classList.add('hidden');
+                // If Round 2 URL is configured but data is empty
+                if (ROUND_2_URL) {
+                     document.getElementById('groupingOutputRound2').innerHTML = '<p class="text-red-500">Round 2 data was loaded but found empty. Group formation skipped.</p>';
+                }
+            }
+            
+            // Default to showing Round 1, or Round 2 if Round 1 is empty and Round 2 is not
+            const round1Exists = studentDataRound1 && studentDataRound1.length > 0;
+
+            if (round1Exists) {
+                showRound('round1');
+            } else if (hasRound2Data) {
+                showRound('round2');
+            }
+        }
+        
+        window.onload = initializeApp;
+
+    </script>
+</body>
+</html>
