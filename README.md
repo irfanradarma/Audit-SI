@@ -70,7 +70,7 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>5</td>
     <td>IS Operations & Business Resilience</td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/05%20-%20IS%20Operations%20and%20Business%20Resilience.pptx" target="_blank">05 - IS Operations and Business Resilience</a></td>
     <td></td>
     <td></td>
   </tr>
