@@ -87,9 +87,9 @@
             {
                 "id": "D4",
                 "title": "Domain 4: Information Systems Operations and Business Resilience",
-                "description": "Maintaining the continuity of IS. (Content placeholder)",
+                "description": "Content for this domain is loaded dynamically from the Google Sheet TSV export",
                 "type": "domain",
-                "children": [],
+                "children": [], // Content will be fetched from the D4 TSV
                 "resources": []
             },
             {
@@ -605,8 +605,8 @@
 
             // Process D4 Data
             const d4Index = courseData.findIndex(d => d.id === 'D4');
-            if (d4Index !== -1 && fetchedD3Data.D4_Content) {
-                courseData[d3Index].children = convertNestedObjectToArray(fetchedD3Data.D3_Content, 'D4', 0);
+            if (d4Index !== -1 && fetchedD4Data.D4_Content) {
+                courseData[d4Index].children = convertNestedObjectToArray(fetchedD4Data.D4_Content, 'D4', 0);
             }
 
             // --- Final Initialization ---
