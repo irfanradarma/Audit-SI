@@ -123,7 +123,7 @@
         const tabBar = document.getElementById('tab-bar');
         
         let courseData = MOCK_DATA_INITIAL;
-        // Set the active domain ID to D3 by default, as requested.
+        // Set the active domain ID to D4 by default, as requested.
         let activeDomainId = 'D4'; 
 
         // Mapping node types to visual styles
@@ -582,8 +582,14 @@
                 return { D3_Content: {} }; // Return an empty object on failure
             });
 
+            const fetchD4Promise = fetchCsvDataWithRetry(D4_URL, 'D4_Content', 'Domain 4').catch(e => {
+                loadErrors.push(`Failed to load Domain 4: ${e.message}`);
+                console.error("Failed to load Domain 4 data:", e);
+                return { D4_Content: {} }; // Return an empty object on failure
+            });
+
             // Wait for both promises to resolve/fail gracefully
-            const [fetchedD2Data, fetchedD3Data] = await Promise.all([fetchD2Promise, fetchD3Promise]);
+            const [fetchedD2Data, fetchedD3Data, fetchedD4Data] = await Promise.all([fetchD2Promise, fetchD3Promise, fetchD4Promise]);
 
             // Process D2 Data
             const d2Index = courseData.findIndex(d => d.id === 'D2');
@@ -595,7 +601,13 @@
             const d3Index = courseData.findIndex(d => d.id === 'D3');
             if (d3Index !== -1 && fetchedD3Data.D3_Content) {
                 courseData[d3Index].children = convertNestedObjectToArray(fetchedD3Data.D3_Content, 'D3', 0);
-            } 
+            }
+
+            // Process D4 Data
+            const d4Index = courseData.findIndex(d => d.id === 'D4');
+            if (d4Index !== -1 && fetchedD3Data.D4_Content) {
+                courseData[d3Index].children = convertNestedObjectToArray(fetchedD3Data.D3_Content, 'D4', 0);
+            }
 
             // --- Final Initialization ---
 
@@ -610,12 +622,13 @@
             // Fallback check: If the default domain D3 has no content, try D2, then D4.
             const d3HasContent = courseData.find(d => d.id === 'D3')?.children.length > 0;
             const d2HasContent = courseData.find(d => d.id === 'D2')?.children.length > 0;
+            const d4HasContent = courseData.find(d => d.id === 'D4')?.children.length > 0;
 
-            if (!d3HasContent) {
-                if (d2HasContent) {
-                    activeDomainId = 'D2';
+            if (!d4HasContent) {
+                if (d3HasContent) {
+                    activeDomainId = 'D3';
                 } else {
-                    activeDomainId = 'D4'; // Fallback to a static domain
+                    activeDomainId = 'D2'; // Fallback to a static domain
                 }
             }
 
