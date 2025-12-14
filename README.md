@@ -76,14 +76,14 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>6</td>
-    <td>Protection of Information Assets</td>
-    <td></td>
+    <td>Protection of Information Assets: Part A</td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/06%20-%20Information%20Asset%20Security%20and%20Control.pptx" target="_blank">06 - Information Asset Security and Control</a></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
     <td>7</td>
-    <td>Protection of Information Assets</td>
+    <td>Protection of Information Assets: Part B</td>
     <td></td>
     <td></td>
     <td></td>
