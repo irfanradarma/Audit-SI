@@ -103,7 +103,7 @@
         ];
 
         // --- Configuration ---
-        const BASE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1GNjHMDHgWf15mVaAJ4lXWRFiXNRDVR_cv9DIOszuxeE/export?format=tsv';
+        const BASE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1-kGFWIiwrVdHqFtHpu1nYsb922rT9KsmgUeWwiEQZks/export?format=tsv';
         
         // D3 URL (original GID=0)
         const D3_URL = `${BASE_SHEET_URL}&gid=0`; 
@@ -113,10 +113,10 @@
 
         // D4 URL (new GID=243720811)
         const D4_URL = `${BASE_SHEET_URL}&gid=243720811`;
-        
+
         // D5 URL (new GID=2146403624)
         const D5_URL = `${BASE_SHEET_URL}&gid=2146403624`;
-
+        
         // --- Core Application Logic ---
 
         const loadingDiv = document.getElementById('loading');
@@ -594,7 +594,7 @@
             const fetchD5Promise = fetchCsvDataWithRetry(D5_URL, 'D5_Content', 'Domain 5').catch(e => {
                 loadErrors.push(`Failed to load Domain 5: ${e.message}`);
                 console.error("Failed to load Domain 5 data:", e);
-                return { D5_Content: {} }; // Return an empty object on failure
+                return { D4_Content: {} }; // Return an empty object on failure
             });
 
             // Wait for both promises to resolve/fail gracefully
@@ -638,7 +638,7 @@
             const d3HasContent = courseData.find(d => d.id === 'D3')?.children.length > 0;
             const d2HasContent = courseData.find(d => d.id === 'D2')?.children.length > 0;
             const d4HasContent = courseData.find(d => d.id === 'D4')?.children.length > 0;
-            const d5hasContent = courseData.find(d => d.id === 'D5')?.children.length > 0;
+            const d5HasContent = courseData.find(d => d.id === 'D5')?.children.length > 0;
 
             if (!d5HasContent) {
                 if (d3HasContent) {
