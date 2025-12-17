@@ -620,7 +620,7 @@
 
             // Process D5 Data
             const d5Index = courseData.findIndex(d => d.id === 'D5');
-            if (d5Index !== -1 && fetchedD4Data.D5_Content) {
+            if (d5Index !== -1 && fetchedD5Data.D5_Content) {
                 courseData[d5Index].children = convertNestedObjectToArray(fetchedD5Data.D5_Content, 'D5', 0);
             }
 
