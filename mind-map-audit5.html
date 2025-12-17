@@ -111,8 +111,11 @@
         // D2 URL (new GID=2065157521)
         const D2_URL = `${BASE_SHEET_URL}&gid=2065157521`;
 
-        // D4 URL (new GID=2065157521)
+        // D4 URL (new GID=1963494505)
         const D4_URL = `${BASE_SHEET_URL}&gid=1963494505`;
+
+        // D5 URL (new GID=1885603828)
+        const D5_URL = `${BASE_SHEET_URL}&gid=1885603828`;
         
         // --- Core Application Logic ---
 
@@ -124,7 +127,7 @@
         
         let courseData = MOCK_DATA_INITIAL;
         // Set the active domain ID to D4 by default, as requested.
-        let activeDomainId = 'D4'; 
+        let activeDomainId = 'D5'; 
 
         // Mapping node types to visual styles
         const TYPE_STYLES = {
@@ -588,8 +591,14 @@
                 return { D4_Content: {} }; // Return an empty object on failure
             });
 
+            const fetchD5Promise = fetchCsvDataWithRetry(D5_URL, 'D5_Content', 'Domain 5').catch(e => {
+                loadErrors.push(`Failed to load Domain 5: ${e.message}`);
+                console.error("Failed to load Domain 5 data:", e);
+                return { D4_Content: {} }; // Return an empty object on failure
+            });
+
             // Wait for both promises to resolve/fail gracefully
-            const [fetchedD2Data, fetchedD3Data, fetchedD4Data] = await Promise.all([fetchD2Promise, fetchD3Promise, fetchD4Promise]);
+            const [fetchedD2Data, fetchedD3Data, fetchedD4Data, fetchedD5Data] = await Promise.all([fetchD2Promise, fetchD3Promise, fetchD4Promise, fetchD5Promise]);
 
             // Process D2 Data
             const d2Index = courseData.findIndex(d => d.id === 'D2');
@@ -609,6 +618,12 @@
                 courseData[d4Index].children = convertNestedObjectToArray(fetchedD4Data.D4_Content, 'D4', 0);
             }
 
+            // Process D5 Data
+            const d5Index = courseData.findIndex(d => d.id === 'D5');
+            if (d5Index !== -1 && fetchedD5Data.D5_Content) {
+                courseData[d5Index].children = convertNestedObjectToArray(fetchedD5Data.D5_Content, 'D5', 0);
+            }
+
             // --- Final Initialization ---
 
             // Display any accumulated errors
@@ -623,12 +638,13 @@
             const d3HasContent = courseData.find(d => d.id === 'D3')?.children.length > 0;
             const d2HasContent = courseData.find(d => d.id === 'D2')?.children.length > 0;
             const d4HasContent = courseData.find(d => d.id === 'D4')?.children.length > 0;
+            const d5HasContent = courseData.find(d => d.id === 'D5')?.children.length > 0;
 
-            if (!d4HasContent) {
+            if (!d5HasContent) {
                 if (d3HasContent) {
-                    activeDomainId = 'D3';
+                    activeDomainId = 'D4';
                 } else {
-                    activeDomainId = 'D2'; // Fallback to a static domain
+                    activeDomainId = 'D3'; // Fallback to a static domain
                 }
             }
 
