@@ -3,62 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CISA Mastery Hub</title>
+    <title>CISA Mastery Hub | Official Domain Review</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
+        
         .flashcard-wrapper { perspective: 1000px; height: 380px; margin: 0 auto; max-width: 480px; }
         .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .flashcard.flipped { transform: rotateY(180deg); }
-        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 24px; padding: 2.5rem; text-align: center; }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 24px; padding: 2.5rem; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        
         .flashcard-front { background: linear-gradient(135deg, #4f46e5, #3730a3); color: white; font-size: 1.75rem; font-weight: 800; border: 4px solid #312e81; }
         .flashcard-back { background-color: #f0fdf4; color: #166534; transform: rotateY(180deg); font-size: 1.25rem; font-weight: 600; border: 4px solid #16a34a; }
-        .subject-card { cursor: pointer; transition: all 0.3s ease; background: white; border: 1px solid #e5e7eb; }
+        
+        .subject-card { cursor: pointer; transition: all 0.3s ease; background: white; border: 1px solid #e5e7eb; position: relative; overflow: hidden; }
         .subject-card:hover { transform: translateY(-8px); border-color: #4f46e5; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        
+        .quiz-option { transition: all 0.2s; border: 2px solid #f1f5f9; }
+        .quiz-option:hover:not(:disabled) { border-color: #4f46e5; background-color: #f8faff; }
+        
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #4f46e5; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 flex items-center justify-center">
 
-    <div id="mainApp" class="max-w-5xl w-full bg-white rounded-[2rem] shadow-2xl p-6 md:p-12 my-8 border border-slate-100">
+    <div id="mainApp" class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-12 my-8 border border-slate-100">
         <header class="mb-10 text-center">
-            <div class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full">ISACA Certification Prep</div>
+            <div class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full">
+                ISACA CISA Preparation
+            </div>
             <h1 class="text-4xl font-black text-slate-900 mb-2">CISA Study Stream</h1>
-            <button onclick="navigateTo('home')" class="mt-4 px-6 py-2 rounded-full border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Dashboard</button>
+            <p id="subHeader" class="text-slate-500 mb-6">Loading comprehensive domain data...</p>
+            <button onclick="navigateTo('home')" class="px-6 py-2 rounded-full border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+                Return to Dashboard
+            </button>
         </header>
 
-        <div id="statusMessage" class="text-center py-20 font-bold text-slate-400">Loading CISA Domains...</div>
+        <!-- Status & Loading -->
+        <div id="statusSection" class="text-center py-20">
+            <div id="loadingSpinner" class="loader mb-4"></div>
+            <p id="statusText" class="text-slate-500 font-medium">Connecting to study database...</p>
+            
+            <div id="manualUpload" class="hidden max-w-md mx-auto bg-amber-50 p-6 rounded-2xl border border-amber-200 mt-6">
+                <h3 class="font-bold text-amber-800 mb-2">Sync Required</h3>
+                <p class="text-sm text-amber-700 mb-4 text-left">If the automated connection fails, you can manually upload your <strong>exercise-data.json</strong> file here:</p>
+                <input type="file" id="fileInput" accept=".json" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"/>
+            </div>
+        </div>
 
+        <!-- Main Content Views -->
         <div id="appViewsContainer" class="hidden">
+            <!-- HOME VIEW -->
             <div id="homeView" class="view">
-                <div id="subjectCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
+                <div class="mb-8 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-800">Domain Dashboard</h2>
+                        <p class="text-slate-500">Select a domain to begin your session</p>
+                    </div>
+                    <div id="globalStats" class="text-right hidden md:block">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Database Load</span>
+                        <div id="totalCountDisplay" class="text-lg font-black text-indigo-600">0 Items</div>
+                    </div>
+                </div>
+                <div id="subjectCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    <!-- Cards injected here -->
+                </div>
             </div>
 
+            <!-- STUDY VIEW -->
             <div id="studyView" class="view hidden">
-                <div class="flex flex-col md:flex-row gap-4 mb-8 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                    <select id="subjectSelect" class="flex-grow p-3 rounded-xl border-slate-200 font-semibold text-slate-700" onchange="handleSubjectChange()"></select>
-                    <div class="flex gap-2">
-                        <button id="btnQuiz" onclick="setFeature('quiz')" class="px-6 py-3 rounded-xl font-bold transition">Quiz</button>
-                        <button id="btnFlashcard" onclick="setFeature('flashcard')" class="px-6 py-3 rounded-xl font-bold transition">Flashcards</button>
+                <div class="flex flex-col lg:flex-row gap-4 mb-10 p-5 bg-slate-50 rounded-[2rem] border border-slate-200 shadow-inner">
+                    <div class="flex-grow">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2 mb-1 block">Active Subject</label>
+                        <select id="subjectSelect" class="w-full bg-transparent border-none font-bold text-slate-800 focus:ring-0 text-lg cursor-pointer" onchange="handleSubjectChange()">
+                            <!-- Options injected here -->
+                        </select>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <button id="btnQuiz" onclick="setFeature('quiz')" class="px-8 py-3 rounded-2xl font-bold transition-all duration-300">Quiz</button>
+                        <button id="btnFlashcard" onclick="setFeature('flashcard')" class="px-8 py-3 rounded-2xl font-bold transition-all duration-300">Flashcards</button>
                     </div>
                 </div>
 
-                <div id="featureContent" class="min-h-[400px]">
-                    <div id="quizContainer" class="hidden">
-                        <div id="quizQuestion" class="mb-8"></div>
-                        <div id="quizFeedback" class="hidden mb-6 p-4 rounded-xl text-center font-bold"></div>
-                        <div class="flex justify-between items-center border-t pt-6">
-                            <span id="quizScoreDisplay" class="font-bold text-slate-400"></span>
-                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 disabled:opacity-50">Next Question</button>
+                <div id="featureContent" class="min-h-[450px]">
+                    <!-- Quiz Container -->
+                    <div id="quizContainer" class="hidden max-w-3xl mx-auto">
+                        <div id="quizQuestion" class="mb-10 min-h-[120px]"></div>
+                        <div id="quizFeedback" class="hidden mb-8 p-5 rounded-2xl text-center font-bold animate-in fade-in slide-in-from-bottom-4 duration-300"></div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-center border-t border-slate-100 pt-8 gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-50 px-4 py-2 rounded-full">
+                                    <span id="quizScoreDisplay" class="font-black text-indigo-600">Score: 0/0</span>
+                                </div>
+                                <div id="progressCircle" class="text-sm font-bold text-slate-400">Question 1</div>
+                            </div>
+                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="w-full sm:w-auto bg-indigo-600 text-white px-10 py-4 rounded-full font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all disabled:opacity-50 disabled:shadow-none">
+                                Next Question
+                            </button>
                         </div>
                     </div>
 
+                    <!-- Flashcard Container -->
                     <div id="flashcardContainer" class="hidden">
-                        <div id="flashcardDeck" class="flashcard-wrapper"></div>
-                        <div class="mt-10 flex justify-center items-center gap-8">
-                            <button onclick="prevCard()" id="prevCardBtn" class="p-4 bg-slate-100 rounded-full hover:bg-slate-200">←</button>
-                            <span id="flashcardIndex" class="font-bold text-slate-700 text-lg"></span>
-                            <button onclick="nextCard()" id="nextCardBtn" class="p-4 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">→</button>
+                        <div id="flashcardDeck" class="flashcard-wrapper">
+                            <!-- Card injected here -->
+                        </div>
+                        <div class="mt-12 flex justify-center items-center gap-10">
+                            <button onclick="prevCard()" id="prevCardBtn" class="p-5 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors disabled:opacity-30">
+                                <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                            </button>
+                            <div class="text-center">
+                                <span id="flashcardIndex" class="font-black text-slate-800 text-2xl tracking-tighter">1 / 10</span>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Flip to Reveal</p>
+                            </div>
+                            <button onclick="nextCard()" id="nextCardBtn" class="p-5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100 disabled:opacity-30">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -67,8 +130,8 @@
     </div>
 
     <script>
-        // UPDATE THIS URL to point to your hosted JSON file
-        const DATA_URL = 'https://github.com/irfanradarma/Audit-SI/raw/main/exercise-data.json'; 
+        // Remote data URL provided by user
+        const DATA_URL = 'https://raw.githubusercontent.com/irfanradarma/Audit-SI/main/exercise-data.json';
         
         let studyData = [];
         let currentSubjectIndex = 0;
@@ -76,36 +139,84 @@
         let quizState = { currentQuestionIndex: 0, score: 0, totalAnswered: 0 };
         let flashcardState = { currentCardIndex: 0 };
 
-        async function loadData() {
+        async function initLoad() {
             try {
-                const response = await fetch(DATA_URL);
+                // We use a small timeout to not wait forever if GitHub is slow
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                const response = await fetch(DATA_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) throw new Error("Connection failed");
                 studyData = await response.json();
-                initApp();
+                startApp();
             } catch (err) {
-                document.getElementById('statusMessage').textContent = "Error loading data. Ensure data_source.json is in the same folder.";
+                console.warn("Auto-load failed. Reverting to manual upload UI.");
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('manualUpload').classList.remove('hidden');
+                document.getElementById('statusText').textContent = "Cloud connection failed.";
             }
         }
 
-        function initApp() {
-            document.getElementById('statusMessage').classList.add('hidden');
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    studyData = JSON.parse(e.target.result);
+                    startApp();
+                } catch (err) {
+                    alert("The file uploaded is not a valid JSON structure.");
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function startApp() {
+            document.getElementById('statusSection').classList.add('hidden');
             document.getElementById('appViewsContainer').classList.remove('hidden');
+            document.getElementById('subHeader').textContent = "Master the 5 Domains of Information Systems Auditing";
             
             const select = document.getElementById('subjectSelect');
             const container = document.getElementById('subjectCardContainer');
             
-            studyData.forEach((s, i) => {
+            select.innerHTML = '';
+            container.innerHTML = '';
+
+            let totalItems = 0;
+
+            studyData.forEach((domain, i) => {
                 const opt = document.createElement('option');
-                opt.value = i; opt.textContent = s.subjectName;
+                opt.value = i; 
+                opt.textContent = domain.subjectName;
                 select.appendChild(opt);
 
+                const qCount = domain.quizQuestions ? domain.quizQuestions.length : 0;
+                const fCount = domain.flashcards ? domain.flashcards.length : 0;
+                totalItems += (qCount + fCount);
+
                 container.innerHTML += `
-                    <div onclick="startSubject(${i})" class="subject-card p-8 rounded-[2rem] flex flex-col h-full">
-                        <div class="bg-indigo-100 text-indigo-700 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 font-bold">D${i+1}</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-2">${s.subjectName}</h3>
-                        <p class="text-slate-500 text-sm mb-6 flex-grow">${s.description}</p>
-                        <div class="text-indigo-600 font-bold text-sm">Start Study →</div>
+                    <div onclick="startSubject(${i})" class="subject-card p-8 rounded-[2rem] flex flex-col h-full group">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="bg-indigo-100 text-indigo-700 w-12 h-12 rounded-2xl flex items-center justify-center font-black group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                                ${i + 1}
+                            </div>
+                            <div class="flex flex-col text-right">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${qCount} Questions</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${fCount} Terms</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 mb-2 leading-tight">${domain.subjectName}</h3>
+                        <p class="text-slate-500 text-sm mb-8 flex-grow leading-relaxed">${domain.description || 'Comprehensive review of key auditing principles and practices.'}</p>
+                        <div class="flex items-center text-indigo-600 font-bold text-sm">
+                            Launch Module <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                     </div>`;
             });
+
+            document.getElementById('totalCountDisplay').textContent = `${totalItems} Items Loaded`;
             navigateTo('home');
         }
 
@@ -124,53 +235,110 @@
         function handleSubjectChange() {
             currentSubjectIndex = parseInt(document.getElementById('subjectSelect').value);
             resetQuiz();
+            resetFlashcard();
             setFeature(currentFeature);
         }
 
         function setFeature(f) {
             currentFeature = f;
             const isQuiz = f === 'quiz';
-            document.getElementById('btnQuiz').className = isQuiz ? 'px-6 py-3 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'px-6 py-3 rounded-xl font-bold bg-white text-slate-600 border border-slate-200';
-            document.getElementById('btnFlashcard').className = !isQuiz ? 'px-6 py-3 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'px-6 py-3 rounded-xl font-bold bg-white text-slate-600 border border-slate-200';
+            
+            const activeBtn = 'bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-105';
+            const inactiveBtn = 'bg-white text-slate-400 border border-slate-200 hover:text-slate-600';
+
+            document.getElementById('btnQuiz').className = `px-8 py-3 rounded-2xl font-bold transition-all duration-300 ${isQuiz ? activeBtn : inactiveBtn}`;
+            document.getElementById('btnFlashcard').className = `px-8 py-3 rounded-2xl font-bold transition-all duration-300 ${!isQuiz ? activeBtn : inactiveBtn}`;
+            
             document.getElementById('quizContainer').classList.toggle('hidden', !isQuiz);
             document.getElementById('flashcardContainer').classList.toggle('hidden', isQuiz);
+            
             isQuiz ? renderQuizQuestion() : renderFlashcard();
         }
 
-        function resetQuiz() { quizState = { currentQuestionIndex: 0, score: 0, totalAnswered: 0 }; }
+        // Quiz Logic
+        function resetQuiz() { 
+            quizState = { currentQuestionIndex: 0, score: 0, totalAnswered: 0 }; 
+            document.getElementById('quizFeedback').classList.add('hidden');
+        }
 
         function renderQuizQuestion() {
-            const q = studyData[currentSubjectIndex].quizQuestions[quizState.currentQuestionIndex];
+            const domain = studyData[currentSubjectIndex];
+            const q = domain.quizQuestions[quizState.currentQuestionIndex];
+            
             if (!q) {
-                document.getElementById('quizQuestion').innerHTML = `<div class="text-center py-10 font-bold text-2xl">Domain Complete!</div>`;
+                document.getElementById('quizQuestion').innerHTML = `
+                    <div class="text-center py-10 bg-indigo-50 rounded-[2rem] border-2 border-dashed border-indigo-200">
+                        <h2 class="text-4xl mb-4">🎉</h2>
+                        <p class="text-2xl font-black text-indigo-900">Module Complete!</p>
+                        <p class="text-indigo-600 font-medium mt-2 mb-6">You've mastered all available questions for this domain.</p>
+                        <button onclick="resetQuiz();renderQuizQuestion()" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-100">Restart Quiz</button>
+                    </div>`;
+                document.getElementById('nextQuestionBtn').classList.add('hidden');
+                document.getElementById('progressCircle').textContent = "Complete";
                 return;
             }
+
+            document.getElementById('nextQuestionBtn').classList.remove('hidden');
             document.getElementById('quizFeedback').classList.add('hidden');
             document.getElementById('nextQuestionBtn').disabled = true;
             document.getElementById('quizScoreDisplay').textContent = `Score: ${quizState.score}/${quizState.totalAnswered}`;
+            document.getElementById('progressCircle').textContent = `Question ${quizState.currentQuestionIndex + 1} of ${domain.quizQuestions.length}`;
+            
             document.getElementById('quizQuestion').innerHTML = `
-                <h3 class="text-2xl font-bold text-slate-800 mb-8">${q.question}</h3>
-                <div class="space-y-3">${q.options.map((opt, i) => `<button onclick="checkAnswer(this, ${i})" class="quiz-option w-full p-5 text-left rounded-2xl border-2 border-slate-100 hover:border-indigo-200 font-medium">${opt}</button>`).join('')}</div>`;
+                <h3 class="text-2xl font-extrabold text-slate-800 mb-8 leading-snug">${q.question}</h3>
+                <div class="grid grid-cols-1 gap-3">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="checkAnswer(this, ${i})" class="quiz-option w-full p-5 text-left rounded-2xl bg-white font-semibold text-slate-700 shadow-sm">
+                            <span class="inline-block w-8 h-8 rounded-lg bg-slate-50 text-slate-400 text-center leading-8 mr-3 font-black text-xs uppercase">${String.fromCharCode(65 + i)}</span>
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>`;
         }
 
         function checkAnswer(btn, idx) {
             const q = studyData[currentSubjectIndex].quizQuestions[quizState.currentQuestionIndex];
             const correct = idx === q.answerIndex;
-            quizState.totalAnswered++; if(correct) quizState.score++;
-            const f = document.getElementById('quizFeedback');
-            f.textContent = correct ? "Correct!" : `Incorrect. Answer: ${q.options[q.answerIndex]}`;
-            f.className = `mb-6 p-4 rounded-xl text-center font-bold ${correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
-            f.classList.remove('hidden');
-            document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+            quizState.totalAnswered++; 
+            if(correct) quizState.score++;
+            
+            const feedback = document.getElementById('quizFeedback');
+            feedback.innerHTML = correct ? 
+                `<span>Correct! Knowledge locked in.</span>` : 
+                `<span>Incorrect. The correct answer is:<br><span class="text-lg mt-1 block">${q.options[q.answerIndex]}</span></span>`;
+            
+            feedback.className = `block mb-8 p-6 rounded-[1.5rem] text-center font-bold ${correct ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-100' : 'bg-rose-50 text-rose-700 border-2 border-rose-100'}`;
+            feedback.classList.remove('hidden');
+            
+            document.querySelectorAll('.quiz-option').forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-40');
+            });
+            btn.classList.remove('opacity-40');
+            btn.classList.add(correct ? 'border-emerald-500' : 'border-rose-500', correct ? 'bg-emerald-50' : 'bg-rose-50');
             document.getElementById('nextQuestionBtn').disabled = false;
         }
 
-        function nextQuestion() { quizState.currentQuestionIndex++; renderQuizQuestion(); }
+        function nextQuestion() { 
+            quizState.currentQuestionIndex++; 
+            renderQuizQuestion(); 
+        }
+
+        // Flashcard Logic
+        function resetFlashcard() { flashcardState.currentCardIndex = 0; }
 
         function renderFlashcard() {
             const cards = studyData[currentSubjectIndex].flashcards;
+            if(!cards || cards.length === 0) {
+                document.getElementById('flashcardDeck').innerHTML = `<div class="p-20 text-center text-slate-400 font-bold">No flashcards for this domain.</div>`;
+                return;
+            }
             const c = cards[flashcardState.currentCardIndex];
-            document.getElementById('flashcardDeck').innerHTML = `<div class="flashcard" onclick="this.classList.toggle('flipped')"><div class="flashcard-front">${c.term}</div><div class="flashcard-back">${c.definition}</div></div>`;
+            document.getElementById('flashcardDeck').innerHTML = `
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-front">${c.term}</div>
+                    <div class="flashcard-back">${c.definition}</div>
+                </div>`;
             document.getElementById('flashcardIndex').textContent = `${flashcardState.currentCardIndex + 1} / ${cards.length}`;
             document.getElementById('prevCardBtn').disabled = flashcardState.currentCardIndex === 0;
             document.getElementById('nextCardBtn').disabled = flashcardState.currentCardIndex === cards.length - 1;
@@ -179,7 +347,7 @@
         function nextCard() { flashcardState.currentCardIndex++; renderFlashcard(); }
         function prevCard() { flashcardState.currentCardIndex--; renderFlashcard(); }
 
-        window.onload = loadData;
+        window.onload = initLoad;
     </script>
 </body>
 </html>
