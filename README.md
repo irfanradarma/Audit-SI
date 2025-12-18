@@ -86,7 +86,7 @@ by Teuku Raja Irfan Radarma
     <td>Protection of Information Assets: Part B</td>
     <td></td>
     <td></td>
-    <td></td>
+    <td><a href="https://irfanradarma.github.io/Audit-SI/try-out.html" target="_blank">Try Out Domain 1 - 5</a></td>
   </tr>
   <tr>
     <td>8</td>
