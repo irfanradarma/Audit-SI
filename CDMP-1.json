@@ -1,0 +1,998 @@
+[
+  {
+    "question": "A data lineage tool enables a user to?",
+    "answer": "Track the data from the source system to a target database, understanding its transformations",
+    "incorrect_answers": [
+      "Enables rapid development of dashboard reporting",
+      "Visualize how the data gets to the data lake",
+      "Track the historical changes to a data value",
+      "Line up the data to support sophisticated glossary management"
+    ]
+  },
+  {
+    "question": "If two data stores are able to be inconsistent during normal operations then the integration approach is?",
+    "answer": "Asynchronous",
+    "incorrect_answers": [
+      "Uncontrolled",
+      "Streaming",
+      "Faulty",
+      "Synchronous"
+    ]
+  },
+  {
+    "question": "Data Governance touchpoints throughout the project lifecycle are Facilitated by this organization",
+    "answer": "The Data Governance Office",
+    "incorrect_answers": [
+      "The Data Stewards Office",
+      "The Data Governance Steering Committee",
+      "The Master Data Office",
+      "The Project Management Office"
+    ]
+  },
+  {
+    "question": "What are the primary responsibilities of a data steward?",
+    "answer": "A business role appointed to take responsibility for the quality and use of their organization's data assets",
+    "incorrect_answers": [
+      "Identifying data problems and issues",
+      "The manager responsible for writing polices and standards that define the Data Management program for an organization",
+      "The data analyst who is the subject matter expert (SME) on a set of reference data",
+      "Analyzing Data Quality"
+    ]
+  },
+  {
+    "question": "Which of these is NOT a primary deliverable of Data Quality Management?",
+    "answer": "Data attribute definitions",
+    "incorrect_answers": [
+      "Analysis from data profiling",
+      "Data Quality strategy and framework",
+      "Data Quality reports",
+      "Data Quality service level agreements"
+    ]
+  },
+  {
+    "question": "Which of these is a valid definition of master data?",
+    "answer": "Data about the business entities that provide context for business transactions",
+    "incorrect_answers": [
+      "Data that if missing or incorrect will cause transactions and processes to fail",
+      "Data that rarely, if ever changes",
+      "Data that other data sits hierarchically beneath",
+      "Data that is only held in one data source"
+    ]
+  },
+  {
+    "question": "Complete the following statement. A business rule...",
+    "answer": "Defines constraints on what can and cannot be done",
+    "incorrect_answers": [
+      "Defines an entity",
+      "Identifies an entity instance",
+      "Measures a business process",
+      "Only exists at the level of the physical data model"
+    ]
+  },
+  {
+    "question": "Obfuscation or redaction of data is the practice of?",
+    "answer": "Making information anonymous or removing sensitive information",
+    "incorrect_answers": [
+      "Reducing the size of large databases",
+      "Organizing data into meaningful groups",
+      "Making information available to the public",
+      "Selling data"
+    ]
+  },
+  {
+    "question": "Which of the following should a DBA (database administrator) do if a database schema change is failing?",
+    "answer": "Apply the backout plan to restore a consistent database state",
+    "incorrect_answers": [
+      "Instruct the software designer to refer to the script and re-run it",
+      "Remove all the content of the tables and try again",
+      "Call the software vendor of the database for technical support",
+      "Call IT support to restore a previous version of the database"
+    ]
+  },
+  {
+    "question": "Which of the following statements regarding a value domain is FALSE?",
+    "answer": "Value domains are defined by external standard organizations",
+    "incorrect_answers": [
+      "Conforming value domains across the organization facilitates Data Quality",
+      "A value domain is a set of allowed values for a given code set",
+      "More than one set of reference data value domains may refer to the same conceptual domain"
+    ]
+  },
+  {
+    "question": "The data dictionary describes?",
+    "answer": "Mainly data in business terms directly from the logical model",
+    "incorrect_answers": [
+      "Mainly source, target, and transformation rules",
+      "Mainly extract, transform, and access processes",
+      "Mainly availability and integrity quality rules",
+      "Mainly data in XML, JSON, and text forms"
+    ]
+  },
+  {
+    "question": "A bank applies the business rule that each Customer may own one or many Accounts and each Account must be owned by one or many Customers. Which relationship type would be most appropriate?",
+    "answer": "Many-to-many",
+    "incorrect_answers": [
+      "One-to-many",
+      "One-to-one",
+      "Recursive",
+      "Many-to-one"
+    ]
+  },
+  {
+    "question": "An Enterprise Content Management system (ECM) stores the following?",
+    "answer": "Information to be displayed on websites and contained in documents",
+    "incorrect_answers": [
+      "Backups of the enterprise's data warehouse",
+      "Documents and images, but not multimedia",
+      "Kanban boards",
+      "Code and test scripts for enterprise development environments"
+    ]
+  },
+  {
+    "question": "\"Slice\", \"Dice\", \"Roll-up\" and \"Pivot\" are terms used in what kind of data processing?",
+    "answer": "OLAP",
+    "incorrect_answers": [
+      "OLTP",
+      "EIEIO",
+      "ODS",
+      "EDI"
+    ]
+  },
+  {
+    "question": "... used for detailing collaboration principles, escalation, and dispute resolution process between Master Data Management and its data suppliers?",
+    "answer": "Operational level agreement",
+    "incorrect_answers": [
+      "Operations run book",
+      "Business requirements document",
+      "Metadata catalog",
+      "Warranty"
+    ]
+  },
+  {
+    "question": "The role of the Physical data model in the Metadata repository is:",
+    "answer": "To describe how and where our data is stored in our systems applications or packages",
+    "incorrect_answers": [
+      "How many master data records are stored in our MDM system",
+      "What the business definition of data concepts is",
+      "Which version of COTS software (Eg. SAP) is implemented",
+      "When the duplicated records were merged"
+    ]
+  },
+  {
+    "question": "Information is:",
+    "answer": "Data in context",
+    "incorrect_answers": [
+      "A management discipline",
+      "Always stored in a computer system",
+      "A byproduct of IT systems"
+    ]
+  },
+  {
+    "question": "An employee may work for one other employee and may manage one or more employees. There is an indeterminate number of levels in this management hierarchy. What type of relationship would work best?",
+    "answer": "Recursive",
+    "incorrect_answers": [
+      "Identifying",
+      "Non-identifying",
+      "Subtyping",
+      "One-to-one"
+    ]
+  },
+  {
+    "question": "What would you not expect to find in the Metadata repository?",
+    "answer": "Data storage devices",
+    "incorrect_answers": [
+      "Data Dictionary",
+      "Data Requirements",
+      "Data Lineage diagrams and models",
+      "Data Models"
+    ]
+  },
+  {
+    "question": "The goals of data operations include which of the following?",
+    "answer": "Assuring availability of the data throughout its lifecycle, protection and integrity assurance of structured data assets, and performance optimization of database transactions",
+    "incorrect_answers": [
+      "Assuring the quality of the structured data assets, taking backups, and managing the security of the database",
+      "Providing the right database access rights, solving software bugs, and managing database logs",
+      "Assuring backups are taken, managing the performance of SQL and checking data quality",
+      "Assuring the performance of the network and storage devices, the quality of the SQL statements, and the selection of DBMS platform"
+    ]
+  },
+  {
+    "question": "A Data Quality Service Level Agreement (SLA) would normally include which of these?",
+    "answer": "Respective roles and responsibilities for Data Quality",
+    "incorrect_answers": [
+      "A business case for data improvement",
+      "A breakdown of the costs of Data Quality improvement",
+      "An enterprise data model",
+      "Detailed technical specifications for data transfer"
+    ]
+  },
+  {
+    "question": "Big data is often defined by three characteristics. They are:",
+    "answer": "Volume, Variety and Velocity",
+    "incorrect_answers": [
+      "Complexity, Compliance and Completeness",
+      "Direction, Depth and Details",
+      "Expansive, Engaged and Enormous",
+      "Size, Speed and Sensitivity"
+    ]
+  },
+  {
+    "question": "Which of the following is a typical metric in data warehouse/BI projects?",
+    "answer": "Number of concurrent users connected to the data warehouse",
+    "incorrect_answers": [
+      "Number of fact tables connected",
+      "Number of different metadata used",
+      "Number of snowflake dimensions used in the projects",
+      "Number of indexes used in the fact table"
+    ]
+  },
+  {
+    "question": "Which of these are characteristics of an effective data security policy?",
+    "answer": "The defined procedures ensure that the right people can use and update data in the right way, and that all inappropriate access and update is restricted",
+    "incorrect_answers": [
+      "None of these",
+      "The procedures are tightly defined, with rigid and effective enforcement sanction and alignment with technology capabilities",
+      "The policies are specific, measurable, achievable, realistic, and technology-aligned",
+      "The procedures defined are benchmarked, supported by technology, framework based, and peer-reviewed"
+    ]
+  },
+  {
+    "question": "Which of the following is not a good example of BI?",
+    "answer": "Statutory reporting to a Regulatory Body",
+    "incorrect_answers": [
+      "Strategic Analytics for Business Decisions",
+      "Trend Analysis",
+      "Decision Support Systems",
+      "Supporting Risk Management Decision Reporting"
+    ]
+  },
+  {
+    "question": "The right to be forgotten is:",
+    "answer": "A person's right to have all their information erased from an organization",
+    "incorrect_answers": [
+      "A person's right to have imperfect memory",
+      "A person's right to have their information removed from all databases on earth",
+      "A person's right to change their name",
+      "A person's right for all search criteria not to lead to their details"
+    ]
+  },
+  {
+    "question": "Which of these is a valid definition of reference data?",
+    "answer": "Data used to classify or categorize other data",
+    "incorrect_answers": [
+      "Data that provides metadata about other data entities",
+      "Data that has a common and widely understood data definition",
+      "Data that is widely accessed and referenced across an organization",
+      "Data that is fixed and never changes"
+    ]
+  },
+  {
+    "question": "When integrating two data stores using batch or real-time synchronous approaches, results in a difference in:",
+    "answer": "Latency",
+    "incorrect_answers": [
+      "Source of truth",
+      "Time stamping",
+      "Lethargy",
+      "Data Quality"
+    ]
+  },
+  {
+    "question": "According to the DAMA DMBOK, the Data Governance Council (DGC) is the highest-authority organization for Data Governance in an organization. Who should typically chair this Council?",
+    "answer": "Chief Data Steward (Business)/Chief Data Officer",
+    "incorrect_answers": [
+      "The chair should rotate across the Data Owners",
+      "Any executive/c-level participant in the DGC",
+      "The Chief Data Architect",
+      "The Chief Information Officer (CIO)"
+    ]
+  },
+  {
+    "question": "What area do you not consider when developing a Data Governance Operating Model?",
+    "answer": "The availability of industry data models",
+    "incorrect_answers": [
+      "Impact of regulations",
+      "The business model: decentralized versus centralized",
+      "Cultural factors such as acceptance of discipline and adaptability to change",
+      "The value of data to the organization"
+    ]
+  },
+  {
+    "question": "Periodic archiving of transaction data from a production CRM system is critical for:",
+    "answer": "The maintenance of database performance",
+    "incorrect_answers": [
+      "Providing alternate sources for reporting systems",
+      "Managing deleted customer records",
+      "Enabling the distribution of transaction data across the enterprise",
+      "Training junior DBAs"
+    ]
+  },
+  {
+    "question": "A 'Data Swamp' is a data lake that has become:",
+    "answer": "Messy, unclean and inconsistent",
+    "incorrect_answers": [
+      "Modelled, managed and muddy",
+      "Overly catalogued, holding information and data",
+      "Suitable for frogs, toads and salamanders",
+      "A data asset that uses machine learning"
+    ]
+  },
+  {
+    "question": "All of the following are TRUE statements on relationship types except:",
+    "answer": "A one-to-many relationship says that a child entity may have one or more parent entities",
+    "incorrect_answers": [
+      "A many-to-many relationship says that an instance of each entity may be associated with many instances of the other entity, and vice versa",
+      "A one-to-many relationship says that a parent entity may have one or more child entries",
+      "A one-to-one relationship says that a parent entity may have one and only one child entity",
+      "A recursive relationship relates instances of an entity to other instances of the same entity"
+    ]
+  },
+  {
+    "question": "Non value-added information is often not removed because:",
+    "answer": "The policies are unclear of what is defined as non-value-added, storage is cheap so there is no cost driver, and it takes more effort to dispose than to keep",
+    "incorrect_answers": [
+      "Legislation is unclear on what should be kept",
+      "Data is an asset. It is likely to be recognized as valuable in the future",
+      "It should not be removed. All data is value-added",
+      "We might need the information at a later stage"
+    ]
+  },
+  {
+    "question": "When performing an evaluation of analytic applications, which of the following questions is least relevant to identify the level of effort needed?",
+    "answer": "Annual costs such as license, maintenance, etc",
+    "incorrect_answers": [
+      "How much do the canned processes in the tool match our business",
+      "How much of the tool infrastructure meets our organisational infrastructure",
+      "The Standard source systems for which ETL is supplied",
+      "No. of source systems we need to integrate into the tool"
+    ]
+  },
+  {
+    "question": "The Data Management Body of Knowledge is produced by?",
+    "answer": "The Data Management Association",
+    "incorrect_answers": [
+      "The Data Analysis Association",
+      "The Project Management Institute",
+      "The Data Management Authority",
+      "The Data Practitioner Association"
+    ]
+  },
+  {
+    "question": "The acronym ACID stands for:",
+    "answer": "Atomicity, Consistency, Isolation and Durability",
+    "incorrect_answers": [
+      "Available, completeness, isolation and dangerous",
+      "Actual, created, identified and deleted",
+      "Available, corrupt, isolation and durable",
+      "Atomicity, completeness, independence and durability"
+    ]
+  },
+  {
+    "question": "Which of these statements best defines Data Security Management?",
+    "answer": "The planning, development, and execution of security policies and procedures to provide proper authentication, authorization, access, and auditing of data and information assets",
+    "incorrect_answers": [
+      "None of these",
+      "The implementation and execution of checkpoints, checklists, controls, and technical mechanisms to govern the access to information in an enterprise",
+      "The planning, implementation, and testing of security technologies, authentication mechanisms, and other controls to prevent access to information",
+      "The definition of controls, technical standards, frameworks, and audit trail capabilities to identify who has or has had access to information"
+    ]
+  },
+  {
+    "question": "Data that is used infrequently or not at all may be moved to an alternative data store. This is called:",
+    "answer": "Archiving",
+    "incorrect_answers": [
+      "Authentication",
+      "Replication",
+      "Analysis",
+      "Auditing"
+    ]
+  },
+  {
+    "question": "The number of artifacts that must be searched in the Metadata repository for all Business change projects are:",
+    "answer": "There is no mandatory number of artefacts to be searched but it is highly recommended that the library is examined",
+    "incorrect_answers": [
+      "The Business Data Glossary and Systems Inventory must be consulted",
+      "The Business Data Glossary and Data Dictionary must be examined",
+      "Conceptual data models and the Business Data Glossary must be examined",
+      "Conceptual, Logical and Physical models must be examined"
+    ]
+  },
+  {
+    "question": "Critical to the success of the data warehouse is the ability to explain the data. The DMBOK knowledge area that practices these techniques is:",
+    "answer": "Metadata Management",
+    "incorrect_answers": [
+      "Reference and Master Data",
+      "Data Storage and Operations",
+      "Data Architecture",
+      "Document & Content Management"
+    ]
+  },
+  {
+    "question": "Information Governance and Data Governance should be?",
+    "answer": "Managed as a single function",
+    "incorrect_answers": [
+      "Managed as separate functions",
+      "Managed by the Chief Information Office",
+      "Managed as integrated functions, with Data Governance reporting to Information Governance",
+      "Managed as integrated functions, with Information Governance reporting to Data Governance"
+    ]
+  },
+  {
+    "question": "When the DMBOK calls Data Quality Management a program, not a project, it means?",
+    "answer": "Data Quality has both project and maintenance work along with communications and training",
+    "incorrect_answers": [
+      "Data Quality practices can stop at the end the project",
+      "Data Quality managers can be paid more than project managers",
+      "Data Quality management is really expensive",
+      "Data Quality is more tightly scoped and planned than ordinary projects"
+    ]
+  },
+  {
+    "question": "Identify who has \"primary\" responsibility for data capture and usage design within programs?",
+    "answer": "Software Architects or Developers",
+    "incorrect_answers": [
+      "Data Architects or Data Analysts or Database Administrators",
+      "Suppliers or Consumers",
+      "Data Management Executive or BI Analysts or Data Security Administrators",
+      "Business Data Stewards or Subject Matter Experts (SMEs)"
+    ]
+  },
+  {
+    "question": "What is NOT a discipline of Data Management according to the DAMA DMBOK?",
+    "answer": "Data Virtualization",
+    "incorrect_answers": [
+      "Data Security Management",
+      "Data Quality Management",
+      "Document and Content Management",
+      "Data Governance"
+    ]
+  },
+  {
+    "question": "A Data Lake is an environment where a vast amount of data can be:",
+    "answer": "Ingested, shared, assessed and analysed",
+    "incorrect_answers": [
+      "Purged, sorted, split and scanned",
+      "Ingested, screened, obfuscated and purged",
+      "Updated, obfuscated, nullified and cleansed",
+      "Digested, processed, deleted and visualised"
+    ]
+  },
+  {
+    "question": "Data for big data ingestion can also be called the data lake. This needs to be carefully managed or the data lake will become:",
+    "answer": "A data swamp",
+    "incorrect_answers": [
+      "An organizational statistic",
+      "A biased report",
+      "Business relevance needs to be considered as a Data Quality metric in its own right",
+      "A data model"
+    ]
+  },
+  {
+    "question": "Which of the following activities are performed by data operations staff?",
+    "answer": "Implement and control database environments, plan for data retention, keep track of database licenses, monitor and tune database performance",
+    "incorrect_answers": [
+      "Clean data that is of bad quality",
+      "Manage the tape libraries",
+      "Grant access to tables, rewrite SQL statements",
+      "Tune the file systems"
+    ]
+  },
+  {
+    "question": "Whose responsibility should it be to identify and report occurrences of defects in information and data?",
+    "answer": "Any employee",
+    "incorrect_answers": [
+      "Customers",
+      "Regulatory compliance officers",
+      "The IT department",
+      "The Information Quality team"
+    ]
+  },
+  {
+    "question": "Master data differs from reference data in which following way?",
+    "answer": "Unlike reference data, master data is not usually limited to predefined domain values",
+    "incorrect_answers": [
+      "Master data does not require a data steward",
+      "Master data do not require business definitions",
+      "Master data should be held to a higher Data Quality standard than reference data"
+    ]
+  },
+  {
+    "question": "A common driver for initiating a Reference Data Management program is:",
+    "answer": "It will improve Data Quality and facilitate analysis across the organization",
+    "incorrect_answers": [
+      "It will consolidate the process of securing third party code sets",
+      "Managing codes and descriptions requires little effort and low cost",
+      "It can be a one-time only project",
+      "It fosters the creative use of data"
+    ]
+  },
+  {
+    "question": "During the implementation of a data warehouse a roadmap is used to?",
+    "answer": "Demonstrate alignment to the project plan",
+    "incorrect_answers": [
+      "Articulate Data Quality checkpoints",
+      "Articulate user requirements",
+      "Construct intricate security authorization",
+      "Demonstrate progress towards the desired end state"
+    ]
+  },
+  {
+    "question": "A Data Quality dimension is?",
+    "answer": "A measurable feature or characteristic of data",
+    "incorrect_answers": [
+      "A valid value in a list",
+      "The value of a particular piece of data",
+      "A core concept in dimensional modeling",
+      "One aspect of Data Quality used extensively in Data Governance"
+    ]
+  },
+  {
+    "question": "Every enterprise is subject to many governmental and industry regulations, many of which regulate how data and information are used and managed. Part of the Data Governance function is to?",
+    "answer": "Monitor and ensure that organizations meet any regulatory compliance requirements",
+    "incorrect_answers": [
+      "Perform ad-hoc audits of possible regulations to report to the Data Governance Council on an information-only basis",
+      "This is a risk and audit responsibility, Data Governance plays no role in this",
+      "This is about data. Data Governance is accountable for the whole process, with risk and audit reporting to Data Governance",
+      "Enforce enterprise-wide mandatory compliance to regulations"
+    ]
+  },
+  {
+    "question": "Which of these is NOT a typical activity in Data Quality Management?",
+    "answer": "Enterprise Data Modelling",
+    "incorrect_answers": [
+      "Creating inspection and monitoring processes",
+      "Identifying data problems and issues",
+      "Analyzing Data Quality",
+      "Defining business requirements and business rules"
+    ]
+  },
+  {
+    "question": "We do not expect to consult the MetaData repository when:",
+    "answer": "Updating the operating system that the Master Data management toolset is running on",
+    "incorrect_answers": [
+      "None of the these",
+      "Undertaking a data quality assessment",
+      "Investigating a data issue",
+      "Assessing the impact of change"
+    ]
+  },
+  {
+    "question": "Since data technology is rapidly becoming more diverse, one should consider which of the following when acquiring a new type of technology:",
+    "answer": "The problem for which technology means to solve and the solution stack for which you have already installed",
+    "incorrect_answers": [
+      "The current data retention policy",
+      "The number of servers that are currently in use",
+      "The number of users that are connected to the current solution",
+      "The performance levels of the currently installed data technology"
+    ]
+  },
+  {
+    "question": "One of the difficulties when integrating multiple source systems is?",
+    "answer": "Determining valid links or equivalences between data elements",
+    "incorrect_answers": [
+      "Having a Data Quality rule applicable to all source systems",
+      "Completing the Data Architecture on time for the first release",
+      "Modifying the source systems to align to the enterprise data model",
+      "Maintaining documentation describing the data warehouse operation"
+    ]
+  },
+  {
+    "question": "What is an Architecture Domain in TOGAF?",
+    "answer": "All of the above (Business, Data, Application, and Technology Architecture)",
+    "incorrect_answers": [
+      "Application Architecture",
+      "Technology Architecture",
+      "Business Architecture",
+      "Data Architecture"
+    ]
+  },
+  {
+    "question": "A comparatively new architectural approach is where volatile data is provisioned in a data warehouse structure to provide transactional systems with a combination of historical and near real time data to meet customer needs. This is a definition of:",
+    "answer": "Active Data Warehousing",
+    "incorrect_answers": [
+      "On Line Transactional Processing System",
+      "Behavioural Decision Support Systems",
+      "Operational Data Store",
+      "On Line Analytical Processing Cube"
+    ]
+  },
+  {
+    "question": "The data operations team assures that the data is recoverable by what?",
+    "answer": "Defining and executing the data recovery plan",
+    "incorrect_answers": [
+      "Guaranteeing the applications take proper exports of the data",
+      "Maintaining a test, development, and production environment",
+      "Making sure the disks are checked regularly for write errors",
+      "Analyzing database error logs"
+    ]
+  },
+  {
+    "question": "In the BASE vs ACID model for Transaction Processing, 'E' is best described by which of these statements?",
+    "answer": "Eventual Data Consistency",
+    "incorrect_answers": [
+      "Business Availability of Secure data ELEMENTS",
+      "Extra Validation",
+      "End to End data consistency",
+      "Eventual Availability of Data as described by the CAP theorem"
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a primary Master Data Management area of focus?",
+    "answer": "Producing read-only versions of key data items",
+    "incorrect_answers": [
+      "Producing clear data definitions for master data",
+      "Providing access to golden data records",
+      "Generating a golden record / best version of the truth",
+      "Identifying duplicate records"
+    ]
+  },
+  {
+    "question": "Which one of the following statements is true regarding Master Data Management?",
+    "answer": "Master Data Management requires techniques for splitting or merging an instance of a business entity",
+    "incorrect_answers": [
+      "Master Data Management involves identifying and maintaining approved coded values",
+      "Business data stewards maintain lists of valid data values for master data instances",
+      "Reference Data Management involves identifying the \"best\" or \"golden\" record for each domain",
+      "Managing reference data requires the same activities and techniques as does managing master data"
+    ]
+  },
+  {
+    "question": "When defining Data Quality indicators, care must be taken to ensure that they have what?",
+    "answer": "Measurability, Relevance, and Acceptability",
+    "incorrect_answers": [
+      "A direct link to the Data Governance strategy",
+      "Items in a dashboard showing their improvement over time",
+      "Timeliness, Validity, and Accuracy",
+      "The core dimensions of Data Quality"
+    ]
+  },
+  {
+    "question": "Which of the following is NOT an activity that would enable business acceptance and user satisfaction?",
+    "answer": "Defining different types of reporting tools to be used for future business needs",
+    "incorrect_answers": [
+      "Furnishing an end-to-end verifiable data lineage",
+      "Understanding the data and defining the operations team's responsiveness to identified issues",
+      "Promoting scheduled meetings with user representatives",
+      "Ensuring perceptions of the quality of the data in the BI system are managed"
+    ]
+  },
+  {
+    "question": "Which statement is correct?",
+    "answer": "Data Governance is informed by the Enterprise Information Architecture",
+    "incorrect_answers": [
+      "All are correct",
+      "Data Management is designed to \"govern\" Data Governance practices",
+      "Data Governance should not be embedded within broader governance frameworks",
+      "None are correct"
+    ]
+  },
+  {
+    "question": "The library of information about our data (our metadata) is built so that:",
+    "answer": "We can be consistent in our use of terminology, better manage it, have a shared formalized view of requirements, and better understand it",
+    "incorrect_answers": [
+      "We can have a shared formalized view of requirements (eg. what data quality we need)",
+      "We can better manage it",
+      "We can better understand it",
+      "We can be consistent in our use of terminology"
+    ]
+  },
+  {
+    "question": "Users continue to use a shared drive instead of a new Document Management Systems. This may be due to what?",
+    "answer": "Onerous classification requirements when adding documents",
+    "incorrect_answers": [
+      "A failure to back up the shared drive",
+      "Concern about the ability to version documents",
+      "The document management system is too expensive",
+      "Concurrent updates to the document are handled better by the shared drive"
+    ]
+  },
+  {
+    "question": "When considering a Data Governance program, communication is a key element. Which of the following would you typically NOT put onto such a communication vehicle?",
+    "answer": "Raw data results of an investigation into a possible data privacy breach",
+    "incorrect_answers": [
+      "Executive message regarding significant Data Management issues",
+      "Link to a \"raise an issue\" log",
+      "The data steward team profiles",
+      "Description of the DG organization, its key members, and contact details"
+    ]
+  },
+  {
+    "question": "A strong argument for pursuing a Reference Data and/or Master Data management initiative is:",
+    "answer": "By centralizing the management of reference and master data, the organization can conform critical data needed for analysis",
+    "incorrect_answers": [
+      "They are essential functions in the Data Management framework",
+      "Job security for the data people",
+      "It will not require a lot of time or effort",
+      "It will not require a lot of time"
+    ]
+  },
+  {
+    "question": "A security mechanism that searches for customer bank account details in outgoing emails is achieving the goal of:",
+    "answer": "Ensuring stakeholder requirements for confidentiality and privacy are met",
+    "incorrect_answers": [
+      "None of these",
+      "Ensuring stakeholder requirements for service design and experience are met",
+      "Ensuring stakeholder requirements for openness and transparency are met",
+      "Ensuring stakeholder requirements for concise definitions and usage are met"
+    ]
+  },
+  {
+    "question": "Which of these statements has the most meaningful relationship label?",
+    "answer": "An order is composed of order lines",
+    "incorrect_answers": [
+      "An order line contains orders",
+      "An order is associated with order lines",
+      "An order is connected with order lines",
+      "An order is related to order lines"
+    ]
+  },
+  {
+    "question": "When defining your business continuity plan, which of the following should one consider doing?",
+    "answer": "Consider written policies and procedures, impact mitigating measures, required recovery time and acceptable amount of disruption, the criticality of the documents",
+    "incorrect_answers": [
+      "Make sure that the data is retained sufficiently long, check that critical data is encrypted, check access rights",
+      "Write a report and discuss with management the required budget",
+      "Have the contracts in place to acquire new hardware in case of technical problem, define policies",
+      "Determine the risk, probability and impact, check document backup frequency"
+    ]
+  },
+  {
+    "question": "When outsourcing Information Management functions, organizations can:",
+    "answer": "Transfer control but not accountability",
+    "incorrect_answers": [
+      "Align strategy and control privacy",
+      "Improve controls while reducing costs",
+      "Reduce cost of compliance and improve turnaround"
+    ]
+  },
+  {
+    "question": "One of the key differences between operational systems and data warehouses:",
+    "answer": "Operational systems focus on current data, data warehouses contain historical data",
+    "incorrect_answers": [
+      "Operational systems focus on business processes, data warehouses focus on business strategies",
+      "Operational systems focus on historical data, data warehouses contain current data",
+      "Operational systems focus on Data Quality, data warehouses focus on data security",
+      "Operational systems are available 24x7, data warehouses are available during business hours"
+    ]
+  },
+  {
+    "question": "What are relationship labels?",
+    "answer": "The verb phrases describing the business rules in each direction between two entities",
+    "incorrect_answers": [
+      "A relationship without cardinality",
+      "A foreign key that has been role-named",
+      "The nullability setting on a foreign key",
+      "A non-identifying relationship"
+    ]
+  },
+  {
+    "question": "Which of the following is the best example of the Data Quality dimension of consistency?",
+    "answer": "All the records in the CRM have been accounted for in the data warehouse",
+    "incorrect_answers": [
+      "The revenue data in the dataset is always $100 out",
+      "The phone numbers in the customer file do not adhere to the standard format",
+      "The source data for the end of month report arrived one week late",
+      "The customer file has 50% duplicated entries"
+    ]
+  },
+  {
+    "question": "The MetaData repository enables us to establish multiple perspectives of data. These are:",
+    "answer": "Business and Technical Perspective",
+    "incorrect_answers": [
+      "Dimensional and non dimensional perspective",
+      "Structured and unstructured",
+      "Internal and External",
+      "3rd normal forms and un normalised"
+    ]
+  },
+  {
+    "question": "Ontology asks ____ while metaphysics asks ____",
+    "answer": "What / How",
+    "incorrect_answers": [
+      "Why / How",
+      "How / Why",
+      "How / What",
+      "What / Who"
+    ]
+  },
+  {
+    "question": "The process of translating plain text into complex codes to hide privileged information is:",
+    "answer": "Encryption",
+    "incorrect_answers": [
+      "Exaggeration",
+      "Elimination",
+      "Encapsulation",
+      "None of these"
+    ]
+  },
+  {
+    "question": "We would expect to consult the Metadata Library when:",
+    "answer": "Assessing the impact of change",
+    "incorrect_answers": [
+      "Implementing a Data Quality tool",
+      "Accessing the internet",
+      "Formulating a Governance policy",
+      "Selecting a Data Storage device"
+    ]
+  },
+  {
+    "question": "Who is responsible for communicating and promoting awareness of the value of Data Governance in the organization?",
+    "answer": "Everyone in the Data Management community",
+    "incorrect_answers": [
+      "The Chief Executive Officer",
+      "Senior Management Executive Forum",
+      "Central Communications and Corporate Awareness",
+      "Data stewards"
+    ]
+  },
+  {
+    "question": "What is the most important role in any regulatory compliance project?",
+    "answer": "Working with business and technical leadership to find the best answers to a standard set of regulatory compliance questions (How, Why, When, etc)",
+    "incorrect_answers": [
+      "Take no part in any project at all, declaring it an audit and risk project",
+      "Provide access to any possible data set to the compliance team and allow them mine the data for non-compliance",
+      "Create a Data Governance \"in-house\" project with a team of Data Stewards to create a standard response",
+      "Work in isolation and mine the data and information for compliance and non compliance issues"
+    ]
+  },
+  {
+    "question": "The role of the CDM (Conceptual Data Model) in the Metadata repository is:",
+    "answer": "To summarize the key data subject areas for a business area at a high level of abstraction to enable the major data concepts to be understood",
+    "incorrect_answers": [
+      "All of these",
+      "None of these",
+      "To determine the primary, alternate and foreign keys of entities",
+      "To agree the cardinality and optionality of relationships between all entities"
+    ]
+  },
+  {
+    "question": "Which of the following is not a goal of Data Quality?",
+    "answer": "The delivery of a Data Quality strategy and framework",
+    "incorrect_answers": [
+      "Implement process to measure, monitor, and report on Data Quality",
+      "Define standards, requirements, and specifications for Data Quality controls",
+      "Advocate for opportunities to improve the quality of data",
+      "Develop a governed approach to make data fit for purpose"
+    ]
+  },
+  {
+    "question": "The acronym ETL most commonly stands for:",
+    "answer": "Extract Transform Load",
+    "incorrect_answers": [
+      "Efficient Trace Logging",
+      "Extract Transpose Leverage",
+      "Extend Trim Load",
+      "Export Transform Log"
+    ]
+  },
+  {
+    "question": "Apart from security requirements internal to the organization, what other strategic goals should a Data Security Management system address?",
+    "answer": "Regulatory requirements for privacy and confidentiality AND privacy and confidentiality needs of all stakeholders",
+    "incorrect_answers": [
+      "Ensuring the organization doesn't engage in SPAM marketing",
+      "Compliance with ISO29100 and PCI-DSS",
+      "None of these",
+      "Compliance with ISO27001 and HIPPA"
+    ]
+  },
+  {
+    "question": "Select the statement that best describes why business relevance needs to be considered as a characteristic of Data Quality metrics?",
+    "answer": "The value of a metric is limited unless it can be linked to some aspect of a business. The metric's acceptability threshold needs to correlate with business expectations",
+    "incorrect_answers": [
+      "Unless you use business terms the end-users won't understand and lose interest in the program",
+      "Expressing business relevance in requirements assists the metadata strategy",
+      "Business relevance needs to be considered as a Data Quality metric in its own right",
+      "Any IT program must have some business relevance defined, or it is a waste of time"
+    ]
+  },
+  {
+    "question": "According to DMBOK, which of these is NOT a valid dimension of Data Quality?",
+    "answer": "Relevance",
+    "incorrect_answers": [
+      "Currency",
+      "Completeness",
+      "Timeliness",
+      "Reasonableness"
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a stage in the Shewhart-Deming Cycle that drives the Data Quality Improvement Lifecycle?",
+    "answer": "Investigate",
+    "incorrect_answers": [
+      "Check",
+      "Do",
+      "Act",
+      "Plan"
+    ]
+  },
+  {
+    "question": "What is a common motivation for Reference & Master Data Management?",
+    "answer": "The need to improve Data Quality and data integrity across multiple data sources",
+    "incorrect_answers": [
+      "Business Intelligence and data warehousing",
+      "The need to build a data dictionary of all core data entities and attributes",
+      "The need to consolidate all data into one physical database",
+      "Regulatory acts such as BCBS239, GDPR, and SOX"
+    ]
+  },
+  {
+    "question": "To which of the following initiatives was the establishment of an industry Meta-Data Standard essential?",
+    "answer": "EDI",
+    "incorrect_answers": [
+      "Proprietary XML",
+      "JSON",
+      "BASEL & SOX",
+      "Internet Protocols"
+    ]
+  },
+  {
+    "question": "Which of these is not a Knowledge Area in DMBOK v2?",
+    "answer": "Big Data & Data Science",
+    "incorrect_answers": [
+      "Data Governance",
+      "Master & Reference Data Management",
+      "Data Quality Management",
+      "Data Security Management"
+    ]
+  },
+  {
+    "question": "What factors should you consider when choosing data warehouse tools?",
+    "answer": "All of the above (Current and future costs, Professional service offerings, Build vs. buy vs. rent, Current and future requirements)",
+    "incorrect_answers": [
+      "Current and future costs",
+      "Professional service offerings",
+      "Build vs. buy vs. rent",
+      "Current and future requirements"
+    ]
+  },
+  {
+    "question": "Which of these is the best definition of an Ontology?",
+    "answer": "A set of concepts and categories in a subject area or domain that shows their properties and the relations between them",
+    "incorrect_answers": [
+      "A mythical creature from ancient Greece",
+      "The theory and science of collating structure of living things",
+      "The classification of something",
+      "An index of terms to enable rapid retrieval and explanation"
+    ]
+  },
+  {
+    "question": "The Data Quality attribute that most closely matches the description \"The difference between when the data is available and needed\" is what?",
+    "answer": "Timeliness",
+    "incorrect_answers": [
+      "All of the above",
+      "Privacy",
+      "Validity",
+      "Consistency"
+    ]
+  },
+  {
+    "question": "You need to discover possible relationships or to show data patterns in an exploratory fashion when you do not necessarily have a specific question to ask. What kind of data tool would you use to identify patterns of data using various algorithms?",
+    "answer": "Data Mining",
+    "incorrect_answers": [
+      "ETL Jobs",
+      "Reducing the size of large databases",
+      "Meta-Data Data Lineage View",
+      "Data Visualisation Application"
+    ]
+  },
+  {
+    "question": "Metadata repository processes will not include:",
+    "answer": "Selecting Data Management Library software, search, and storage technologies",
+    "incorrect_answers": [
+      "All of these",
+      "Managing change to data products (e.g. Data Dictionary or Business Data Glossary) entries",
+      "Controlling versions of data product...",
+      "Assessing impact where change to existing data product entries are proposed..."
+    ]
+  },
+  {
+    "question": "Three common interaction models for data integration are:",
+    "answer": "Point to point, hub and spoke, publish and subscribe",
+    "incorrect_answers": [
+      "Straight copy, curved copy, roundabout copy",
+      "Record and pass, copy and send, read and write",
+      "Paint to point, wheel and spoke, public and share",
+      "Plane to point, harvest and seed, publish and subscribe"
+    ]
+  }
+]
