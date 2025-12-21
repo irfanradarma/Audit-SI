@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Exercise App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations for smoother UI */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .correct-answer {
+            background-color: #10B981 !important; /* Tailwind green-500 */
+            color: white !important;
+            border-color: #10B981 !important;
+        }
+        .wrong-answer {
+            background-color: #EF4444 !important; /* Tailwind red-500 */
+            color: white !important;
+            border-color: #EF4444 !important;
+        }
+        .disabled-card {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                ExamMaster
+            </h1>
+            <button onclick="goHome()" class="text-sm text-gray-500 hover:text-blue-600 font-medium">Exit to Home</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main id="app-container" class="max-w-3xl mx-auto px-4 py-8">
+        
+        <!-- View 1: Home / Set Selection -->
+        <div id="home-view" class="fade-in">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-3">Select Question Set</h2>
+                <p class="text-gray-500">Choose a topic to start your practice exam.</p>
+            </div>
+
+            <div class="grid md:grid-cols-1 gap-6">
+                <!-- Set 1 Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-blue-500">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Available</span>
+                                <h3 class="text-xl font-bold mb-2">CDMP Fundamentals - Set 1</h3>
+                                <p class="text-gray-600 text-sm mb-4">Comprehensive questions covering data governance, quality, and management principles.</p>
+                                <div class="flex items-center text-gray-500 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    100 Questions
+                                </div>
+                            </div>
+                            <button onclick="startQuiz(1)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
+                                Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Set 2 Card (Placeholder) -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 disabled-card grayscale">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Coming Soon</span>
+                            <h3 class="text-xl font-bold text-gray-400">Question Set 2</h3>
+                            <p class="text-gray-400 text-sm">Advanced Data Concepts</p>
+                        </div>
+                        <button disabled class="bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-lg cursor-not-allowed">
+                            Locked
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Set 3 Card (Placeholder) -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 disabled-card grayscale">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Coming Soon</span>
+                            <h3 class="text-xl font-bold text-gray-400">Question Set 3</h3>
+                            <p class="text-gray-400 text-sm">Specialist Scenarios</p>
+                        </div>
+                        <button disabled class="bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-lg cursor-not-allowed">
+                            Locked
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 2: Quiz Interface -->
+        <div id="quiz-view" class="hidden fade-in">
+            <!-- Progress Header -->
+            <div class="mb-6">
+                <div class="flex justify-between text-sm font-medium text-gray-500 mb-2">
+                    <span id="question-counter">Question 1 of 10</span>
+                    <span id="score-counter">Score: 0</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 leading-relaxed">
+                    <!-- Question goes here -->
+                </h3>
+
+                <!-- Options Grid -->
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Options injected by JS -->
+                </div>
+
+                <!-- Feedback & Next Button -->
+                <div id="feedback-area" class="mt-8 pt-4 border-t border-gray-100 hidden">
+                    <div id="feedback-message" class="text-lg font-bold mb-4"></div>
+                    <button id="next-btn" onclick="nextQuestion()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors float-right">
+                        Next Question &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 3: Results -->
+        <div id="result-view" class="hidden fade-in text-center py-10">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg mx-auto">
+                <div class="mb-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800">Quiz Completed!</h2>
+                    <p class="text-gray-500 mt-2">Here is how you performed</p>
+                </div>
+
+                <div class="flex justify-center items-center mb-8 space-x-8">
+                    <div class="text-center">
+                        <p class="text-4xl font-bold text-blue-600" id="final-score">0</p>
+                        <p class="text-xs text-gray-400 uppercase tracking-wide">Points</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-4xl font-bold text-purple-600" id="final-percent">0%</p>
+                        <p class="text-xs text-gray-400 uppercase tracking-wide">Accuracy</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="startQuiz(1)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        Retake Quiz
+                    </button>
+                    <button onclick="goHome()" class="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-lg transition-colors">
+                        Choose Another Set
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t mt-12 py-6 text-center text-gray-400 text-sm">
+        <p>&copy; 2025 ExamMaster App</p>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA SECTION ---
+        // External Data Source
+        const URL_SET_1 = "https://irfanradarma.github.io/Audit-SI/CDMP-1.json";
+
+        // --- APP STATE ---
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // --- DOM ELEMENTS ---
+        const homeView = document.getElementById('home-view');
+        const quizView = document.getElementById('quiz-view');
+        const resultView = document.getElementById('result-view');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const progressBar = document.getElementById('progress-bar');
+        const questionCounter = document.getElementById('question-counter');
+        const scoreCounter = document.getElementById('score-counter');
+        const finalScore = document.getElementById('final-score');
+        const finalPercent = document.getElementById('final-percent');
+
+        // --- NAVIGATION FUNCTIONS ---
+        function showView(viewId) {
+            [homeView, quizView, resultView].forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function goHome() {
+            showView('home-view');
+        }
+
+        // --- QUIZ LOGIC ---
+
+        async function startQuiz(setNumber) {
+            let rawQuestions = [];
+            
+            try {
+                // Simple loading indicator
+                const originalCursor = document.body.style.cursor;
+                document.body.style.cursor = 'wait';
+
+                // Fetch data based on set number
+                if (setNumber === 1) {
+                    const response = await fetch(URL_SET_1);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    rawQuestions = await response.json();
+                }
+                
+                // Reset cursor
+                document.body.style.cursor = originalCursor;
+
+                // 1. Shuffle the questions so order is different every time
+                currentQuestions = shuffleArray([...rawQuestions]);
+                
+                // 2. Reset State
+                currentQuestionIndex = 0;
+                score = 0;
+                isAnswered = false;
+
+                // 3. Show Quiz UI
+                showView('quiz-view');
+                renderQuestion();
+
+            } catch (error) {
+                document.body.style.cursor = 'default';
+                console.error("Failed to load questions:", error);
+                alert("Could not load questions. Please check your internet connection.\n\nTarget: " + URL_SET_1);
+            }
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentQuestionIndex];
+            
+            // Update Text
+            questionText.textContent = q.question;
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
+            scoreCounter.textContent = `Score: ${score}`;
+            
+            // Update Progress Bar
+            const progress = ((currentQuestionIndex) / currentQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Clear previous state
+            optionsContainer.innerHTML = '';
+            feedbackArea.classList.add('hidden');
+            isAnswered = false;
+
+            // Prepare Options
+            // Mix correct answer with incorrect ones
+            let options = [...q.incorrect_answers, q.answer];
+            // Shuffle options so the answer isn't always in the same spot
+            options = shuffleArray(options);
+
+            // Generate Buttons
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 text-gray-700 font-medium";
+                btn.textContent = opt;
+                btn.onclick = () => handleAnswerClick(btn, opt, q.answer);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswerClick(selectedBtn, selectedText, correctText) {
+            if (isAnswered) return; // Prevent multiple clicks
+            isAnswered = true;
+
+            const allButtons = optionsContainer.querySelectorAll('button');
+
+            // Logic to highlight buttons
+            if (selectedText === correctText) {
+                // Correct
+                score++;
+                selectedBtn.classList.add('correct-answer');
+                feedbackMessage.textContent = "Correct! 🎉";
+                feedbackMessage.className = "text-lg font-bold mb-4 text-green-600";
+            } else {
+                // Incorrect
+                selectedBtn.classList.add('wrong-answer');
+                feedbackMessage.textContent = "Incorrect.";
+                feedbackMessage.className = "text-lg font-bold mb-4 text-red-600";
+
+                // Highlight the correct one so user learns
+                allButtons.forEach(btn => {
+                    if (btn.textContent === correctText) {
+                        btn.classList.add('correct-answer');
+                    }
+                });
+            }
+
+            // Disable all buttons after choice
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                if (!btn.classList.contains('correct-answer') && !btn.classList.contains('wrong-answer')) {
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            // Show Next Button area
+            feedbackArea.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentQuestions.length) {
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            showView('result-view');
+            finalScore.textContent = score;
+            const percent = Math.round((score / currentQuestions.length) * 100);
+            finalPercent.textContent = `${percent}%`;
+        }
+
+        // --- UTILITIES ---
+        // Fisher-Yates Shuffle Algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+    </script>
+</body>
+</html>
