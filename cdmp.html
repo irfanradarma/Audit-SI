@@ -162,6 +162,13 @@
                     <!-- Feedback & Next Button -->
                     <div id="feedback-area" class="mt-8 pt-4 border-t border-gray-100 hidden">
                         <div id="feedback-message" class="text-lg font-bold mb-4"></div>
+                        
+                        <!-- Explanation Box -->
+                        <div id="explanation-box" class="hidden mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 text-gray-700">
+                            <strong class="block text-blue-700 mb-1">Explanation:</strong>
+                            <p id="explanation-text" class="text-sm leading-relaxed"></p>
+                        </div>
+
                         <button id="next-btn" onclick="nextQuestion()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors float-right">
                             Next Question &rarr;
                         </button>
@@ -218,6 +225,21 @@
         const URL_SET_1 = "https://irfanradarma.github.io/Audit-SI/CDMP-1.json";
         const URL_SET_3 = "https://irfanradarma.github.io/Audit-SI/CDMP-3.json"; 
 
+        // Fallback data in case URL_SET_3 fails (404 Error)
+        const FALLBACK_DATA_SET_3 = [
+            {
+                "question": "Which of the following is NOT a phase in the Data Quality Management Cycle?",
+                "answer": "Data Archiving",
+                "incorrect_answers": ["Define", "Measure", "Analyze", "Improve"],
+                "explanation": "Data Archiving is a lifecycle process, not a phase of the quality improvement cycle."
+            },
+            {
+                "question": "In the context of Reference Data Management, what is the primary purpose of a 'Cross-walk'?",
+                "answer": "To map equivalent values across different systems or standards",
+                "incorrect_answers": ["To delete duplicate records", "To generate unique identifiers", "To encrypt sensitive data elements"]
+            }
+        ];
+
         // --- APP STATE ---
         let currentQuestions = [];
         let currentQuestionIndex = 0;
@@ -233,6 +255,8 @@
         const optionsContainer = document.getElementById('options-container');
         const feedbackArea = document.getElementById('feedback-area');
         const feedbackMessage = document.getElementById('feedback-message');
+        const explanationBox = document.getElementById('explanation-box');
+        const explanationText = document.getElementById('explanation-text');
         const progressBar = document.getElementById('progress-bar');
         const questionCounter = document.getElementById('question-counter');
         const scoreCounter = document.getElementById('score-counter');
@@ -266,18 +290,41 @@
                 return;
             }
             
+            // UI Loading State
+            const originalCursor = document.body.style.cursor;
+            document.body.style.cursor = 'wait';
+            
             try {
-                // Simple loading indicator
-                const originalCursor = document.body.style.cursor;
-                document.body.style.cursor = 'wait';
-
                 const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                rawQuestions = await response.json();
                 
-                // Reset cursor
-                document.body.style.cursor = originalCursor;
+                // Handle 404 specially for Set 3
+                if (response.status === 404 && setNumber === 3) {
+                     console.warn("Set 3 URL not found. Switching to fallback data.");
+                     throw new Error("USE_FALLBACK_3");
+                }
+                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                rawQuestions = await response.json();
 
+            } catch (error) {
+                // Check if we should use fallback data
+                if (error.message === "USE_FALLBACK_3" || (setNumber === 3 && error.message.includes("404"))) {
+                    rawQuestions = FALLBACK_DATA_SET_3;
+                    alert("Note: The remote question file for Set 3 was not found (404). \n\nLoaded local practice questions instead so you can test the app.");
+                } else {
+                    document.body.style.cursor = 'default';
+                    console.error("Failed to load questions:", error);
+                    alert("Could not load questions. Please check your internet connection.\n\nTarget: " + targetUrl);
+                    return; // Stop execution
+                }
+            } finally {
+                // Always reset cursor
+                document.body.style.cursor = originalCursor;
+            }
+            
+            // If we have questions (from fetch or fallback), start the game
+            if (rawQuestions.length > 0) {
                 // 1. Shuffle the questions so order is different every time
                 currentQuestions = shuffleArray([...rawQuestions]);
                 
@@ -289,11 +336,6 @@
                 // 3. Show Quiz UI
                 showView('quiz-view');
                 renderQuestion();
-
-            } catch (error) {
-                document.body.style.cursor = 'default';
-                console.error("Failed to load questions:", error);
-                alert("Could not load questions. Please check your internet connection.\n\nTarget: " + targetUrl);
             }
         }
 
@@ -312,6 +354,7 @@
             // Clear previous state
             optionsContainer.innerHTML = '';
             feedbackArea.classList.add('hidden');
+            explanationBox.classList.add('hidden'); // Ensure explanation is hidden initially
             isAnswered = false;
 
             // Prepare Options
@@ -338,6 +381,7 @@
             isAnswered = true;
 
             const allButtons = optionsContainer.querySelectorAll('button');
+            const currentQ = currentQuestions[currentQuestionIndex];
 
             // Logic to highlight buttons
             if (selectedText === correctText) {
@@ -367,6 +411,14 @@
                     btn.classList.add('opacity-50');
                 }
             });
+
+            // Handle Explanation
+            if (currentQ.explanation && currentQ.explanation.trim() !== "") {
+                explanationText.textContent = currentQ.explanation;
+                explanationBox.classList.remove('hidden');
+            } else {
+                explanationBox.classList.add('hidden');
+            }
 
             // Show Next Button area
             feedbackArea.classList.remove('hidden');
