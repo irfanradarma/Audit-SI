@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Exam Exercise App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Force app to fit screen height exactly (mobile app feel) */
+        body {
+            height: 100vh; /* Fallback */
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            overflow: hidden; /* Prevent body scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Scrollable content area */
+        #scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        }
+
         /* Custom animations for smoother UI */
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
@@ -30,10 +46,10 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans text-gray-800">
+<body class="bg-gray-100 font-sans text-gray-800">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-10">
+    <!-- Navbar (Fixed at top, does not scroll) -->
+    <nav class="bg-white shadow-sm flex-none z-10">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold text-blue-600 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,155 +61,169 @@
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <main id="app-container" class="max-w-3xl mx-auto px-4 py-8">
+    <!-- Scrollable Content Wrapper -->
+    <div id="scroll-container">
         
-        <!-- View 1: Home / Set Selection -->
-        <div id="home-view" class="fade-in">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold mb-3">Select Question Set</h2>
-                <p class="text-gray-500">Choose a topic to start your practice exam.</p>
-            </div>
+        <!-- Main Container -->
+        <main id="app-container" class="max-w-3xl mx-auto px-4 py-8">
+            
+            <!-- View 1: Home / Set Selection -->
+            <div id="home-view" class="fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold mb-3">Select Question Set</h2>
+                    <p class="text-gray-500">Choose a topic to start your practice exam.</p>
+                </div>
 
-            <div class="grid md:grid-cols-1 gap-6">
-                <!-- Set 1 Card -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-blue-500">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Available</span>
-                                <h3 class="text-xl font-bold mb-2">CDMP Fundamentals - Set 1</h3>
-                                <p class="text-gray-600 text-sm mb-4">Comprehensive questions covering data governance, quality, and management principles.</p>
-                                <div class="flex items-center text-gray-500 text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    100 Questions
+                <div class="grid md:grid-cols-1 gap-6">
+                    <!-- Set 1 Card -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-blue-500">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Available</span>
+                                    <h3 class="text-xl font-bold mb-2">CDMP Fundamentals - Set 1</h3>
+                                    <p class="text-gray-600 text-sm mb-4">Comprehensive questions covering data governance, quality, and management principles.</p>
+                                    <div class="flex items-center text-gray-500 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Practice Set
+                                    </div>
                                 </div>
+                                <button onclick="startQuiz(1)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
+                                    Start
+                                </button>
                             </div>
-                            <button onclick="startQuiz(1)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
-                                Start
+                        </div>
+                    </div>
+
+                    <!-- Set 2 Card (Still Locked) -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 disabled-card grayscale">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Coming Soon</span>
+                                <h3 class="text-xl font-bold text-gray-400">Question Set 2</h3>
+                                <p class="text-gray-400 text-sm">Advanced Data Concepts</p>
+                            </div>
+                            <button disabled class="bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-lg cursor-not-allowed">
+                                Locked
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Set 2 Card (Placeholder) -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 disabled-card grayscale">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="inline-block px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Coming Soon</span>
-                            <h3 class="text-xl font-bold text-gray-400">Question Set 2</h3>
-                            <p class="text-gray-400 text-sm">Advanced Data Concepts</p>
+                    <!-- Set 3 Card (Now Available) -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-purple-500">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">New</span>
+                                    <h3 class="text-xl font-bold mb-2">CDMP Specialist - Set 3</h3>
+                                    <p class="text-gray-600 text-sm mb-4">Specialist scenarios focusing on advanced implementation and case studies.</p>
+                                    <div class="flex items-center text-gray-500 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                        </svg>
+                                        Practice Set
+                                    </div>
+                                </div>
+                                <button onclick="startQuiz(3)" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
+                                    Start
+                                </button>
+                            </div>
                         </div>
-                        <button disabled class="bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-lg cursor-not-allowed">
-                            Locked
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Set 3 Card (Placeholder) -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 disabled-card grayscale">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="inline-block px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">Coming Soon</span>
-                            <h3 class="text-xl font-bold text-gray-400">Question Set 3</h3>
-                            <p class="text-gray-400 text-sm">Specialist Scenarios</p>
-                        </div>
-                        <button disabled class="bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-lg cursor-not-allowed">
-                            Locked
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- View 2: Quiz Interface -->
-        <div id="quiz-view" class="hidden fade-in">
-            <!-- Progress Header -->
-            <div class="mb-6">
-                <div class="flex justify-between text-sm font-medium text-gray-500 mb-2">
-                    <span id="question-counter">Question 1 of 10</span>
-                    <span id="score-counter">Score: 0</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-                <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 leading-relaxed">
-                    <!-- Question goes here -->
-                </h3>
-
-                <!-- Options Grid -->
-                <div id="options-container" class="grid grid-cols-1 gap-4">
-                    <!-- Options injected by JS -->
-                </div>
-
-                <!-- Feedback & Next Button -->
-                <div id="feedback-area" class="mt-8 pt-4 border-t border-gray-100 hidden">
-                    <div id="feedback-message" class="text-lg font-bold mb-4"></div>
-                    <button id="next-btn" onclick="nextQuestion()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors float-right">
-                        Next Question &rarr;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- View 3: Results -->
-        <div id="result-view" class="hidden fade-in text-center py-10">
-            <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg mx-auto">
+            <!-- View 2: Quiz Interface -->
+            <div id="quiz-view" class="hidden fade-in">
+                <!-- Progress Header -->
                 <div class="mb-6">
-                    <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                    <div class="flex justify-between text-sm font-medium text-gray-500 mb-2">
+                        <span id="question-counter">Question 1 of 10</span>
+                        <span id="score-counter">Score: 0</span>
                     </div>
-                    <h2 class="text-3xl font-bold text-gray-800">Quiz Completed!</h2>
-                    <p class="text-gray-500 mt-2">Here is how you performed</p>
-                </div>
-
-                <div class="flex justify-center items-center mb-8 space-x-8">
-                    <div class="text-center">
-                        <p class="text-4xl font-bold text-blue-600" id="final-score">0</p>
-                        <p class="text-xs text-gray-400 uppercase tracking-wide">Points</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-4xl font-bold text-purple-600" id="final-percent">0%</p>
-                        <p class="text-xs text-gray-400 uppercase tracking-wide">Accuracy</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <div class="space-y-3">
-                    <button onclick="startQuiz(1)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
-                        Retake Quiz
-                    </button>
-                    <button onclick="goHome()" class="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-lg transition-colors">
-                        Choose Another Set
-                    </button>
+                <!-- Question Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 leading-relaxed">
+                        <!-- Question goes here -->
+                    </h3>
+
+                    <!-- Options Grid -->
+                    <div id="options-container" class="grid grid-cols-1 gap-4">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <!-- Feedback & Next Button -->
+                    <div id="feedback-area" class="mt-8 pt-4 border-t border-gray-100 hidden">
+                        <div id="feedback-message" class="text-lg font-bold mb-4"></div>
+                        <button id="next-btn" onclick="nextQuestion()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors float-right">
+                            Next Question &rarr;
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </main>
+            <!-- View 3: Results -->
+            <div id="result-view" class="hidden fade-in text-center py-10">
+                <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg mx-auto">
+                    <div class="mb-6">
+                        <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-800">Quiz Completed!</h2>
+                        <p class="text-gray-500 mt-2">Here is how you performed</p>
+                    </div>
 
-    <footer class="bg-white border-t mt-12 py-6 text-center text-gray-400 text-sm">
-        <p>&copy; 2025 ExamMaster App</p>
-    </footer>
+                    <div class="flex justify-center items-center mb-8 space-x-8">
+                        <div class="text-center">
+                            <p class="text-4xl font-bold text-blue-600" id="final-score">0</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wide">Points</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-4xl font-bold text-purple-600" id="final-percent">0%</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wide">Accuracy</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button onclick="startQuiz(currentSetNumber)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                            Retake Quiz
+                        </button>
+                        <button onclick="goHome()" class="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-lg transition-colors">
+                            Choose Another Set
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="bg-white border-t mt-12 py-6 text-center text-gray-400 text-sm">
+            <p>&copy; 2025 ExamMaster App</p>
+        </footer>
+    </div>
 
     <!-- Application Logic -->
     <script>
         // --- DATA SECTION ---
-        // External Data Source
+        // External Data Sources
         const URL_SET_1 = "https://irfanradarma.github.io/Audit-SI/CDMP-1.json";
+        const URL_SET_3 = "https://irfanradarma.github.io/Audit-SI/CDMP-3.json"; 
 
         // --- APP STATE ---
         let currentQuestions = [];
         let currentQuestionIndex = 0;
         let score = 0;
         let isAnswered = false;
+        let currentSetNumber = 1; // To track which set is being played for "Retake"
 
         // --- DOM ELEMENTS ---
         const homeView = document.getElementById('home-view');
@@ -208,11 +238,14 @@
         const scoreCounter = document.getElementById('score-counter');
         const finalScore = document.getElementById('final-score');
         const finalPercent = document.getElementById('final-percent');
+        const scrollContainer = document.getElementById('scroll-container');
 
         // --- NAVIGATION FUNCTIONS ---
         function showView(viewId) {
             [homeView, quizView, resultView].forEach(el => el.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
+            // Reset scroll to top when changing views
+            scrollContainer.scrollTop = 0;
         }
 
         function goHome() {
@@ -222,19 +255,25 @@
         // --- QUIZ LOGIC ---
 
         async function startQuiz(setNumber) {
+            currentSetNumber = setNumber;
             let rawQuestions = [];
+            let targetUrl = "";
+
+            if (setNumber === 1) targetUrl = URL_SET_1;
+            else if (setNumber === 3) targetUrl = URL_SET_3;
+            else {
+                alert("This set is not available yet.");
+                return;
+            }
             
             try {
                 // Simple loading indicator
                 const originalCursor = document.body.style.cursor;
                 document.body.style.cursor = 'wait';
 
-                // Fetch data based on set number
-                if (setNumber === 1) {
-                    const response = await fetch(URL_SET_1);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    rawQuestions = await response.json();
-                }
+                const response = await fetch(targetUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                rawQuestions = await response.json();
                 
                 // Reset cursor
                 document.body.style.cursor = originalCursor;
@@ -254,7 +293,7 @@
             } catch (error) {
                 document.body.style.cursor = 'default';
                 console.error("Failed to load questions:", error);
-                alert("Could not load questions. Please check your internet connection.\n\nTarget: " + URL_SET_1);
+                alert("Could not load questions. Please check your internet connection.\n\nTarget: " + targetUrl);
             }
         }
 
@@ -289,6 +328,9 @@
                 btn.onclick = () => handleAnswerClick(btn, opt, q.answer);
                 optionsContainer.appendChild(btn);
             });
+            
+            // Ensure top of question is visible if user scrolled down on previous long question
+            scrollContainer.scrollTop = 0; 
         }
 
         function handleAnswerClick(selectedBtn, selectedText, correctText) {
@@ -328,6 +370,11 @@
 
             // Show Next Button area
             feedbackArea.classList.remove('hidden');
+            
+            // Auto scroll to feedback if it's off screen
+            setTimeout(() => {
+                feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 100);
         }
 
         function nextQuestion() {
