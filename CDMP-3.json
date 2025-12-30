@@ -1,1198 +1,998 @@
 [
   {
-    "number": 1,
     "question": "OLAP, conceptually illustrates as a?*",
-    "multiple_choices": [
+    "answer": "Cube",
+    "incorrect_answers": [
       "Recursive stricture",
       "Hierarchical structure",
-      "Cube",
       "Multi-columnar structure",
       "Relational table"
-    ],
-    "correct_answer": "Cube"
+    ]
   },
   {
-    "number": 2,
     "question": "HTTPS indicates that the website is?",
-    "multiple_choices": [
-      "Equipped with a security layer",
+    "answer": "Equipped with a security layer",
+    "incorrect_answers": [
       "Equipped with third party cookies",
       "Equipped with an underlying database",
       "Equipped with a foreign language translator",
       "Equipped with a contant management system"
-    ],
-    "correct_answer": "Equipped with a security layer"
+    ]
   },
   {
-    "number": 3,
     "question": "An umbrella term for any classification or controlled vocabulary is",
-    "multiple_choices": [
-      "Taxonomy",
+    "answer": "Taxonomy",
+    "incorrect_answers": [
       "Metadata",
       "Data model",
       "English",
       "Dictionary"
-    ],
-    "correct_answer": "Taxonomy"
+    ]
   },
   {
-    "number": 4,
     "question": "The main part of a data vault that houses and integrates data from various source systems is referred to as?",
-    "multiple_choices": [
+    "answer": "Raw data vault",
+    "incorrect_answers": [
       "Metries mart",
       "Information mart",
       "Business data sault",
-      "Raw data vault",
       "Persisted staging area"
-    ],
-    "correct_answer": "Raw data vault"
+    ]
   },
   {
-    "number": 5,
     "question": "The ability to re-establish service after an interruption and correct errors caused by unforeseen events or component failures is called?",
-    "multiple_choices": [
+    "answer": "Recoverability",
+    "incorrect_answers": [
       "Reliability",
       "Servicesbility",
-      "Recoverability",
       "All of the above",
       "Manageability"
-    ],
-    "correct_answer": "Recoverability"
+    ]
   },
   {
-    "number": 6,
     "question": "What is the goal of collecting and documenting business rules?",
-    "multiple_choices": [
+    "answer": "To identify the requirements for the Data Quality",
+    "incorrect_answers": [
       "To identify potential sources of data for the Data Integration effort",
-      "To identify the requirements for the Data Quality",
       "To reuse existing Data integration solutioris",
       "To design user experience",
       "To direct when to manually trigger events and alerts"
-    ],
-    "correct_answer": "To identify the requirements for the Data Quality"
+    ]
   },
   {
-    "number": 7,
     "question": "The data operations team assures that data is recoverable by which of the following methods",
-    "multiple_choices": [
+    "answer": "Defining and executing the data recovery plan",
+    "incorrect_answers": [
       "Making sure the disks are checked regularly for write emors",
-      "Defining and executing the data recovery plan",
       "Guaranteeing the applications take proper exports of the data",
       "Maintaining a test, development, and production environment",
       "Analyzing database enor logs"
-    ],
-    "correct_answer": "Defining and executing the data recovery plan"
+    ]
   },
   {
-    "number": 8,
     "question": "A sandbox is a type of database environment used for?",
-    "multiple_choices": [
+    "answer": "Proofs of concept and to test hypotheses",
+    "incorrect_answers": [
       "Production backups",
       "Low-budget projects",
       "Remote users",
-      "Proofs of concept and to test hypotheses",
       "User acceptance testing"
-    ],
-    "correct_answer": "Proofs of concept and to test hypotheses"
+    ]
   },
   {
-    "number": 9,
     "question": "What is the benefit of using role groups to implement Data Security policies?",
-    "multiple_choices": [
+    "answer": "It reduces the amount of effort to assign access rights to users if they inherit rights from their group",
+    "incorrect_answers": [
       "It simplifies revoking individual permissions from an individual usiet",
       "It allows users to by typecast by the administrator",
-      "It reduces the amount of effort to assign access rights to users if they inherit rights from their group",
       "It allows for iterative reporting of user access"
-    ],
-    "correct_answer": "It reduces the amount of effort to assign access rights to users if they inherit rights from their group"
+    ]
   },
   {
-    "number": 10,
     "question": "The DAMA Wheel contains",
-    "multiple_choices": [
+    "answer": "Knowledge areas",
+    "incorrect_answers": [
       "Data Strategy initiatives",
       "Maturity model dimensions",
       "Data Management deliverables",
-      "Data Management processes",
-      "Knowledge areas"
-    ],
-    "correct_answer": "Knowledge areas"
+      "Data Management processes"
+    ]
   },
   {
-    "number": 11,
     "question": "To answer questions like \"What does this report mean? or \"What does this metric mean?\", the data warehouse/BI team should focus on?",
-    "multiple_choices": [
+    "answer": "End-to-end metadata",
+    "incorrect_answers": [
       "Conceptual data model",
       "Data lineage",
-      "End-to-end metadata",
       "Predictive and prescriptive analytics",
       "Data Quality applications"
-    ],
-    "correct_answer": "End-to-end metadata"
+    ]
   },
   {
-    "number": 12,
     "question": "What is the difference between a Data Security policy and an information technology security policy?",
-    "multiple_choices": [
+    "answer": "Data Security policies are more granular in nature and take a data-centric approach",
+    "incorrect_answers": [
       "Information technology security policies are defined by extertiual standards",
       "There is no differerice",
-      "Data Security policies are more granular in nature and take a data-centric approach",
       "The Data Governance Council should have no role in Dara Security"
-    ],
-    "correct_answer": "Data Security policies are more granular in nature and take a data-centric approach"
+    ]
   },
   {
-    "number": 13,
     "question": "As part of the reference Data Stewardship process, it is helpful to capture basic data about each reference data set. Which answer best describes which data should be captured",
-    "multiple_choices": [
+    "answer": "Steward name, originating organization, expected frequency of updates, and processes using the reference data",
+    "incorrect_answers": [
       "Maturity models that access the organization's readiness to accept Data Governance",
-      "Steward name, originating organization, expected frequency of updates, and processes using the reference data",
       "Metrics to quantify reference data's value to the organization",
       "Enterprise Architecture, programmsing logic workflows, and ETL relating to any reference data",
       "The names of everyone who is a business or technical user of the reference data"
-    ],
-    "correct_answer": "Steward name, originating organization, expected frequency of updates, and processes using the reference data"
+    ]
   },
   {
-    "number": 14,
     "question": "Which of the following is NOT true of a supertype or sub-type entity relationship?",
-    "multiple_choices": [
+    "answer": "Sub-type entities must be mutually exclusive",
+    "incorrect_answers": [
       "A sub-type inherits all attributes and relationships of the super-type",
-      "Sub-type entities must be mutually exclusive",
       "Attributes and relationships shared by some, but not all, sub-types are modeled with the sub-types",
       "The mibtype relationships should have a discriminator attribute",
       "Attributes and relationships shared by all sub-types are modeled with the super type"
-    ],
-    "correct_answer": "Sub-type entities must be mutually exclusive"
+    ]
   },
   {
-    "number": 15,
     "question": "What organization structure should set the overall direction for Data Governance?",
-    "multiple_choices": [
-      "Data Governance Council",
+    "answer": "Data Governance Council",
+    "incorrect_answers": [
       "PMO",
       "IT Leadership Team",
       "Data Quality Board",
       "Data Governance Office"
-    ],
-    "correct_answer": "Data Governance Council"
+    ]
   },
   {
-    "number": 16,
     "question": "When discussing transforming a logical data model to a physical data model, the breaking apart of a table or file horizontally or vertically is what?",
-    "multiple_choices": [
+    "answer": "Partitioning",
+    "incorrect_answers": [
       "Denormaiszation",
       "Solidity",
       "Indexing",
-      "Partitioning",
       "Substitution"
-    ],
-    "correct_answer": "Partitioning"
+    ]
   },
   {
-    "number": 17,
     "question": "A RACI matrix is a useful tool to support the __________ in an outsourced arrangement?",
-    "multiple_choices": [
-      "Segregation of duties",
+    "answer": "Segregation of duties",
+    "incorrect_answers": [
       "Service level agreement",
       "Preventing unauthorized access, manipulation, or use of data and information",
       "Transfer of access controls",
       "Alignment of business goals"
-    ],
-    "correct_answer": "Segregation of duties"
+    ]
   },
   {
-    "number": 18,
     "question": "A best practice for BI monitoring and tuning is to define and display which set of customer-facing satisfaction metrics?",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "Regular survey of DW BIM customers satisfaction",
-      "All of the above",
       "Average query response time",
       "Usage statistics and patterns",
       "Number of users per day/week/month"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 19,
     "question": "What technique will identify the system of record for the data?",
-    "multiple_choices": [
+    "answer": "Analysis of lineage",
+    "incorrect_answers": [
       "Collection of business rules",
-      "Analysis of lineage",
       "Data discovery",
       "Data profiling",
       "Definition of Data Integration and Lifecycle requiremente"
-    ],
-    "correct_answer": "Analysis of lineage"
+    ]
   },
   {
-    "number": 20,
     "question": "Plant equipment is an example of?",
-    "multiple_choices": [
+    "answer": "Master data",
+    "incorrect_answers": [
       "Reference data",
       "Transaction data",
       "Inverted data",
-      "Master data",
       "None of these"
-    ],
-    "correct_answer": "Master data"
+    ]
   },
   {
-    "number": 21,
     "question": "The need to manage data movement efficiently is a primary driver for?",
-    "multiple_choices": [
+    "answer": "Data Integration and Interoperability",
+    "incorrect_answers": [
       "All of the above",
       "Data Warehousing and Business Intelligence",
       "Document and Content Management",
-      "Data Storage and Operations",
-      "Data Integration and Interoperability"
-    ],
-    "correct_answer": "Data Integration and Interoperability"
+      "Data Storage and Operations"
+    ]
   },
   {
-    "number": 22,
     "question": "The requirement to enter a username, a password and then a code sent to an authentication app is called",
-    "multiple_choices": [
+    "answer": "2-factor authentication.",
+    "incorrect_answers": [
       "1-factor authentication.",
-      "2-factor authentication.",
       "biometric authentication",
       "proactive authentication"
-    ],
-    "correct_answer": "2-factor authentication."
+    ]
   },
   {
-    "number": 23,
     "question": "How do Data Management professionals maintain the commitment of key stakeholders to the Data Management initiative?",
-    "multiple_choices": [
-      "Continuous communication, education, and promotion of the importance and value of data and information assets",
+    "answer": "Continuous communication, education, and promotion of the importance and value of data and information assets",
+    "incorrect_answers": [
       "Weekly email reports showing metrics on Data Management progress or lack thereof",
       "It is not necessary, as the stakeholders signed up at the beginning of the programs",
       "Rely on the stakeholder group to be self-sustaining"
-    ],
-    "correct_answer": "Continuous communication, education, and promotion of the importance and value of data and information assets"
+    ]
   },
   {
-    "number": 24,
     "question": "Which definition is most accurate for Data Storage and Operations Management?",
-    "multiple_choices": [
+    "answer": "The design, implementation, and support of stored data to maximize its value",
+    "incorrect_answers": [
       "Managing shared data to meet orgamzational goals, restuce risks associated with data redundancy, ensure higher quality, and reduce the costs of data integration.",
       "Identifying the data needs of the enterprise (regardless of structure) and designing and maintaining the master blueprints to meet those needs",
-      "The process of discovering, analyzing, and scoping data requirements, and then representing and communicating these data requirements in a precise form called the data model",
-      "The design, implementation, and support of stored data to maximize its value"
-    ],
-    "correct_answer": "The design, implementation, and support of stored data to maximize its value"
+      "The process of discovering, analyzing, and scoping data requirements, and then representing and communicating these data requirements in a precise form called the data model"
+    ]
   },
   {
-    "number": 25,
     "question": "Reference data",
-    "multiple_choices": [
+    "answer": "Usually has fewer attributes than master data.",
+    "incorrect_answers": [
       "is also known as external data",
       "is more difficult to govern than master data",
       "is free",
-      "Usually has more attributes than master data",
-      "Usually has fewer attributes than master data."
-    ],
-    "correct_answer": "Usually has fewer attributes than master data."
+      "Usually has more attributes than master data"
+    ]
   },
   {
-    "number": 26,
     "question": "What is true with regard to the information presented in the DMBOK",
-    "multiple_choices": [
+    "answer": "All but A are correct",
+    "incorrect_answers": [
       "All the above",
       "B. It's not just about technology",
-      "All but A are correct",
       "D. Organization and culture play an important part",
       "A. Data Management exists within a vacuum",
       "C. Many environmental elements cross all of the disciplines"
-    ],
-    "correct_answer": "All but A are correct"
+    ]
   },
   {
-    "number": 27,
     "question": "According to the DMBoK2, which items are NOT a consideration in a data valuation?",
-    "multiple_choices": [
+    "answer": "How much we can be ransomed for by a malware attack",
+    "incorrect_answers": [
       "Cost of obtaining and storing data",
       "Impact to the organization if data were missing",
       "What the data could be sold for",
-      "Benefits of higher quality data",
-      "How much we can be ransomed for by a malware attack"
-    ],
-    "correct_answer": "How much we can be ransomed for by a malware attack"
+      "Benefits of higher quality data"
+    ]
   },
   {
-    "number": 28,
     "question": "Which of the following activities are performed by data operationis staff",
-    "multiple_choices": [
-      "implement and control database environmerita, plan for data retention, keep track of database licenses, monitor and tune database performance",
+    "answer": "implement and control database environmerita, plan for data retention, keep track of database licenses, monitor and tune database performance",
+    "incorrect_answers": [
       "Grant access to tables and rewrite SQL statements",
       "Manage the tape libranes",
       "Clean data that is of bad quality",
       "Ture the file systerms"
-    ],
-    "correct_answer": "implement and control database environmerita, plan for data retention, keep track of database licenses, monitor and tune database performance"
+    ]
   },
   {
-    "number": 29,
     "question": "Critical to the incremental development of the data warehouse is?",
-    "multiple_choices": [
+    "answer": "A strong release management process",
+    "incorrect_answers": [
       "An agile development team",
       "A strong capacity management process",
       "A strong incident management process",
-      "A strong release management process",
       "The assurance to include velocity, vanety, and veracity measurements"
-    ],
-    "correct_answer": "A strong release management process"
+    ]
   },
   {
-    "number": 30,
     "question": "Components of logical data modeis include",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "Keys",
-      "All of the above",
       "Attributes",
       "Entities",
       "Relationships"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 31,
     "question": "Which of the following statements about business rules is FALSE",
-    "multiple_choices": [
+    "answer": "Data rules cannot be shown on a data model",
+    "incorrect_answers": [
       "All business rules must be identified prior to the start of the Data Modeling process",
       "Action rules are difficult to define in a data model",
       "Data rules constrain how data relates to other data",
-      "Data rules cannot be shown on a data model",
       "Action rules are instructions on what to do when data elements contain certain values"
-    ],
-    "correct_answer": "Data rules cannot be shown on a data model"
+    ]
   },
   {
-    "number": 32,
     "question": "A reason to produce a data model is?",
-    "multiple_choices": [
-      "All of the above",
+    "answer": "All of the above",
+    "incorrect_answers": [
       "All but C",
       "A. To capture business requirements",
       "D. To avoid the late discovery of missed requirements",
       "B. To create a bridge between business and IT",
       "To set context for enterprise projects"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 33,
     "question": "Range domains allow all values that are between a minimum and maximum value For example, Order Delivery Date must be between Today's Date and three months in the future",
-    "multiple_choices": [
-      "Range domains",
+    "answer": "Range domains",
+    "incorrect_answers": [
       "Format domans",
       "Venolty domains",
       "None of the above",
       "List dornains"
-    ],
-    "correct_answer": "Range domains"
+    ]
   },
   {
-    "number": 34,
     "question": "What type of key identifies an entity/table for the systest may be \"natural\" or \"surrogate,\" and can also be composite?",
-    "multiple_choices": [
+    "answer": "Primary",
+    "incorrect_answers": [
       "Alternate",
       "Inverted",
-      "Primary",
       "Foreign",
       "None of the Above"
-    ],
-    "correct_answer": "Primary"
+    ]
   },
   {
-    "number": 35,
     "question": "Which of the following is a Mera Data scheme focused specifically on documents?",
-    "multiple_choices": [
-      "Preservation Meta-Data",
+    "answer": "Preservation Meta-Data",
+    "incorrect_answers": [
       "Administrative Meta-Data",
       "Descriptive Meta-Data",
       "Structural Meta-Data",
       "Business Meta-Data"
-    ],
-    "correct_answer": "Preservation Meta-Data"
+    ]
   },
   {
-    "number": 36,
     "question": "In a non-identifying relationship?",
-    "multiple_choices": [
+    "answer": "The primary key of the parent entity becomes a foreign kay in the child entity",
+    "incorrect_answers": [
       "The foreign key of the parent entity migrates to the child entity",
       "The primary key of the child entity is concatenated",
-      "The primary key of the parent entity becomes a foreign kay in the child entity",
       "The primary key of the child entity is removed",
       "The primary key of the parent entity becomes part of the primary key of the child entity"
-    ],
-    "correct_answer": "The primary key of the parent entity becomes a foreign kay in the child entity"
+    ]
   },
   {
-    "number": 37,
     "question": "The highest level of data model types is the?*",
-    "multiple_choices": [
+    "answer": "Conceptual model",
+    "incorrect_answers": [
       "Dimensional model",
       "Database model",
-      "Conceptual model",
       "Physical model",
       "Logical model"
-    ],
-    "correct_answer": "Conceptual model"
+    ]
   },
   {
-    "number": 38,
     "question": "Examples of data model components are?",
-    "multiple_choices": [
+    "answer": "Keys. Relationships, Attributes, Entities, Facts",
+    "incorrect_answers": [
       "Iteration, Decision, input Output",
       "Files, Folders, Links",
       "CPU GPU RAM, ROM",
-      "Monitat Keytroarrt, Mouse, Disk",
-      "Keys. Relationships, Attributes, Entities, Facts"
-    ],
-    "correct_answer": "Keys. Relationships, Attributes, Entities, Facts"
+      "Monitat Keytroarrt, Mouse, Disk"
+    ]
   },
   {
-    "number": 39,
     "question": "Communicating the value of Data Governance can be approached in a number of ways. Which of the following approaches is NOT a recognized way of doing thee?",
-    "multiple_choices": [
+    "answer": "Creating a series of \"elevator pitches\" for the appropriate audience",
+    "incorrect_answers": [
       "Maintaining an intranet website",
       "Promoting participation in a DM fonım or community",
       "Publishing a regular newsletter via hardcopy or email",
-      "Providing only negative communications on ongoing data issues to key executiv stakeholders",
-      "Creating a series of \"elevator pitches\" for the appropriate audience"
-    ],
-    "correct_answer": "Creating a series of \"elevator pitches\" for the appropriate audience"
+      "Providing only negative communications on ongoing data issues to key executiv stakeholders"
+    ]
   },
   {
-    "number": 40,
     "question": "An effective Data Security Strategy needs to consider __________ as well as technical security?",
-    "multiple_choices": [
-      "Physical (devices, hard copy)",
+    "answer": "Physical (devices, hard copy)",
+    "incorrect_answers": [
       "Functional (timing structures)",
       "Operational (function, flexibility)",
       "Conceptual (metadata, Business Glossary)"
-    ],
-    "correct_answer": "Physical (devices, hard copy)"
+    ]
   },
   {
-    "number": 41,
     "question": "In data security, which of the following is not one of the four \"As\"",
-    "multiple_choices": [
+    "answer": "Available",
+    "incorrect_answers": [
       "Audit",
       "Authentication",
-      "Access",
-      "Available"
-    ],
-    "correct_answer": "Available"
+      "Access"
+    ]
   },
   {
-    "number": 42,
     "question": "What kind of enterface is in place when systems are tightly coupled",
-    "multiple_choices": [
+    "answer": "A synchronous interface",
+    "incorrect_answers": [
       "An independent interface",
-      "A synchronous interface",
       "A user interface",
       "A legacy interface",
       "A hatch interface"
-    ],
-    "correct_answer": "A synchronous interface"
+    ]
   },
   {
-    "number": 43,
     "question": "Why is Data Management so important for organizations today?",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "All but D",
-      "All of the above",
       "C. Tighter regulations across many industries",
       "B. New product developments",
       "D. To have a competitive advantage",
       "A The increase in data volumes"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 44,
     "question": "For countries, is there an internationally recognized set of codes tο με",
-    "multiple_choices": [
+    "answer": "Yes, 150 3166 is the internationally standardized sat of codes used by most organizations",
+    "incorrect_answers": [
       "Yes, the standarts siet are the codes used by your country's postal service",
       "No you should use whatever your organization wants to use",
       "No, there is no intemationally recognized siet of codes because each country wants to develop their own",
-      "Yes, 150 3166 is the internationally standardized sat of codes used by most organizations",
       "No, organizations should develop their own set of codes to use because the dat is used internally"
-    ],
-    "correct_answer": "Yes, 150 3166 is the internationally standardized sat of codes used by most organizations"
+    ]
   },
   {
-    "number": 45,
     "question": "When defining your business continuity plan, which of the following should you consider doing?",
-    "multiple_choices": [
+    "answer": "Consider written policies and procedures, impact mitigating measures, required recovery time and acceptable amount of disruption, the criticality of the documents",
+    "incorrect_answers": [
       "Make sure that the data is retained sufficiently long, check that criticar data is encrypted, check access rights",
       "Have the contracts in place to acquire new hardware in case of technical problems define policies",
       "Determine the risk, probability and impact, check document backup frequency.",
-      "Verite a report and discuss the required budget with management.",
-      "Consider written policies and procedures, impact mitigating measures, required recovery time and acceptable amount of disruption, the criticality of the documents"
-    ],
-    "correct_answer": "Consider written policies and procedures, impact mitigating measures, required recovery time and acceptable amount of disruption, the criticality of the documents"
+      "Verite a report and discuss the required budget with management."
+    ]
   },
   {
-    "number": 46,
     "question": "Data is an organizational asset What international standard is concemed with asset management",
-    "multiple_choices": [
+    "answer": "150 55000/55001",
+    "incorrect_answers": [
       "150 25000",
-      "150 55000/55001",
       "ANSI 859",
       "150 27001",
       "150 9000"
-    ],
-    "correct_answer": "150 55000/55001"
+    ]
   },
   {
-    "number": 47,
     "question": "The most common teem for entity in the prysical level of a model is?",
-    "multiple_choices": [
+    "answer": "Table",
+    "incorrect_answers": [
       "Primary key",
       "Database",
       "Index",
-      "Table",
       "Diagram"
-    ],
-    "correct_answer": "Table"
+    ]
   },
   {
-    "number": 48,
     "question": "In 2009, ARMA international published GARP for managing records and information. BARP stands for",
-    "multiple_choices": [
+    "answer": "Generally Acceptable Recordkeeping Principles",
+    "incorrect_answers": [
       "Gregarious Archive of Recordkeeping Processes",
       "Global Accredited Recordkeeping Principies",
       "Generally Available Recordkeeping Practices",
-      "Generally Acceptable Recordkeeping Principles",
       "G20 Approved Recordkeeping Principles"
-    ],
-    "correct_answer": "Generally Acceptable Recordkeeping Principles"
+    ]
   },
   {
-    "number": 49,
     "question": "In the information Management Lifecycle, the lata Govmance activity \"Define the Data Governance Framework\" is in which Lifecycle stage?",
-    "multiple_choices": [
+    "answer": "Plan",
+    "incorrect_answers": [
       "Specify",
       "Create and acquire",
       "Maintain and ute",
-      "Enable",
-      "Plan"
-    ],
-    "correct_answer": "Plan"
+      "Enable"
+    ]
   },
   {
-    "number": 50,
     "question": "A Content Distribution Network supporting a multi-national website is likely to use?",
-    "multiple_choices": [
+    "answer": "A replication solution",
+    "incorrect_answers": [
       "A database backup and restore solution",
       "An archiving solution",
       "An extract, transform, and load solution",
-      "A replication solution",
       "A records disposal solution"
-    ],
-    "correct_answer": "A replication solution"
+    ]
   },
   {
-    "number": 51,
     "question": "__________ is the ability for multiple systerns to communicate through data that does not require processing on either side.",
-    "multiple_choices": [
+    "answer": "Data Interoperability",
+    "incorrect_answers": [
       "Data Governance",
       "Document and Content Management",
       "Data Integration",
-      "Data Warehousing and Business Intelligence",
-      "Data Interoperability"
-    ],
-    "correct_answer": "Data Interoperability"
+      "Data Warehousing and Business Intelligence"
+    ]
   },
   {
-    "number": 52,
     "question": "Is the data model important in establishing Master Data Management?",
-    "multiple_choices": [
+    "answer": "Yes, Master Data Management needs consistent logical defitutions",
+    "incorrect_answers": [
       "Only if Master Data Management needs to know the processing steps for all data",
       "No, within a given source, data representing the same entity can be different",
-      "Yes, Master Data Management needs consistent logical defitutions",
       "No, not if the data model is physically instantiated in muttiple platforms",
       "No, not if the organization has complex systems with multiple ways of capturing data"
-    ],
-    "correct_answer": "Yes, Master Data Management needs consistent logical defitutions"
+    ]
   },
   {
-    "number": 53,
     "question": "In dimensional data models, which of these is NOT true regarding messutes?",
-    "multiple_choices": [
-      "Measures can always be added across all dimensions",
+    "answer": "Measures can always be added across all dimensions",
+    "incorrect_answers": [
       "Measures should be numeric and additive",
       "Care must be taken if a measure is a snapshot figure",
       "Measures are found in fact tables",
       "The relationship could be an identifying relationship"
-    ],
-    "correct_answer": "Measures can always be added across all dimensions"
+    ]
   },
   {
-    "number": 54,
     "question": "Which statement best describes the relationship between documente and recorda",
-    "multiple_choices": [
+    "answer": "Reconts are a subset of documents",
+    "incorrect_answers": [
       "Documents and records are the same thing",
       "Documents are a subset of records",
-      "Reconts are a subset of documents",
       "Documents are written and reconds are audio",
       "Documents and records are not related"
-    ],
-    "correct_answer": "Reconts are a subset of documents"
+    ]
   },
   {
-    "number": 55,
     "question": "Data Storage and Operations Managementt has different deliverablies, such as",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "Production database environments",
-      "All of the above",
       "Mechanisme for ensuring availability, integrity, and recoverability of data",
       "Processes for implementation and changes to databases",
       "Mechanisms for detecting and reporting errors"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 56,
     "question": "Reference and master data include the renoncillation and maintenance of cone saitical shared data in order to",
-    "multiple_choices": [
+    "answer": "Enable consistent use across the systems of the most timely and relevant. version of essential data",
+    "incorrect_answers": [
       "Discourage changes to the codes and Values",
       "Save space in the databases and keep only the most rebent data",
       "Make it easier to store data for the programmers and users",
       "Inspect all data that is in production and get the business areas to certify that the data is correct",
-      "All of the above",
-      "Enable consistent use across the systems of the most timely and relevant. version of essential data"
-    ],
-    "correct_answer": "Enable consistent use across the systems of the most timely and relevant. version of essential data"
+      "All of the above"
+    ]
   },
   {
-    "number": 57,
     "question": "Which of the followings NOT a Data Modeling style?",
-    "multiple_choices": [
+    "answer": "CRUD",
+    "incorrect_answers": [
       "6",
       "UME",
       "CHEN",
       "ORM",
-      "IDEFIX",
-      "CRUD"
-    ],
-    "correct_answer": "CRUD"
+      "IDEFIX"
+    ]
   },
   {
-    "number": 58,
     "question": "Data Serurity policies should be developed and communicated to ensure that",
-    "multiple_choices": [
+    "answer": "it is easier to comply than not to comply",
+    "incorrect_answers": [
       "External regulatory reviews and audies can be conducted efficiently",
       "External consultants can be used effectively in implementation",
-      "it is easier to comply than not to comply",
       "Data that is not requested, orchestrated, or technology supported",
       "Standards and teniplates can be reused from other organizationis"
-    ],
-    "correct_answer": "it is easier to comply than not to comply"
+    ]
   },
   {
-    "number": 59,
     "question": "Star and Showflake are concepts of which Data Modeling schema?",
-    "multiple_choices": [
+    "answer": "Dimensional",
+    "incorrect_answers": [
       "Fact-based",
       "NoSQL",
-      "Dimensional",
       "Time-based",
       "Object-oriented"
-    ],
-    "correct_answer": "Dimensional"
+    ]
   },
   {
-    "number": 60,
     "question": "Database monitoning tools meature key database metrics, such as?",
-    "multiple_choices": [
+    "answer": "Capacity, availability, cache performance, and user statistics",
+    "incorrect_answers": [
       "Capacity, availability, backup instances, and Data Quality",
       "Create, read, normalization, and user access",
       "Capacity, design, normalization, and user access",
-      "Create, read, update, and delete",
-      "Capacity, availability, cache performance, and user statistics"
-    ],
-    "correct_answer": "Capacity, availability, cache performance, and user statistics"
+      "Create, read, update, and delete"
+    ]
   },
   {
-    "number": 61,
     "question": "In the PRISM acronym for database design principles, the letter S stands für?",
-    "multiple_choices": [
+    "answer": "Security",
+    "incorrect_answers": [
       "None of the above",
       "Solidity",
       "Safety",
-      "Soundness",
-      "Security"
-    ],
-    "correct_answer": "Security"
+      "Soundness"
+    ]
   },
   {
-    "number": 62,
     "question": "In the relational data model, what is the best synonym for a relation?",
-    "multiple_choices": [
-      "Table",
+    "answer": "Table",
+    "incorrect_answers": [
       "Row",
       "Association",
       "Tuple",
       "Relationship"
-    ],
-    "correct_answer": "Table"
+    ]
   },
   {
-    "number": 63,
     "question": "Dimension tables?",
-    "multiple_choices": [
+    "answer": "Have many columne but few rows",
+    "incorrect_answers": [
       "Have few columns but many rows",
       "Do not contain hierarchies",
       "Contain measures",
-      "Have many columne but few rows",
       "Are the same as facts"
-    ],
-    "correct_answer": "Have many columne but few rows"
+    ]
   },
   {
-    "number": 64,
     "question": "The stated goals of Gata Security Management are?",
-    "multiple_choices": [
-      "All of the above",
+    "answer": "All of the above",
+    "incorrect_answers": [
       "B. Understand and comply with all relevant regulations and policies for privacy protection, and confidentiality",
       "C. Ensure that the privacy and confidentiality needs of all stakeholders are enforced and audited",
       "A Enable appropnate, and prevent inappropriate, access to emerprise data assets",
       "All but C"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 65,
     "question": "When discussing the Data Quality Management Cycle, what part of the cycle typically deals with acting to resolve any identified issues to Improve Data Quality and better meet business expectations?",
-    "multiple_choices": [
+    "answer": "Act",
+    "incorrect_answers": [
       "Check",
       "Do/Deploy",
       "Proceed",
-      "Plz",
-      "Act"
-    ],
-    "correct_answer": "Act"
+      "Plz"
+    ]
   },
   {
-    "number": 66,
     "question": "Which of these are increasingly diving legalation for information security and data privacy?",
-    "multiple_choices": [
+    "answer": "A recognition of ethical issues in information Management",
+    "incorrect_answers": [
       "A desire for economic protectionis",
       "A resistance to open data and transparency",
       "An objective of making life more challenging for information Management professionals",
-      "ANSI 859",
-      "A recognition of ethical issues in information Management"
-    ],
-    "correct_answer": "A recognition of ethical issues in information Management"
+      "ANSI 859"
+    ]
   },
   {
-    "number": 67,
     "question": "In the conceptual data model ari instantiation of a particular business entity is described as?",
-    "multiple_choices": [
+    "answer": "Entity occurrence",
+    "incorrect_answers": [
       "How",
       "Record",
-      "Entity occurrence",
       "Dataset",
       "Rule"
-    ],
-    "correct_answer": "Entity occurrence"
+    ]
   },
   {
-    "number": 68,
     "question": "A type of Master data architecture is",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "Hybrid",
-      "All of the above",
       "Registry",
       "Virtualised",
       "Repository"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 69,
     "question": "The implementation and administration of Data Senurity policies is primarily the responsibility of",
-    "multiple_choices": [
+    "answer": "Security administrators",
+    "incorrect_answers": [
       "All staff",
       "The CIO",
-      "Security administrators",
       "Knowledge workers"
-    ],
-    "correct_answer": "Security administrators"
+    ]
   },
   {
-    "number": 70,
     "question": "Ontology is the study of",
-    "multiple_choices": [
+    "answer": "Being und existence",
+    "incorrect_answers": [
       "Knowledge",
       "Existence",
       "Beginning",
-      "Being und existence",
       "Reality"
-    ],
-    "correct_answer": "Being und existence"
+    ]
   },
   {
-    "number": 71,
     "question": "The Data Quality Management cycle has four stages. Three are Plan Monitor, and Act. What is the fourth stage?",
-    "multiple_choices": [
+    "answer": "Deploy",
+    "incorrect_answers": [
       "Manage",
       "Reiterate",
-      "Deploy",
       "Prepare",
       "Improve"
-    ],
-    "correct_answer": "Deploy"
+    ]
   },
   {
-    "number": 72,
     "question": "Which of these does NOT characterize an effective data steward?\"",
-    "multiple_choices": [
+    "answer": "Is a highly experienced technical expert in a variety of data management disciplines & tools",
+    "incorrect_answers": [
       "He/She works association with the Data Owner to protect and enhance the data assets under his or her con",
       "is a recognized subject matter expert in the data subject area/ business domain that he or she is responsible for",
-      "Is a highly experienced technical expert in a variety of data management disciplines & tools",
       "He/She is an effective communicator",
       "He/she works collaboratively across the organization with data stakeholders and others identifying data problems and issues"
-    ],
-    "correct_answer": "Is a highly experienced technical expert in a variety of data management disciplines & tools"
+    ]
   },
   {
-    "number": 73,
     "question": "A Data Quality program should limit its scope to?",
-    "multiple_choices": [
-      "The data most critical to the enterprise and its customers",
+    "answer": "The data most critical to the enterprise and its customers",
+    "incorrect_answers": [
       "The highest-profile program with the best benefits",
       "The data that changes most often",
       "The data that is of interest to the Chief Executive Officer",
       "All the data stored in the enterprise"
-    ],
-    "correct_answer": "The data most critical to the enterprise and its customers"
+    ]
   },
   {
-    "number": 74,
     "question": "What is the role of the Data Governance Council in defining an information security policy?",
-    "multiple_choices": [
+    "answer": "The Data Govemance Council should review and approve the high-level Duta Security policy",
+    "incorrect_answers": [
       "The Data Govemance Council should implement the Data Security policy",
-      "The Data Govemance Council should review and approve the high-level Duta Security policy",
       "A draft implementation readmap with projects and action items",
       "The Data Govermance Council should define the Data Secutty policy",
       "The Data Governance Council should have no role in Data Security"
-    ],
-    "correct_answer": "The Data Govemance Council should review and approve the high-level Duta Security policy"
+    ]
   },
   {
-    "number": 75,
     "question": "What is the difference between cardinality rules and data integrity rules?",
-    "multiple_choices": [
-      "Cardinality rules define the quantity of each entity instance that can participate in a relationship between two entities, and referential integrity rules ensure valid values",
+    "answer": "Cardinality rules define the quantity of each entity instance that can participate in a relationship between two entities, and referential integrity rules ensure valid values",
+    "incorrect_answers": [
       "There is no difference: Cardinality rules and referential integrity rules are synonyms",
       "Referential integrity rules quantify the relationships between two or more entities and cardinality tiles quantify the common attributes across entities",
       "Referential integrity rules define the quantity of each entity instance that can participate in a relationship between two entities, and cardinality näes ensure valid values",
       "Referential integrity rules only appear on a relational data model, and cardinality nales only appear on a dimensional data model"
-    ],
-    "correct_answer": "Cardinality rules define the quantity of each entity instance that can participate in a relationship between two entities, and referential integrity rules ensure valid values"
+    ]
   },
   {
-    "number": 76,
     "question": "Implementing a Services -Oriented Architecture (SOA) will often use?",
-    "multiple_choices": [
+    "answer": "An enterpise services bus",
+    "incorrect_answers": [
       "Data Visualization tools",
       "A Data Modeling tool",
       "ETL servers",
-      "A data lake",
-      "An enterpise services bus"
-    ],
-    "correct_answer": "An enterpise services bus"
+      "A data lake"
+    ]
   },
   {
-    "number": 77,
     "question": "which of the following is NOT a goal of Data Management?",
-    "multiple_choices": [
+    "answer": "Understanding the process needs of the enterprise",
+    "incorrect_answers": [
       "Ensuring the privacy and confidentiality of stakeholder data",
       "Preventing unauthorized access, manipulation, or use of data and information",
       "Ensuring the quality of data and information",
-      "Capturing, storing, protecting, and ensuring the integrity of data assets",
-      "Understanding the process needs of the enterprise"
-    ],
-    "correct_answer": "Understanding the process needs of the enterprise"
+      "Capturing, storing, protecting, and ensuring the integrity of data assets"
+    ]
   },
   {
-    "number": 78,
     "question": "Data Modeling is",
-    "multiple_choices": [
-      "The process of discovering, analyzing, and scoping data requirements, and then representing and communicating these data requirements in a precise form called the data model. This process is iterative and may include a conceptual, logical, and physical model",
+    "answer": "The process of discovering, analyzing, and scoping data requirements, and then representing and communicating these data requirements in a precise form called the data model. This process is iterative and may include a conceptual, logical, and physical model",
+    "incorrect_answers": [
       "All of the above",
       "The planning, implementation, and control activities for the lifecycle management of data and information found in any form or medium",
       "None of the above",
       "The exercise of authority, control, and shared decision-making (planiving, monitoring and enforcement! over the management of data assets"
-    ],
-    "correct_answer": "The process of discovering, analyzing, and scoping data requirements, and then representing and communicating these data requirements in a precise form called the data model. This process is iterative and may include a conceptual, logical, and physical model"
+    ]
   },
   {
-    "number": 79,
     "question": "A document that stipulates the responsibilities and acceptable use of data to be exchanged, is commonly referred to as a?",
-    "multiple_choices": [
+    "answer": "Data Sharing Agreement",
+    "incorrect_answers": [
       "Data Quality Assessment",
-      "Data Sharing Agreement",
       "Data Model",
       "Project Charter"
-    ],
-    "correct_answer": "Data Sharing Agreement"
+    ]
   },
   {
-    "number": 80,
     "question": "Which of these statemente is true",
-    "multiple_choices": [
+    "answer": "Data Quality Management is a continuous process",
+    "incorrect_answers": [
       "Data Quality Management is the application of technology to data problems",
       "Data Quality Management is a synonym for Data Governance",
-      "Data Quality Management is a continuous process",
       "Data Quality Management only addresses structured data",
       "Data Quality Management is usually a one-off project"
-    ],
-    "correct_answer": "Data Quality Management is a continuous process"
+    ]
   },
   {
-    "number": 81,
     "question": "The percentage of enterprise computers having the most recent security patch installed\" is a metric of which knowledge ares?",
-    "multiple_choices": [
+    "answer": "Data Security",
+    "incorrect_answers": [
       "Metadata Management",
-      "Data Security",
       "Data Warefiousing and Business Intelligence",
       "Data Quality",
       "Data Storage and Operations"
-    ],
-    "correct_answer": "Data Security"
+    ]
   },
   {
-    "number": 82,
     "question": "What is accurate when discussing many to many relationships?",
-    "multiple_choices": [
+    "answer": "All of the above",
+    "incorrect_answers": [
       "There is often hidden business meaning in this relationship",
       "While many-to-many relationships are OK in a Conceptual Data Model, they should be resolved in a logical data model",
-      "All of the above",
       "All but A",
       "There are stually additional attributes discovered in the intersection entity"
-    ],
-    "correct_answer": "All of the above"
+    ]
   },
   {
-    "number": 83,
     "question": "In recursive relationship?",
-    "multiple_choices": [
-      "The foreign key must have a role name to avoid attribute duplication",
+    "answer": "The foreign key must have a role name to avoid attribute duplication",
+    "incorrect_answers": [
       "All of the above",
       "The relationship could be an identifying relationship",
       "None of these recursive relationships are not allowed in data models",
       "The relationship could be mandatory at either end"
-    ],
-    "correct_answer": "The foreign key must have a role name to avoid attribute duplication"
+    ]
   },
   {
-    "number": 84,
     "question": "in its broadest context, the data warehouse includes",
-    "multiple_choices": [
+    "answer": "Any data stores or extracts used to support the delivery for Bl purposes",
+    "incorrect_answers": [
       "Data stores and extracts that can be transformed into star schemas",
       "All the data in the enterprise",
       "Either an inmon or Kimball approach",
-      "An integrated data store, ETL logic, and extensive data cleansing routines",
-      "Any data stores or extracts used to support the delivery for Bl purposes"
-    ],
-    "correct_answer": "Any data stores or extracts used to support the delivery for Bl purposes"
+      "An integrated data store, ETL logic, and extensive data cleansing routines"
+    ]
   },
   {
-    "number": 85,
     "question": "Which of these NOT an expected role of a Data Quality Oversight Board?",
-    "multiple_choices": [
-      "Data profiling and analysis",
+    "answer": "Data profiling and analysis",
+    "incorrect_answers": [
       "Establishing communications and feedback mechanisms",
       "Producing certification and compliance policies",
       "Developing and maintaining Data Quality",
       "Setting Data Quality improvement pronties"
-    ],
-    "correct_answer": "Data profiling and analysis"
+    ]
   },
   {
-    "number": 86,
     "question": "Master and reference data are forms of?",
-    "multiple_choices": [
-      "Data Integration",
+    "answer": "Data Integration",
+    "incorrect_answers": [
       "Data Mapping.",
       "Data Quality",
       "Data Architecture",
       "Data Security"
-    ],
-    "correct_answer": "Data Integration"
+    ]
   },
   {
-    "number": 87,
     "question": "What is one of the benefits of Senicies-Oriented Architecture (SOA)?",
-    "multiple_choices": [
+    "answer": "Enables application independence and the ability to replace systems without significant changes to interfacing systems",
+    "incorrect_answers": [
       "Prowdes oversight and control to the integration development lifecycle",
       "Is the fastest way to develop a new interface",
-      "Enables application independence and the ability to replace systems without significant changes to interfacing systems",
       "Provides an optimized user expenence for the data consumer",
       "Allows access to the underlying data structures"
-    ],
-    "correct_answer": "Enables application independence and the ability to replace systems without significant changes to interfacing systems"
+    ]
   },
   {
-    "number": 88,
     "question": "Database performance depends upon two independent facets. These are?",
-    "multiple_choices": [
+    "answer": "Avaliability and speed",
+    "incorrect_answers": [
       "Distance to data center and network bandwidth",
       "Choice of DBMS and programming language",
       "Number of users and number of tables",
-      "Hardware and network",
-      "Avaliability and speed"
-    ],
-    "correct_answer": "Avaliability and speed"
+      "Hardware and network"
+    ]
   },
   {
-    "number": 89,
     "question": "What is the technique for log-based change of data capturing",
-    "multiple_choices": [
-      "Source Database Management System create data activity logs which are monitored and applied on the target database",
+    "answer": "Source Database Management System create data activity logs which are monitored and applied on the target database",
+    "incorrect_answers": [
       "Compare the current state of the source system to a previous copy",
       "The source system processes add to a simple list of changed objects and identifiers on data update",
       "The source system populater specific data elements in the target system",
       "The source system processes copy data that has changed into separate object part of source data update"
-    ],
-    "correct_answer": "Source Database Management System create data activity logs which are monitored and applied on the target database"
+    ]
   },
   {
-    "number": 90,
     "question": "According to the DMBOK, which of the following are included as Data Managerrient goals?",
-    "multiple_choices": [
+    "answer": "We should ensure that data can be used effectively to add value to the enterprise",
+    "incorrect_answers": [
       "Big Data goals need to change to reflect reality",
       "Data Quality goais must be signed with 1502700T",
-      "We should ensure that data can be used effectively to add value to the enterprise",
       "Data Management goals must focus first on legislation",
       "Data Management goals should be driven by technical capability and available capabilities"
-    ],
-    "correct_answer": "We should ensure that data can be used effectively to add value to the enterprise"
+    ]
   },
   {
-    "number": 91,
     "question": "According to the DBok, the system that contains the \"best version of the master data is the",
-    "multiple_choices": [
-      "System of record",
+    "answer": "System of record",
+    "incorrect_answers": [
       "Goiden record",
       "Consuming system",
       "Source system",
       "Spoke"
-    ],
-    "correct_answer": "System of record"
+    ]
   },
   {
-    "number": 92,
     "question": "Which of the following should staff do to gumantee optimum database performance of data operations?",
-    "multiple_choices": [
-      "Discuss performance requirements with the data architects",
+    "answer": "Discuss performance requirements with the data architects",
+    "incorrect_answers": [
       "Discuss the amount of time a user can wait on a screen",
       "Reduce the number of rows in the tables.",
       "Revoke the access rights of heavy users",
       "Decide what type of storage will be acquleed"
-    ],
-    "correct_answer": "Discuss performance requirements with the data architects"
+    ]
   },
   {
-    "number": 93,
     "question": "The stakeholder requirements for privacy and confidentiality are goals found in?",
-    "multiple_choices": [
+    "answer": "Data Security",
+    "incorrect_answers": [
       "Data Architecture",
-      "Data Security",
       "Metadata Management",
       "Data Quality",
       "Document and Content Management"
-    ],
-    "correct_answer": "Data Security"
+    ]
   },
   {
-    "number": 94,
     "question": "Which of these is a key process in delining Data Quality business nules?",
-    "multiple_choices": [
+    "answer": "Separatinio data that does not meet business needs from data that does",
+    "incorrect_answers": [
       "De-duplicating data recorde",
-      "Separatinio data that does not meet business needs from data that does",
       "Producing Data Quality reports and dashboarde",
       "Matching data from different data sources",
       "Producing Data Management policies"
-    ],
-    "correct_answer": "Separatinio data that does not meet business needs from data that does"
+    ]
   },
   {
-    "number": 95,
     "question": "Which Normal Form typically has this normalization rule \"Use the minimal amount of attributes in key",
-    "multiple_choices": [
+    "answer": "Second NF",
+    "incorrect_answers": [
       "All of the above",
       "None of the above",
-      "Second NF",
       "Third NF",
       "Fest NF"
-    ],
-    "correct_answer": "Second NF"
+    ]
   },
   {
-    "number": 96,
     "question": "Which of the following is NOT an activity that would enable business acceptance and user satisfaction",
-    "multiple_choices": [
+    "answer": "Defining different types of reporting tools to be used for future busmess needs",
+    "incorrect_answers": [
       "Promoting scheduled meetings with weer representatives",
       "Ensuing perceptions of the quality of the data in the system are managed",
-      "Defining different types of reporting tools to be used for future busmess needs",
       "Understanding the data and defining the operations team's responsiveness to identified issues",
       "Furnishing an end-to-end verifiable data lineage"
-    ],
-    "correct_answer": "Defining different types of reporting tools to be used for future busmess needs"
+    ]
   },
   {
-    "number": 97,
     "question": "Communicating the value of Data Govemance can be approached in a number of ways. Which of the following approaches NOT a recognized way of doing this?",
-    "multiple_choices": [
+    "answer": "Creating a series of \"elevator pitches\" for the appropriate audience",
+    "incorrect_answers": [
       "Providing only negative communications on ongoing data issues to key executiv stakeholders",
       "Promoting participation in a DM forum or community",
       "Maintaining an intranet website",
-      "Publishing a regular newsletter via hardcopy or email",
-      "Creating a series of \"elevator pitches\" for the appropriate audience"
-    ],
-    "correct_answer": "Creating a series of \"elevator pitches\" for the appropriate audience"
+      "Publishing a regular newsletter via hardcopy or email"
+    ]
   },
   {
-    "number": 98,
     "question": "Which of these is NOT a type of key found in a data model",
-    "multiple_choices": [
-      "Local Key",
+    "answer": "Local Key",
+    "incorrect_answers": [
       "Foreign key",
       "Primary key",
       "Surrogate key",
       "Alternate kury"
-    ],
-    "correct_answer": "Local Key"
+    ]
   },
   {
-    "number": 99,
     "question": "Which of the following is NOT an approach to data valuation?",
-    "multiple_choices": [
+    "answer": "Enterprise Data Modeling",
+    "incorrect_answers": [
       "Cost of obtaining and stonng data",
       "Expected revenue from innovative uses of data",
       "What the data could be sold for",
-      "Cost of replacing data if it were lost",
-      "Enterprise Data Modeling"
-    ],
-    "correct_answer": "Enterprise Data Modeling"
+      "Cost of replacing data if it were lost"
+    ]
   },
   {
-    "number": 100,
     "question": "in the data lifecycle, the DMBOK recommends minimizing HOT data ROT1 stands for?",
-    "multiple_choices": [
+    "answer": "Data that is Redundant, Obsolete Trivial",
+    "incorrect_answers": [
       "Data is Routine, Obsolete, Tiny",
       "Data that is not Relational, Operational, Timely",
       "Data that is not Requested, Orchestrated Technology supported.",
-      "Data that is Redundant, Obsolete Trivial",
       "Data that is not Realistic, Ordered, Tunely"
-    ],
-    "correct_answer": "Data that is Redundant, Obsolete Trivial"
+    ]
   }
 ]
