@@ -86,7 +86,8 @@ by Teuku Raja Irfan Radarma
     <td>Protection of Information Assets: Part B</td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx" target="_blank">07 - Security Event Management.pptx</a></td>
     <td>Quiz Through LMS</td>
-    <td><a href="https://irfanradarma.github.io/Audit-SI/try-out.html" target="_blank">Try Out Domain 1 - 5</a></td>
+    <td><a href="https://irfanradarma.github.io/Audit-SI/try-out.html" target="_blank">Try Out Domain 1 - 5</a><br><br>
+    <a href="https://forms.gle/JNBbpYAWQXh7wtPH6" target="_blank">Tugas VII - Lessons Learned</a></td>
   </tr>
   <tr>
     <td>8</td>
