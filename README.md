@@ -84,7 +84,7 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>7</td>
     <td>Protection of Information Assets: Part B</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx" target="_blank">07 - Security Event Management.pptx</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx" target="_blank">07 - Security Event Management</a></td>
     <td>Quiz Through LMS</td>
     <td><a href="https://irfanradarma.github.io/Audit-SI/try-out.html" target="_blank">Try Out Domain 1 - 5</a><br><br>
     <a href="https://forms.gle/JNBbpYAWQXh7wtPH6" target="_blank">Tugas VII - Lessons Learned</a></td>
@@ -96,9 +96,16 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>9</td>
     <td>Basic of Data Analysis</td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/09%20-%20Basic%20Data%20Analysis.pptx" target="_blank">09 - Basic Data Analysis</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Data%20Impor.zip" target="_blank">- Impor Data</a><br>
+    <a href="https://github.com/irfanradarma/PTIK-STAN/raw/main/Slides/06/spotify_data_light.xlsx" target="_blank">- Data Spotify</a>
+    </td>
+    <td><a href="https://www.youtube.com/watch?v=Kwn8GJyNv64" target="_blank">1. Tutorial Pivot Table</a><br>
+    <a href="https://www.youtube.com/watch?v=bhfRlU_bNmw" target="_blank">2. Tutorial SUM, SUMIF, SUMIFS</a><br>
+    <a href="https://www.youtube.com/watch?v=OekP7P-Xw4I" target="_blank">3. Tutorial CONSOLIDATE</a><br>
+    <a href="https://www.youtube.com/watch?v=JNZqRYkgZ4c" target="_blank">4. Tutorial Filtering Data</a><br>
+    <a href="https://www.youtube.com/watch?v=UV-SPoVkDaU" target="_blank">5. Tutorial Advanced Filters</a><br>
+    <a href="https://www.youtube.com/watch?v=LKbRkIIVG60&pp=ygUQdHV0b3JpYWwgdmxvb2t1cA%3D%3D" target="_blank">6. Tutorial Vlookup</a></td>
   </tr>
   <tr>
     <td>10</td>
