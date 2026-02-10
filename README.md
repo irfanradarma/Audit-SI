@@ -114,7 +114,7 @@ by Teuku Raja Irfan Radarma
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Week%2010%20Practice.xlsx" target="_blank">Week 10 Practice</a><br><br>
     Tugas VIII - Simulasi ToE:<br>
     <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Assignment%20of%20Week%2010.xlsx" target="_blank">- Sales Data</a><br>
-    <a href="https://forms.gle/UomXmnZEnLGkxyWz9" target="_blank">- Submission Form</a><br>(Deadline: Sunday Midnight)</a></td>
+    <a href="https://forms.gle/UomXmnZEnLGkxyWz9" target="_blank">- Submission Form</a><br>(Deadline: Sunday Midnight)</td>
     <td><a href="https://drive.google.com/drive/folders/1KWQqTYpNElnZxWfQIZvHP4nMVipOfils" target="_blank">Praktik Pengujian AppCon MYOB</a> (dari dosko)<br><br>
     <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Fun%20Excel%20II.xlsx" target="_blank">Fun Excel Comp II Data</a></td>
   </tr>
