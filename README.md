@@ -110,7 +110,7 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>10</td>
     <td>Risk and Control</td>
-    <td>><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/10%20-%20Risiko%20dan%20Pengendalian.pptx" target="_blank">10 - Risiko dan Pengendalian</a></td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/10%20-%20Risiko%20dan%20Pengendalian.pptx" target="_blank">10 - Risiko dan Pengendalian</a></td></td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Week%2010%20Practice.xlsx" target="_blank">Week 10 Practice</a></td>
     <td>Tugas:<br>
     <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Assignment%20of%20Week%2010.xlsx" target="_blank">- Sales</a><br>
