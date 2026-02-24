@@ -129,10 +129,13 @@ by Teuku Raja Irfan Radarma
   </tr>
   <tr>
     <td>12</td>
-    <td>Analytics and Sampling</td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>Sampling and Statistical Aproach</td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik" target="_blank">12 - Sampling dan Pendekatan Statistik</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/week12%20-%20Latihan%20Anomaly.xlsx" target="_blank">data latihan anomali</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Tugas%20Week%2012.pptx" target="_blank">- Instruksi Tugas Week 12</a><br>
+    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20data%20absensi.csv" target="_blank">- Data Absensi</a><br>
+    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20audit_log_wifi_kampus.csv" target="_blank">- Data log jaringan</a><br><br>
+    <a href="https://forms.gle/BfQk7hNuQbunQDDm7" target="_blank">Submit your work here</a><br></td>
   </tr>
   <tr>
     <td>13</td>
