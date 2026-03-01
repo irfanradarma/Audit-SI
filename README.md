@@ -130,7 +130,7 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>12</td>
     <td>Sampling and Statistical Aproach</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik" target="_blank">12 - Sampling dan Pendekatan Statistik</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik.pptx" target="_blank">12 - Sampling dan Pendekatan Statistik</a></td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/week12%20-%20Latihan%20Anomaly.xlsx" target="_blank">data latihan anomali</a></td>
     <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Tugas%20Week%2012.pptx" target="_blank">- Instruksi Tugas Week 12</a><br>
     <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20data%20absensi.csv" target="_blank">- Data Absensi</a><br>
@@ -140,8 +140,8 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>13</td>
     <td>Substantive Testing: Sales Cycle</td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/13.%20Asersi%20Siklus%20Penjualan.pptx" target="_blank">13 - Audit Siklus Penjualan</a></td>
+    <td>Kuis via LMS</td>
     <td></td>
   </tr>
   <tr>
