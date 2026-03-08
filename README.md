@@ -147,8 +147,8 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>14</td>
     <td>Substantive Testing: Expenditure Cycle</td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/14.%20Asersi%20Siklus%20Pengeluaran.pptx" target="_blank">14 - Audit Siklus Pembelian</a></td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/14%20-%20Latihan%20Data%20Pembelian.xls" target="_blank">Data Pembelian</a></td>
     <td></td>
   </tr>
   <tr>
