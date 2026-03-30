@@ -154,9 +154,9 @@ by Teuku Raja Irfan Radarma
   <tr>
     <td>15</td>
     <td>Audit Report</td>
+    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/15.%20Laporan%20Audit.pptx" target="_blank">15 - (Bukan) Laporan Audit</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://www.youtube.com/watch?v=zcp2Ku5T8h8" target="_blank">Hyperlink Excel Tutorial</a></td>
   </tr>
   <tr>
     <td>16</td>
