@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Final Assignment</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    typography: {
+                        DEFAULT: {
+                            css: {
+                                maxWidth: '65ch',
+                                color: 'inherit',
+                                a: { color: '#3182ce', '&:hover': { color: '#2c5282' } },
+                                p: { marginTop: '1.25em', marginBottom: '1.25em', lineHeight: '1.75' },
+                                h1: { color: 'inherit', fontWeight: '800', fontSize: '2.25em', marginTop: '0', marginBottom: '0.8888889em', lineHeight: '1.1111111' },
+                                h2: { color: 'inherit', fontWeight: '700', fontSize: '1.5em', marginTop: '2em', marginBottom: '1em', lineHeight: '1.3333333' },
+                            },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Custom Styles for smooth transitions -->
+    <style>
+        /* Smooth transitions for theme switching and sidebar */
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        #sidebar { transition: transform 0.3s ease-in-out; }
+        
+        /* Reading typography tweaks */
+        .reading-content {
+            font-family: 'Georgia', Cambria, "Times New Roman", Times, serif;
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        
+        .reading-content h1, .reading-content h2, .reading-content h3 {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#faf9f6] text-gray-800 dark:bg-gray-900 dark:text-gray-200 h-screen overflow-hidden flex selection:bg-blue-200 selection:text-blue-900 dark:selection:bg-blue-800 dark:selection:text-blue-100">
+
+    <!-- Mobile Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden transition-opacity duration-300 opacity-0" onclick="toggleSidebar()"></div>
+
+    <!-- Collapsible Sidebar (Table of Contents) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <h2 class="text-xl font-bold tracking-tight">Contents</h2>
+            <button onclick="toggleSidebar()" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none" aria-label="Close sidebar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto no-scrollbar p-4">
+            <ul id="toc-list" class="space-y-1">
+                <!-- TOC items will be injected here via JS -->
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        <!-- Top Navigation Bar -->
+        <header class="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-[#faf9f6] dark:bg-gray-900 z-10 sticky top-0">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h1 class="text-lg font-semibold truncate hidden sm:block" id="book-title-header">Your Final Assignment</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none transition-colors" aria-label="Toggle Dark Mode">
+                    <!-- Sun Icon (shows in dark mode) -->
+                    <svg id="theme-icon-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <!-- Moon Icon (shows in light mode) -->
+                    <svg id="theme-icon-moon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Book Page Container -->
+        <main id="scroll-container" class="flex-1 overflow-y-auto scroll-smooth pb-24">
+            <article class="max-w-3xl mx-auto px-6 sm:px-12 py-12">
+                <div id="page-content" class="reading-content transition-opacity duration-300">
+                    <!-- Chapter content will be injected here -->
+                </div>
+            </article>
+        </main>
+
+        <!-- Bottom Pagination Bar -->
+        <footer class="absolute bottom-0 left-0 right-0 border-t border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm z-10">
+            <div class="max-w-3xl mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
+                <button id="prev-btn" onclick="prevPage()" class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    <span>Previous</span>
+                </button>
+                
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400" id="page-indicator">
+                    Page 1 / 5
+                </div>
+                
+                <button id="next-btn" onclick="nextPage()" class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <span>Next</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. YOUR EBOOK CONTENT GOES HERE ---
+        // You can add as many chapters as you want. You can use HTML tags inside the content string.
+        const bookData = [
+            {
+                title: "Introduction",
+                content: `
+                    <div class="text-center mb-12 border-b pb-12 dark:border-gray-700">
+                        <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Your Final Assignment</h1>
+                        <p class="text-xl text-gray-500 italic mb-8">Lesson(s) From My Mundane Journey</p>
+                        <p class="text-sm uppercase tracking-widest text-gray-400">By Irfan</p>
+                    </div>
+                    <p>Hi friends,</p><br>
+                    <p>I am writing this to you as someone who stood where you are standing now—though the view looked quite different back then.</p><br>
+                    <p>I graduated from this same school about 13 years ago. When I walk through the campus today, I hardly recognize it. The infrastructure has transformed; the buildings are new, the facilities are modern, and the environment you live in is vastly different from the one I left. Even the path that lies ahead of you has shifted. While we share the same destination—entering the service of the government—the route to get there has evolved. The regulations, the pressures, and the landscape are not what they were over a decade ago.</p><br>
+                    <p>Because of this, I want to warn you: the world waiting ahead of you is full of surprises, and your map will look different than mine.</p><br>
+                    <p>This is exactly why this writing is not a "framework," a "standard," nor a "guideline" (I hope you still remember our lesson from Week 6 regarding the difference, lol). I cannot give you a standard operating procedure for a world that changes this fast. Instead, this is simply a collection of stories. </p><br>
+                    <p>I am sharing the narrative of my journey—the things you might encounter, or perhaps things you will never face—so you can be mentally prepared. I want to lower the anxiety that comes with the unknown. I want you to know that your story will be your own version. Life and its challenges are not standardized tests; the questions vary from person to person. </p><br>
+                    <p>I am writing this because I genuinely wish for you to have a wonderful life ahead. </p><br>
+                    <p>Think of this writing as a meal I am serving you. If you find some "good meat" here—a lesson or a principle that holds true despite the 13-year gap—then please, take it. Chew on it. But mix it with your own "sauces." Flavor it with your modern context, your values, and the reality of the world you are graduating into today. </p><br>
+                    <p>Most importantly, and I think this is going to be prevalent for you here, I want you to know the "bad things" I serve in this writing. I want you to see the stumbles and the harsh realities I faced, so you can factor them into your life decisions. </p><br>
+                    <p>We may have walked different hallways to get here, but the destination is the same. Welcome to the coming brutal reality. </p><br>
+
+                `
+            },
+            {
+                title: "Chapter 1: The Harsh Truth",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 1: The Harsh Truth</h2>
+                    <p>It is only natural for you to walk out of graduation with your chin up and your chest out, carrying high expectations about stepping into the office for the first time. But please, hold on. I need you to pause right there, because I am warning you now: most of those expectations are about to perish.</p><br>
+<p>I remember walking into the office as a fresh STAN graduate. In my head, I had convinced myself that I was a precious asset—a diamond that the government was lucky to find. My internal monologue sounded something like this: </p><br>
+<p><i>“Here come the new graduates. We are the elite. We are the smart ones who will be doing very important, strategic jobs that only special people with special intelligence can handle.”</i></p><br>
+<p>I am sorry to break it to you, but that did not happen. And there is a very high probability it will not happen for you, either. Sure, maybe one or two seniors might patch your ego and say, "Oh, look, the bright young minds are here," but practically speaking? You are starting at zero. </p><br>
+<p>Most of us joining a government office as fresh graduates will immediately realize our position in the ecological hierarchy: the very bottom of the food chain. We are the "newbies." And newbies do the mundane. </p><br>
+<p>In my case, the reality I had to face was a far cry from "strategic decision making." My days were busy with being a glorified courier, physically delivering mail from one room to another. (I can tell you this specific torture won't happen to you, since we have gone digital now and use e-office systems, but trust me, you will find your own modern version of "grunt work").</p><br>
+<p>My reality involved answering phone calls from employees who didn't know why their screens were black. It involved fixing printers that jammed for the fifth time that day. It involved literally crawling under someone else’s dusty desk to plug in cables and climbing up to the roof to check connections. </p><br>
+<p>I did all of that. Me, the "precious asset." </p><br>
+<p>The harsh reality doesn't just come from the job description; it comes from the people. You are about to encounter a collision of cultures. You will meet colleagues you’ve never imagined working with, facing generation gaps and office politics that were never covered in our syllabus. In that new environment, as a bottom-feeder in the food chain, it is easy to just "embrace the truth" and start undervaluing yourself. You might start thinking, <i>maybe I'm just a cable-guy after all</i>.</p><br>
+<p>This harsh truth strikes hard. </p><br>
+<p>In my case, I complained to the world. I screamed internally. But I never showed it. Deep down, I knew I was special, and I refused to nullify my potential by giving up just because the start was rough. </p><br>
+<p>Looking back, I realized that the universe wasn't trying to punish me by putting me under that desk. It was just checking to see if my dignity came from my job title or from inside me. If you are truly "gold," you stay gold even in the mud. It took me a while to understand that standing tall is easy, but keeping your head up while crawling is where the real character is built. </p><br>
+<p>But here is the thing about harsh truths: they are shapeshifters. </p><br>
+<p>This experience of being a "glorified cable guy" was just the first iteration. As you turn the pages of this book—and the pages of your life—you will find that reality checks have a habit of showing up uninvited, wearing different disguises. They don't just appear in the office; they will find you in a class when you think you’re the smartest one in the room, and they will sit at your dinner table when you are navigating married life. </p><br>
+<p>We will talk about those other disguises later. But for now, let's rewind a bit. Because before I even got the chance to crawl under those desks, I had to survive the uncertainty of even getting the job. </p><br>
+<p>To give you some context on how different things were back in my day: It wasn't immediately decided where my cohort would start their career. It was a time of total limbo. I think I told you guys before in class that I had to wait a full year after graduation just to be able to call myself a public servant. </p><br>
+<p>It felt like a collective moment of "tidak naik kelas" (being held back a grade). </p><br>
+<p>The sting wasn't just from the waiting; it was from the witnessing. I watched my high school friends—people I grew up with—already starting their careers. They were posting about their first days, their new lanyards, and their first paychecks. <p>They were moving forward. Meanwhile, I was just... there. Stuck in the uncertainty. </p><br>
+<p>It was a strange paradox to live in. To my parents, my neighbors, and my friends from primary school, I was the "success story." I was the one who managed to crack the code; I got into STAN, one of the most competitive schools in the country. I had survived the drop-out nightmares semester after semester while others fell away. I had done everything right. I was supposed to be the "best." </p><br>
+<p>Yet, it felt like that "best" was being punished. </p><br>
+<p>It felt like I had run a marathon at record speed, only to be told to sit on the curb just inches from the finish line. That question haunted me, and it haunted all of us: <i>Is the career waiting at the end of this tunnel really worth this one wasteful year?</i></p><br>
+<p>Most of us, the cohort, clung to the hope that it was. We convinced ourselves the prize was worth the penalty. So, we kept waiting. </p><br>
+<p>When you are stuck in that kind of limbo, your natural response is to look at history—specifically, the cohort before you. And for us, the history was bleak. The previous graduates were scattered across Kemenkeu, BPK, and BPKP. But the rumor mill was cruel; most of the students in the previous cohort got placed into BPKP (State Development Audit Agency), which, let’s be honest, was the "least preferred" destination for most of us back then. We were terrified that was our destiny too. </p><br>
+<p>But finally, the light at the end of the tunnel appeared. We had to take a test (TKD) to determine our placement. As we filled up the forms, we realized something huge: our cohort was exclusive to the Ministry of Finance (Kemenkeu). We were asked to choose three units as our preference. </p><br>
+<p>Long story short, the lottery of life (and my test scores) landed me in the Inspectorate General (Itjen). </p><br>
+<p>Now, let me prolong the story of exactly how I got into Itjen, because there is a bigger picture here. </p><br>
+<p>I was lucky. </p><br>
+<p>And luck, usually, belongs to the minority. Most students in my cohort did not have the privilege I stumbled upon back then. I say "stumbled upon" because I didn't even realize it was a privilege at the time. I didn't plan to go to Itjen. It wasn't a place discussed in our rented rooms or canteens. When we fantasized about our futures, we imagined ourselves in the "Big Three"—the Tax Office (Pajak), the Customs Office (Bea Cukai), or the Supreme Audit Agency (BPK). Itjen was the underdog; rather unknown and rarely mentioned. </p><br>
+<p>So, ironically, on the day I found out I got into Itjen, I was actually a little disappointed. </p><br>
+<p>I looked around and saw most of my friends heading to the places we had discussed for years. They were going to live the life we had imagined in our "cheap talks" back on campus. I felt left out. </p><br>
+<p>Little did I know, I was witnessing a bullet graze past me while it hit the people I cared about. </p><br>
+<p>Most of those friends would go on to face a very specific, very brutal harsh truth that I was lucky to escape. They were placed in units that required them to serve across the vast archipelago—far from the capital city, and far from their families. It wasn't just a one-time thing; the harsh reality was that they would be juggled here and there, moved from East to West, spending their entire careers packing and unpacking boxes in remote locations. </p><br>
+<p>For a handful of my friends, the math just didn't add up. They decided that this life—even after the struggle of getting in and the pain of the 'wasteful year'—simply wasn't worth it. So, they made the hard call to quit. They walked away, even knowing it meant paying a literal price to buy back their freedom from the government bond. And they paid it. </p><br>
+<p>Meanwhile, as those who stayed navigated, I found myself "stuck" with the fate I had initially frowned upon. I was sitting in Jakarta as an auditor, complaining about the traffic, while unknowingly holding onto the very thing they would have killed for: stability. </p><br>
+<p>Sometimes, the "Harsh Truth" isn't just about suffering. Sometimes, the harsh truth is realizing that you don't always get what you want, but you might just get exactly what you need. But don't get too comfortable with the small win. Just because I was "lucky" enough to stay in Jakarta didn't mean I was safe from the grind. Stability just meant my battlefield was stationary. And trust me, the battle was just beginning. </p><br>
+<p>I also need to acknowledge the elephant in the room. </p><br>
+<p>I know that looking at my story might sound like a luxury compared to the fog you are walking into. I am fully aware that the target board you are aiming for is much sparser now. The placement map is wider, the slots are tighter, and the uncertainty you are staring down is likely on another level compared to my "wasteful year." </p><br>
+<p>But here is a truth that holds up, whether it's 2013 or today. The harshness is almost always temporary. </p><br>
+<p>Most of the time, the cause of your struggle is something completely out of your hands—a sudden policy change, a budget cut, or a random algorithm at HR. You cannot control the board game. </p><br>
+<p>But you are under your control. </p><br>
+<p>You can choose to lose hope, or you can choose to trust a stranger, more complex paradox: The bad is rarely absolutely bad, and the good is rarely absolutely good. We will dig deeper into real examples of this slippery dichotomy throughout this book, bridging the 10+ years of experience between where I was then and where you are now. </p><br>
+<p>So, when the harsh truth hits you—and it will—don't label it as the end of the world. Label it as a plot twist. </p><br>
+<p>Now, speaking of plot twists and surviving the battlefield... let me tell you about one of the reasons I survived mine. It wasn't because I was strong. It was because I wasn't alone. </p><br>
+
+                `
+            },
+            {
+                title: "Chapter 2: The Grind Boys",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 2: The Grind Boys</h2>
+                    <p>I know some of you might raise an eyebrow at this chapter title. No, this isn’t a reference to three guys poking each other to tease every Wednesday night.</p><br>
+<p>It is about the "grind"—that specific, repetitive friction of being a newbie public servant—and the realization that you can never survive that grind if you are doing it all alone. I am indebted to "The Boys," the friends with whom I shared my happiest laughs and my deepest sorrows. The people who were willing to share their chaotic paths with me. </p><br>
+<p>As I mentioned before, entering Itjen as a newbie involved me and 69 others from STAN. Fortunately, I recognized at least 10 faces in that crowd, so I didn't have to face the music entirely solo. </p><br>
+<p>The early bond started, admittedly, with the "smoking buddies." (Full disclosure: I used to be a smoker back then. I am not anymore). Now, I am absolutely not encouraging you to pick up a cigarette. But I am encouraging you to find your tribe. When you are facing the unknown, it is infinitely easier when you have a partner to face it with, regardless of what social lubricant brings you together. </p><br>
+<p>Transitioning from the freedom of unemployment to the rigid 7:30-to-17:00 life is a shock to the system. It was only bearable because I had the boys to swap stories with in the corridors. </p><br>
+<p>But before we could settle in, we had to survive the "sorting hat" process. </p><br>
+<p>In Itjen, we didn't have a definitive placement right away. First, we had to go through an induction program—two weeks of sitting in a classroom (again), listening to presentations about the office life we were supposed to anticipate. After the theory came the practice: OJT (On-the-Job Training). We spent five weeks on a rotation carousel, spending one week in a division, then moving to the next, on repeat.
+<p>Only after surviving that carousel were we interviewed by HR to determine our final placement.
+<p>Now, here is where strategy came in. As a person with a genuine interest in IT, I designed my interview answers carefully. I wanted to look like the perfect puzzle piece for the IT division. This wasn't exactly a hard staircase to climb, though. Among the 70 newbies, the IT division was one of the least preferred destinations. The building was ripe with rumors that the IT division was full of "nerds" and "geeks" and generally lacked a cool factor.
+<p>That didn't hold me back. I had a gut feeling that I had something in my pocket that would be useful there. So, as expected, I got into the division. And yes, I can later confirm that the accusation of a "nerdy and geeky environment" was absolutely true. </p><br>
+<p>But as a human being made with a little spice of rebelliousness, I have always wanted to break stigmas. I looked at this "boring" division and decided to shake it up. </p><br>
+<p>In between the mundane jobs—crawling under desks, fixing someone’s monitor, troubleshooting printers—I tried my best to goof around. I knew it might upset some of the more rigid personnel, but I had 10 other cohort friends destined for the same IT division, and we made a collective pact to bond through the absurdity of it all. </p><br>
+<p>This goofiness found its perfect stage in our first couple of weeks. The division was about to celebrate its Lustrum (a five-year anniversary celebration), and naturally, the "lowest on the food chain" (us) were assigned to organize the event. </p><br>
+<p>I saw this as an opportunity. I managed to infect everyone with my enthusiasm, convincing them to agree to a "goofy performance"—silly costumes, gimmicks, the works. I was ready to go all-out. </p><br>
+<p>I remember asking everyone to come to the office on a Sunday to fix up the decorations and rehearse. But here is where the "all-out" mentality took a weird turn. Since my parents' house—where I was living at the time—was 90++ minutes away from the office, I decided to do something uncanny and unprecedented: I decided to sleep in the office. </p><br>
+<p>I was the only one who thought of it, and the only one who did it. And let me tell you, I discovered something that night. Despite the modern infrastructure and the bright lights, a government office at night, all alone, is terrifying. It’s a ghost town of silence. I did not get a proper sleep that night, lol. </p><br>
+<p>But that consistency—trying to be goofy, trying to be present, trying to build something with the boys—fruited into a strong bond between us. However, I need to clarify something important: Being goofy does not mean being incompetent. In fact, the goofiness was just a way to survive the pressure. When it came to the actual work, I had to prove to the world (and to myself, remember the "Gold in the Mud"?) that I could do anything better than average. </p><br>
+<p>Take my very first assignment tasked by my boss: doing a capacity analysis for data storage. A senior employee, perhaps used to the "good enough" culture, told me to just do a simple calculation—average it out like he did last year. </p><br>
+<p>I refused. </p><br>
+<p>I asked a friend in my team to help me incorporate serious math logic. We didn't just add and divide; we applied linear regression. We turned a simple chore into a statistical model. </p><br>
+<p>Why? Because the "Harsh Truth" I told you about earlier creates a choice. You can let the system grind you down until you are just another cog, or you can grind back, finding excellence in the mundane and joy in the chaos. I chose the latter, but I could only do it because I had the courage the boys beside me sparked. </p><br>
+<p>It sounds cliché, but trust me, that consistency pays off. That tiny improvement to overcome mediocrity finally led me to a pivotal moment. </p><br>
+<p>I remember my division head, out of the blue, dropped two printed papers on my desk. He said just a few words: </i>"Try to read this, and please conclude which one among the two is more applicable to our office."</i></p><br>
+<p>Just so you know, one paper was about GRC (Governance, Risk, and Compliance) tool implementation, and the other was about Data Analytics tool implementation in an internal audit function. </p><br>
+<p>These were technical papers, written in complex English. I honestly had a hard time understanding them. But I didn't just glance at them; I asked a friend of mine to wrestle with them. We wrote a two-page summary concluding that Data Analytics was the more suitable path for us. </p><br>
+<p>Looking back, I realize now that my boss never actually needed my answer. He probably already knew which tool he wanted. It wasn't a test of knowledge; it was a test of character. He was planting a seed—a seed of curiosity to see if I would go beyond the mundane. </p><br>
+<p>Because I put in the effort, I was entrusted to work around Data Analytics, which at that time was still a grey area that no one quite understood. I got the chance to work among leaders. I got the chance to work with big companies like EY. All in all, the mundane can be overcome, eventually. </p><br>
+<p>And that momentum didn't stop at work. </p><br>
+<p>Almost two years into my career in Itjen, a new wave came: the chance to pursue higher education. Honestly? I wasn't really into that kind of pursuit initially. But the bond between "The Boys" was strong, and the wave was bringing me along. It was a joint effort. </p><br>
+<p>That collective positive mental attitude bore fruit: 80% of us got the scholarship. </p><br>
+<p>But I need to tell you a secret. We didn't get it because we were smarter. We got it because we were street-smart. </p><br>
+<p>Let me tell you this story. The night before the scholarship written exam—which covered financial accounting, cost accounting, economics, and English—I was hanging out with the boys in one of our rooms. The vibe was tense. Suddenly, a friend got a tip from a senior who had passed the previous batch. The intel was specific: <i>The program head for this scholarship at the university is a Professor in Cost Accounting.</i></p><br>
+<p>My brain clicked. I asked, "Does this Professor write books?" The answer was yes. "Get the book," I said. "Tonight." </p><br>
+<p>We managed to get our hands on the book. We didn't read the whole thing—we didn't have time. We just skimmed the exercise questions at the end of every chapter. We reversed-engineered them, figuring out the answers just in case. </p><br>
+<p>The moment of truth came the next morning. I opened the exam booklet. The hardest section, Cost Accounting, was literally generated from the very questions we had read the night before. I ended up getting the highest score among all contestants. </p><br>
+<p>Now, just so you know—and I cannot stress this enough—this was not because I am smart. It was because I was lucky, and I had the right friends. </p><br>
+<p>To convince you even further: one of the employees who took that same exam and did not pass is a man you likely know very well. He is nowadays known nationally as a brilliant thinker and influencer: Ferry Irwandi. </p><br>
+<p>And this brings me to a realization I want you to chew on. </p><br>
+<p>In this line of work—and honestly, in life—there is a dangerous temptation to be the "Lone Wolf." To think that because you graduated from this prestigious school, because you are "gold," you can walk through the fire alone. You might think asking for help is a weakness, or that relying on a pack slows you down. </p><br>
+<p>Please, delete that thought. </p><br>
+<p>The "Lone Wolf" dies in the winter; the pack survives. I am telling you this not as a lecture, but as a confession. I am not a self-made man. I am a man made by the hands of others. </p><br>
+<p>The "boys" didn't just help me crack a Cost Accounting exam. That exam was just the key to a much larger door—a ticket to study in the United States, a chapter we will get to in a minute. But their role didn't end with plane tickets and accolades. </p><br>
+<p>Years later, when the "Harsh Truth" stopped wearing the disguise of a difficult boss and started wearing the mask of total despair—when I found myself standing on the edge of a very dark valley, contemplating ending my own story—it wasn't my GPA that pulled me back. It wasn't my rank, my title, or my "special intelligence." </p><br>
+<p>It was them. </p><br>
+
+                `
+            },
+            {
+                title: "Chapter 3: The Purposeful Pursuit of Education",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 3: The Purposeful Pursuit of Education</h2>
+                    <p><i>To be continued...</i></p>
+                `
+            },
+            {
+                title: "Chapter 4: The unlikely Likely",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 4: The unlikely Likely</h2>
+                    <p>To be continued...</p>
+                `
+            },
+             {
+                title: "Chapter 5: The Cupid's Story",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 5: The Cupid's Story</h2>
+                    <p>To be continued...</p>
+                `
+            },
+            {
+                title: "Chapter 6: The Politicking Game",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 6: The Politicking Game</h2>
+                    <p>To be continued...</p>
+                `
+            },
+            {
+                title: "Chapter 7: Cut-Lossing and Moving On",
+                content: `
+                    <h2 class="text-3xl font-bold mb-6">Chapter 7: Cut-Lossing and Moving On</h2>
+                    <p>To be continued...</p>
+                `
+            }
+        ];
+
+        // --- 2. APP STATE ---
+        let currentPage = 0;
+        let isSidebarOpen = false;
+
+        // --- 3. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved page and theme from LocalStorage
+            const savedPage = localStorage.getItem('ebook_currentPage');
+            if (savedPage !== null) {
+                currentPage = parseInt(savedPage, 10);
+            }
+
+            // Theme setup
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            renderTOC();
+            renderPage();
+            setupKeyboardNavigation();
+        });
+
+        // --- 4. CORE FUNCTIONS ---
+
+        function renderPage() {
+            // Ensure bounds
+            if (currentPage < 0) currentPage = 0;
+            if (currentPage >= bookData.length) currentPage = bookData.length - 1;
+
+            const contentDiv = document.getElementById('page-content');
+            const scrollContainer = document.getElementById('scroll-container');
+            
+            // Fade out effect
+            contentDiv.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Update content
+                contentDiv.innerHTML = bookData[currentPage].content;
+                
+                // Scroll to top
+                scrollContainer.scrollTop = 0;
+                
+                // Fade in effect
+                contentDiv.style.opacity = '1';
+                
+                // Update UI elements
+                updatePaginationUI();
+                highlightCurrentTOCItem();
+                
+                // Save progress
+                localStorage.setItem('ebook_currentPage', currentPage);
+            }, 150); // Matches transition duration
+        }
+
+        function renderTOC() {
+            const tocList = document.getElementById('toc-list');
+            tocList.innerHTML = '';
+
+            bookData.forEach((chapter, index) => {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                
+                button.className = `w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
+                    index === currentPage 
+                    ? 'bg-blue-50 text-blue-700 font-semibold dark:bg-blue-900/50 dark:text-blue-300' 
+                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700/50'
+                }`;
+                button.textContent = chapter.title;
+                button.onclick = () => {
+                    goToPage(index);
+                    if(window.innerWidth < 1024) toggleSidebar(); // Close sidebar on mobile after clicking
+                };
+
+                // Add ID to button for easy updating later
+                button.id = `toc-btn-${index}`;
+                
+                li.appendChild(button);
+                tocList.appendChild(li);
+            });
+        }
+
+        function highlightCurrentTOCItem() {
+            bookData.forEach((_, index) => {
+                const btn = document.getElementById(`toc-btn-${index}`);
+                if (btn) {
+                    if (index === currentPage) {
+                        btn.className = 'w-full text-left px-4 py-3 rounded-lg text-sm transition-colors bg-blue-50 text-blue-700 font-semibold dark:bg-blue-900/50 dark:text-blue-300';
+                    } else {
+                        btn.className = 'w-full text-left px-4 py-3 rounded-lg text-sm transition-colors text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700/50';
+                    }
+                }
+            });
+        }
+
+        function updatePaginationUI() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicator = document.getElementById('page-indicator');
+
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage === bookData.length - 1;
+            
+            indicator.textContent = `Page ${currentPage + 1} of ${bookData.length}`;
+        }
+
+        // --- 5. NAVIGATION LOGIC ---
+
+        function nextPage() {
+            if (currentPage < bookData.length - 1) {
+                currentPage++;
+                renderPage();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                renderPage();
+            }
+        }
+
+        function goToPage(index) {
+            if (index >= 0 && index < bookData.length && index !== currentPage) {
+                currentPage = index;
+                renderPage();
+            }
+        }
+
+        function setupKeyboardNavigation() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    nextPage();
+                } else if (e.key === 'ArrowLeft') {
+                    prevPage();
+                } else if (e.key === 'Escape' && isSidebarOpen) {
+                    toggleSidebar();
+                }
+            });
+        }
+
+        // --- 6. UI TOGGLES (Sidebar & Theme) ---
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            isSidebarOpen = !isSidebarOpen;
+
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                // slight delay to allow display:block to apply before changing opacity
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10); 
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300); // wait for fade out
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+    </script>
+</body>
+</html>
