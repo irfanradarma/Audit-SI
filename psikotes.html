@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Psikotes Kuantitatif</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles & Animations */
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f0fdf4; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-press { transition: transform 0.1s, box-shadow 0.1s; }
+        .btn-press:active { transform: scale(0.95); }
+        
+        /* Disable text selection during gameplay for better mobile experience */
+        .no-select { user-select: none; -webkit-user-select: none; }
+        
+        /* Modal Overlay */
+        #settings-modal { background-color: rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-slate-800 no-select">
+
+    <!-- Main Container -->
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-xl overflow-hidden relative min-h-[600px] flex flex-col">
+        
+        <!-- ==================== SCREEN 1: HOME ==================== -->
+        <div id="screen-home" class="flex-1 flex flex-col p-6 fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-slate-800">Psikotes<span class="text-emerald-500">Pro</span></h1>
+                <button onclick="openSettings()" class="text-slate-400 hover:text-slate-600 p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+
+            <div class="space-y-6 flex-1">
+                <!-- Mode Selection -->
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">1. Pilih Mode Tes</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="btn-mode-pauli" onclick="selectMode('pauli')" class="mode-btn border-2 border-emerald-500 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-semibold btn-press transition-colors">
+                            Mode Pauli
+                        </button>
+                        <button id="btn-mode-tf" onclick="selectMode('tf')" class="mode-btn border-2 border-slate-200 text-slate-500 hover:border-emerald-200 py-3 rounded-xl font-semibold btn-press transition-colors">
+                            Benar/Salah
+                        </button>
+                    </div>
+                    <p id="mode-desc" class="text-xs text-slate-500 mt-2">Jumlahkan 2 angka dan ketik digit terakhirnya.</p>
+                </div>
+
+                <!-- Time Selection -->
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">2. Durasi Waktu</h2>
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <button onclick="selectTime(30, this)" class="time-btn border-2 border-slate-200 text-slate-600 py-2 rounded-lg font-medium btn-press hover:bg-slate-50 transition-colors">30s</button>
+                        <button onclick="selectTime(60, this)" class="time-btn border-2 border-emerald-500 bg-emerald-50 text-emerald-700 py-2 rounded-lg font-medium btn-press transition-colors">60s</button>
+                        <button onclick="selectTime(120, this)" class="time-btn border-2 border-slate-200 text-slate-600 py-2 rounded-lg font-medium btn-press hover:bg-slate-50 transition-colors">120s</button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-slate-500">Atau kustom (detik):</span>
+                        <input type="number" id="custom-time" min="10" placeholder="Cth: 45" class="border-2 border-slate-200 rounded-lg px-3 py-1.5 w-24 text-sm focus:outline-none focus:border-emerald-500" oninput="clearTimeSelection()">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-emerald-200 btn-press mt-6">
+                MULAI TES
+            </button>
+        </div>
+
+        <!-- ==================== SCREEN 2: ACTIVE TEST ==================== -->
+        <div id="screen-test" class="hidden flex-1 flex flex-col p-6 fade-in h-full">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-sm font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                    Soal: <span id="ui-answered" class="text-slate-800">0</span>
+                </div>
+                <div class="flex items-center text-rose-500 font-bold text-xl bg-rose-50 px-4 py-1 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span id="ui-timer">60</span>s
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="flex-1 flex items-center justify-center bg-slate-50 rounded-2xl mb-6 shadow-inner relative overflow-hidden">
+                <!-- Pauli Template -->
+                <div id="q-pauli" class="hidden flex-row items-center justify-center space-x-3 md:space-x-5 text-5xl md:text-6xl font-bold w-full transition-all">
+                    <div class="flex items-center bg-emerald-50 border-2 border-emerald-400 rounded-2xl px-4 py-3 shadow-sm min-w-[140px] justify-center relative">
+                        <span id="p-n1" class="text-slate-800">7</span>
+                        <span class="text-3xl text-emerald-500 mx-2">+</span>
+                        <span id="p-n2" class="text-slate-800">8</span>
+                        <div class="absolute -bottom-2.5 bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">Jumlahkan</div>
+                    </div>
+                    <span id="p-n3" class="text-slate-400 opacity-80 w-8 text-center">9</span>
+                </div>
+
+                <!-- Benar/Salah Template -->
+                <div id="q-tf" class="hidden text-5xl md:text-6xl font-bold text-slate-800 tracking-wider">
+                    <span id="tf-eq">5 + 4 = 9</span>
+                </div>
+            </div>
+
+            <!-- Input Controls (On-Screen) -->
+            <div id="controls-pauli" class="hidden grid grid-cols-3 gap-2 md:gap-3 mb-2 max-w-[280px] mx-auto w-full">
+                <!-- Generated in JS -->
+            </div>
+            
+            <div id="controls-tf" class="hidden grid grid-cols-2 gap-4 mb-2">
+                <button onclick="handleInput(false)" class="bg-rose-100 text-rose-600 border-2 border-rose-500 hover:bg-rose-200 text-2xl font-bold py-6 rounded-2xl btn-press shadow-sm">
+                    SALAH
+                </button>
+                <button onclick="handleInput(true)" class="bg-emerald-100 text-emerald-600 border-2 border-emerald-500 hover:bg-emerald-200 text-2xl font-bold py-6 rounded-2xl btn-press shadow-sm">
+                    BENAR
+                </button>
+            </div>
+            <div class="text-center mt-2 text-xs text-slate-400">Kamu juga bisa menggunakan keyboard.</div>
+        </div>
+
+        <!-- ==================== SCREEN 3: RESULT ==================== -->
+        <div id="screen-result" class="hidden flex-1 flex flex-col p-6 fade-in h-full justify-center">
+            <div class="text-center mb-8">
+                <div class="inline-block bg-emerald-100 p-4 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-800">Waktu Habis!</h2>
+                <p class="text-slate-500 mt-2">Berikut adalah hasil evaluasi kamu.</p>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-5 mb-6 border border-slate-100">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm text-center">
+                        <div class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Speed</div>
+                        <div class="text-3xl font-bold text-slate-800" id="res-speed">0</div>
+                        <div class="text-xs text-slate-500">Soal Dijawab</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm text-center">
+                        <div class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Accuracy</div>
+                        <div class="text-3xl font-bold text-emerald-500" id="res-accuracy">0</div>
+                        <div class="text-xs text-slate-500">Jawaban Benar</div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-1">Pace (Performa per Menit):</h3>
+                    <div id="res-pace">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3 mt-auto">
+                <button onclick="startGame()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-emerald-200 btn-press">
+                    Ulangi Tes
+                </button>
+                <button onclick="goHome()" class="w-full bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 text-lg font-bold py-4 rounded-xl btn-press">
+                    Kembali ke Menu
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== SETTINGS MODAL ==================== -->
+        <div id="settings-modal" class="hidden absolute inset-0 z-50 flex items-center justify-center p-4 fade-in">
+            <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 relative max-h-full overflow-y-auto">
+                <button onclick="closeSettings()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <h3 class="text-xl font-bold text-slate-800 mb-4">Pengaturan Tombol Keyboard</h3>
+                
+                <div class="space-y-6">
+                    <!-- Benar/Salah Binds -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-emerald-600 mb-2 border-b pb-1">Mode Benar/Salah</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-xs text-slate-500 block mb-1">Tombol Benar</label>
+                                <button id="bind-tf-true" onclick="startBinding('tf_true')" class="w-full bg-slate-100 border border-slate-300 py-2 rounded text-sm font-mono text-slate-700 hover:bg-slate-200">ArrowRight</button>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 block mb-1">Tombol Salah</label>
+                                <button id="bind-tf-false" onclick="startBinding('tf_false')" class="w-full bg-slate-100 border border-slate-300 py-2 rounded text-sm font-mono text-slate-700 hover:bg-slate-200">ArrowLeft</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pauli Binds (Compact) -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-emerald-600 mb-2 border-b pb-1">Mode Pauli (Angka)</h4>
+                        <p class="text-xs text-slate-400 mb-2">Klik tombol di bawah, lalu tekan tombol keyboard baru untuk mengubahnya.</p>
+                        <div class="grid grid-cols-5 gap-2" id="pauli-binds-container">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t flex justify-end">
+                    <button onclick="resetDefaultKeys()" class="text-sm text-rose-500 font-medium mr-4 hover:underline">Reset Default</button>
+                    <button onclick="closeSettings()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">Selesai</button>
+                </div>
+
+                <!-- Binding Overlay -->
+                <div id="binding-overlay" class="hidden absolute inset-0 bg-emerald-500/90 rounded-2xl flex flex-col items-center justify-center text-white z-10">
+                    <div class="animate-bounce mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>
+                    </div>
+                    <p class="font-bold text-lg">Tekan tombol apapun...</p>
+                    <p class="text-sm mt-1 opacity-80">Tekan ESC untuk batal</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- State Variables ---
+        let currentMode = 'pauli'; // 'pauli' | 'tf'
+        let duration = 60; // in seconds
+        let timerInterval = null;
+        let timeLeft = 0;
+        let isPlaying = false;
+        
+        let stats = { answered: 0, correct: 0 };
+        let currentQ = {}; // Holds current question data
+        let pauliSequence = []; // Holds the chain of numbers for Pauli mode
+        let paceData = []; // To track pace per minute
+        let currentIntervalSize = 10; // For chart dynamic x-axis
+
+        // --- Default KeyBindings ---
+        const defaultKeys = {
+            tf_true: 'ArrowRight', tf_false: 'ArrowLeft',
+            p_0: '0', p_1: '1', p_2: '2', p_3: '3', p_4: '4',
+            p_5: '5', p_6: '6', p_7: '7', p_8: '8', p_9: '9'
+        };
+        let userKeys = JSON.parse(localStorage.getItem('psikotes_keys')) || {...defaultKeys};
+
+        // --- Initialization ---
+        function init() {
+            renderPauliControls();
+            renderPauliSettings();
+            updateSettingsUI();
+            
+            // Global Keydown Listener
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        // --- UI Flow & Navigation ---
+        function switchScreen(screenId) {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-test').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function goHome() {
+            isPlaying = false;
+            clearInterval(timerInterval);
+            switchScreen('screen-home');
+        }
+
+        // --- Home Setup ---
+        function selectMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('border-slate-200', 'text-slate-500');
+            });
+            const activeBtn = document.getElementById(`btn-mode-${mode}`);
+            activeBtn.classList.remove('border-slate-200', 'text-slate-500');
+            activeBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+
+            document.getElementById('mode-desc').innerText = mode === 'pauli' 
+                ? "Jumlahkan 2 angka dan ketik digit terakhirnya. (cth: 8+7=15 -> ketik 5)"
+                : "Evaluasi persamaan matematika dengan cepat (Benar atau Salah).";
+        }
+
+        function selectTime(seconds, btnElement) {
+            duration = seconds;
+            document.getElementById('custom-time').value = ''; // clear custom
+            
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('border-slate-200', 'text-slate-600');
+            });
+            btnElement.classList.remove('border-slate-200', 'text-slate-600');
+            btnElement.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+        }
+
+        function clearTimeSelection() {
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('border-slate-200', 'text-slate-600');
+            });
+        }
+
+        // --- Game Engine ---
+        function startGame() {
+            // Get custom time if filled
+            const customTime = parseInt(document.getElementById('custom-time').value);
+            if (customTime && customTime >= 10) {
+                duration = customTime;
+            }
+
+            // Reset state
+            stats = { answered: 0, correct: 0 };
+            timeLeft = duration;
+            isPlaying = true;
+            
+            // Setup dynamic interval size for chart based on rules
+            if (duration === 30) currentIntervalSize = 10;
+            else if (duration === 60) currentIntervalSize = 15;
+            else if (duration === 120) currentIntervalSize = 30;
+            else if (duration > 120) currentIntervalSize = 60;
+            else currentIntervalSize = 10; // Custom time <= 120
+            
+            // Setup paceData for chart
+            paceData = [];
+            const numIntervals = Math.ceil(duration / currentIntervalSize);
+            for(let i=0; i < numIntervals; i++) {
+                let endSec = Math.min((i + 1) * currentIntervalSize, duration);
+                paceData.push({ answered: 0, correct: 0, label: `${endSec}s` });
+            }
+            
+            // Generate initial sequence for Pauli mode
+            pauliSequence = [
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10)
+            ];
+
+            // UI Setup
+            document.getElementById('ui-answered').innerText = '0';
+            document.getElementById('ui-timer').innerText = timeLeft;
+            
+            document.getElementById('q-pauli').classList.add('hidden');
+            document.getElementById('q-tf').classList.add('hidden');
+            document.getElementById('controls-pauli').classList.add('hidden');
+            document.getElementById('controls-tf').classList.add('hidden');
+
+            if (currentMode === 'pauli') {
+                document.getElementById('q-pauli').classList.remove('hidden');
+                document.getElementById('q-pauli').classList.add('flex');
+                document.getElementById('controls-pauli').classList.remove('hidden');
+            } else {
+                document.getElementById('q-tf').classList.remove('hidden');
+                document.getElementById('controls-tf').classList.remove('hidden');
+            }
+
+            switchScreen('screen-test');
+            generateQuestion();
+
+            // Timer
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('ui-timer').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function generateQuestion() {
+            if (currentMode === 'pauli') {
+                currentQ = { answer: (pauliSequence[0] + pauliSequence[1]) % 10 };
+                
+                document.getElementById('p-n1').innerText = pauliSequence[0];
+                document.getElementById('p-n2').innerText = pauliSequence[1];
+                document.getElementById('p-n3').innerText = pauliSequence[2];
+            } else {
+                // Benar Salah
+                const ops = ['+', '-', '*'];
+                const op = ops[Math.floor(Math.random() * ops.length)];
+                let n1, n2, realAns;
+                
+                if (op === '*') {
+                    n1 = Math.floor(Math.random() * 9) + 2; // 2-10
+                    n2 = Math.floor(Math.random() * 9) + 2;
+                    realAns = n1 * n2;
+                } else {
+                    n1 = Math.floor(Math.random() * 20) + 1;
+                    n2 = Math.floor(Math.random() * 20) + 1;
+                    if (op === '-' && n1 < n2) [n1, n2] = [n2, n1]; // Avoid negatives
+                    realAns = op === '+' ? n1 + n2 : n1 - n2;
+                }
+
+                const isCorrectEq = Math.random() > 0.5;
+                let shownAns = realAns;
+                if (!isCorrectEq) {
+                    // Generate close wrong answer
+                    const offset = Math.floor(Math.random() * 3) + 1;
+                    shownAns = Math.random() > 0.5 ? realAns + offset : realAns - offset;
+                }
+
+                currentQ = { text: `${n1} ${op} ${n2} = ${shownAns}`, answer: isCorrectEq };
+                document.getElementById('tf-eq').innerText = currentQ.text;
+            }
+        }
+
+        function handleInput(val) {
+            if (!isPlaying) return;
+
+            stats.answered++;
+            let isCorrect = false;
+
+            if (currentMode === 'pauli') {
+                if (val === currentQ.answer) {
+                    stats.correct++;
+                    isCorrect = true;
+                }
+                
+                // Shift sequence and add a new number at the end
+                pauliSequence.shift();
+                pauliSequence.push(Math.floor(Math.random() * 10));
+            } else {
+                if (val === currentQ.answer) {
+                    stats.correct++;
+                    isCorrect = true;
+                }
+            }
+
+            // Track Pace Data dynamically
+            const elapsed = duration - timeLeft;
+            let intervalIndex = Math.floor(elapsed / currentIntervalSize);
+            // Cap to the last interval in case of timing edge case
+            intervalIndex = Math.min(intervalIndex, paceData.length - 1);
+            
+            if(paceData[intervalIndex]) {
+                paceData[intervalIndex].answered++;
+                if (isCorrect) paceData[intervalIndex].correct++;
+            }
+
+            document.getElementById('ui-answered').innerText = stats.answered;
+            generateQuestion();
+        }
+
+        function endGame() {
+            isPlaying = false;
+            clearInterval(timerInterval);
+            
+            // Populate Results
+            document.getElementById('res-speed').innerText = stats.answered;
+            document.getElementById('res-accuracy').innerText = stats.correct;
+            
+            // Build Bar Chart for Pace
+            let maxVal = Math.max(...paceData.map(d => d.answered), 1); // Get highest value to scale the chart
+            // Tambahkan overflow-x-auto agar chart bisa digeser jika durasi custom memiliki banyak bar (misal tiap 10 detik untuk waktu 110s = 11 bar)
+            let chartHTML = '<div class="flex items-end justify-around h-32 w-full pt-6 border-b border-blue-200/50 pb-2 overflow-x-auto gap-2 px-1">';
+            
+            paceData.forEach((data, index) => {
+                let hAns = (data.answered / maxVal) * 100;
+                let hCor = (data.correct / maxVal) * 100;
+                let label = data.label;
+
+                chartHTML += `
+                <div class="flex flex-col items-center flex-1 h-full min-w-[30px]">
+                    <div class="flex items-end space-x-1 h-full w-full justify-center group mt-auto">
+                        <div class="w-4 md:w-6 bg-blue-200 rounded-t-sm relative flex items-end justify-center transition-all" style="height: ${hAns}%">
+                             <span class="text-[9px] font-bold text-blue-700 absolute -top-3.5">${data.answered > 0 ? data.answered : ''}</span>
+                        </div>
+                        <div class="w-4 md:w-6 bg-emerald-400 rounded-t-sm relative flex items-end justify-center transition-all" style="height: ${hCor}%">
+                             <span class="text-[9px] font-bold text-emerald-800 absolute -top-3.5">${data.correct > 0 ? data.correct : ''}</span>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-medium text-blue-800 mt-2">${label}</span>
+                </div>
+                `;
+            });
+            chartHTML += '</div>';
+            chartHTML += `
+                <div class="flex justify-center space-x-4 mt-3 text-[10px] text-blue-700 font-medium">
+                    <div class="flex items-center"><div class="w-3 h-3 bg-blue-200 mr-1.5 rounded-sm"></div> Dijawab</div>
+                    <div class="flex items-center"><div class="w-3 h-3 bg-emerald-400 mr-1.5 rounded-sm"></div> Benar</div>
+                </div>
+            `;
+            
+            document.getElementById('res-pace').innerHTML = chartHTML;
+
+            switchScreen('screen-result');
+        }
+
+        // --- Keyboard Handling ---
+        function handleKeyPress(e) {
+            // Ignore if in input field or binding mode
+            if (e.target.tagName === 'INPUT' || bindingKeyFor) return;
+
+            if (isPlaying) {
+                // Prevent default scrolling for arrows/space
+                if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].indexOf(e.key) > -1) {
+                    e.preventDefault();
+                }
+
+                if (currentMode === 'tf') {
+                    if (e.key === userKeys.tf_true) handleInput(true);
+                    else if (e.key === userKeys.tf_false) handleInput(false);
+                } else if (currentMode === 'pauli') {
+                    for (let i = 0; i <= 9; i++) {
+                        if (e.key === userKeys[`p_${i}`]) {
+                            handleInput(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- Render On-Screen Controls ---
+        function renderPauliControls() {
+            const container = document.getElementById('controls-pauli');
+            container.innerHTML = '';
+            // Numpad style layout: 789, 456, 123, empty 0 empty
+            const layout = [7, 8, 9, 4, 5, 6, 1, 2, 3, null, 0, null];
+            
+            layout.forEach(num => {
+                if (num === null) {
+                    container.innerHTML += `<div></div>`;
+                } else {
+                    container.innerHTML += `
+                        <button onclick="handleInput(${num})" class="bg-white border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 text-2xl font-bold py-4 rounded-xl btn-press text-slate-700 shadow-sm">
+                            ${num}
+                        </button>
+                    `;
+                }
+            });
+        }
+
+        // --- Settings & Key Binding ---
+        let bindingKeyFor = null;
+
+        function openSettings() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+        function closeSettings() {
+            if(bindingKeyFor) return; // Prevent close while binding
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function renderPauliSettings() {
+            const container = document.getElementById('pauli-binds-container');
+            container.innerHTML = '';
+            for (let i = 0; i <= 9; i++) {
+                container.innerHTML += `
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] text-slate-400 font-bold mb-1">Angka ${i}</span>
+                        <button id="bind-p-${i}" onclick="startBinding('p_${i}')" class="w-full bg-slate-100 border border-slate-300 py-1.5 rounded text-xs font-mono text-slate-700 hover:bg-slate-200 truncate px-1">
+                            ${userKeys[`p_${i}`]}
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateSettingsUI() {
+            document.getElementById('bind-tf-true').innerText = formatKeyName(userKeys.tf_true);
+            document.getElementById('bind-tf-false').innerText = formatKeyName(userKeys.tf_false);
+            for (let i = 0; i <= 9; i++) {
+                const el = document.getElementById(`bind-p-${i}`);
+                if(el) el.innerText = formatKeyName(userKeys[`p_${i}`]);
+            }
+        }
+
+        function formatKeyName(key) {
+            if(key === ' ') return 'Space';
+            return key;
+        }
+
+        function startBinding(actionKey) {
+            bindingKeyFor = actionKey;
+            document.getElementById('binding-overlay').classList.remove('hidden');
+            
+            // Remove normal listener, add temp one
+            document.removeEventListener('keydown', handleKeyPress);
+            document.addEventListener('keydown', captureBindKey, { once: true });
+        }
+
+        function captureBindKey(e) {
+            e.preventDefault();
+            const newKey = e.key;
+
+            if (newKey !== 'Escape') {
+                userKeys[bindingKeyFor] = newKey;
+                localStorage.setItem('psikotes_keys', JSON.stringify(userKeys));
+                updateSettingsUI();
+            }
+
+            // Cleanup
+            bindingKeyFor = null;
+            document.getElementById('binding-overlay').classList.add('hidden');
+            setTimeout(() => {
+                document.addEventListener('keydown', handleKeyPress);
+            }, 100);
+        }
+
+        function resetDefaultKeys() {
+            userKeys = {...defaultKeys};
+            localStorage.setItem('psikotes_keys', JSON.stringify(userKeys));
+            updateSettingsUI();
+        }
+
+        // Run init on load
+        window.onload = init;
+    </script>
+</body>
+</html>
