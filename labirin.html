@@ -30,7 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.5rem; /* Menyesuaikan agar muat di ukuran 40px */
         }
 
         .cell.wall {
@@ -46,25 +46,20 @@
             background-color: #4ade80; /* Green for finish */
         }
 
-        /* Player Character */
-        #player {
+        /* Player & Moving Star Character */
+        #player, #moving-star {
             position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth movement */
             z-index: 10;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
-        .dir-indicator {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            border-radius: 50%;
-            top: 5px;
+        #moving-star {
+            z-index: 5;
         }
 
         /* Command List Animation */
@@ -89,55 +84,73 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col">
+<body class="h-screen flex flex-col text-slate-800 overflow-hidden">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm p-4 text-center z-10">
-        <h1 class="text-3xl font-bold text-green-600">🤖 Logic Bot</h1>
-        <p class="text-slate-500 font-semibold">Level: <span id="level-display" class="text-blue-500 text-xl">1</span></p>
+    <header class="bg-white shadow-sm p-3 flex flex-col items-center justify-center z-10 shrink-0">
+        <h1 class="text-2xl md:text-3xl font-bold text-green-600">🤖 Logic Bot</h1>
+        
+        <!-- Navigasi Level -->
+        <div class="mt-2 flex items-center gap-2">
+            <button onclick="changeLevel(-1)" class="w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full font-bold transition-colors shadow-sm active:scale-95" title="Level Sebelumnya">
+                ◀
+            </button>
+            
+            <select id="level-select" onchange="jumpToLevel(parseInt(this.value))" class="bg-slate-100 hover:bg-slate-200 border-2 border-slate-200 text-blue-600 font-bold py-1 px-3 rounded-xl cursor-pointer outline-none focus:border-blue-400 transition-colors shadow-sm text-center appearance-none text-sm md:text-base">
+                <!-- Pilihan level akan diisi oleh JavaScript -->
+            </select>
+            
+            <button onclick="changeLevel(1)" class="w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full font-bold transition-colors shadow-sm active:scale-95" title="Level Selanjutnya">
+                ▶
+            </button>
+        </div>
     </header>
 
     <!-- Main Game Area -->
-    <main class="flex-1 max-w-6xl w-full mx-auto p-4 flex flex-col md:flex-row gap-6">
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 flex flex-col md:flex-row gap-6 h-[calc(100vh-80px)] overflow-hidden">
         
         <!-- Left Side: Game Board -->
-        <section class="flex-1 flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
-            <h2 class="text-xl font-bold mb-4 text-slate-700">Labirin</h2>
-            <div id="game-board-container" class="relative">
-                <div id="game-board"></div>
-                <!-- Player Element -->
-                <div id="player"><span style="transform: rotate(-45deg); display: inline-block;">🚀</span></div>
+        <section class="md:flex-[1.2] flex flex-col items-center justify-center bg-white p-4 rounded-2xl shadow-lg border border-slate-100 overflow-hidden shrink-0">
+            <h2 class="text-xl font-bold mb-2 text-slate-700">Labirin</h2>
+            <div class="flex-1 flex items-center justify-center w-full min-h-0">
+                <div id="game-board-container" class="relative">
+                    <div id="game-board"></div>
+                    <!-- Player Element -->
+                    <div id="player"><span style="transform: rotate(-45deg); display: inline-block;">🚀</span></div>
+                    <!-- Moving Star Element -->
+                    <div id="moving-star" style="display: none;"><span class="animate-bounce">⭐</span></div>
+                </div>
             </div>
-            <p class="mt-4 text-slate-500 text-sm text-center">Bawa roket dari kotak <span class="font-bold text-blue-500">Biru</span> ke bendera di kotak <span class="font-bold text-green-500">Hijau</span>!</p>
+            <p class="mt-3 text-slate-500 text-xs md:text-sm text-center">Bawa roket dari kotak <span class="font-bold text-blue-500">Biru</span> ke bendera di kotak <span class="font-bold text-green-500">Hijau</span>!</p>
         </section>
 
         <!-- Right Side: Controls & Commands -->
-        <section class="w-full md:w-96 flex flex-col bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+        <section class="flex-1 w-full flex flex-col bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
             
             <!-- Command Inputs -->
-            <div class="p-6 bg-slate-50">
-                <h2 class="text-xl font-bold mb-4 text-slate-700 text-center">Blok Perintah</h2>
-                <div class="grid grid-cols-3 gap-3">
-                    <button onclick="addCommand('left')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">↩️</span>
-                        <span class="text-xs font-bold">Kiri</span>
+            <div class="p-4 bg-slate-50 shrink-0">
+                <h2 class="text-lg font-bold mb-3 text-slate-700 text-center">Blok Perintah</h2>
+                <div class="grid grid-cols-3 gap-2 md:gap-3">
+                    <button onclick="addCommand('left')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-3 md:p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-xl md:text-2xl mb-1">↩️</span>
+                        <span class="text-[10px] md:text-xs font-bold">Kiri</span>
                     </button>
-                    <button onclick="addCommand('forward')" class="btn-cmd bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">⬆️</span>
-                        <span class="text-xs font-bold">Maju</span>
+                    <button onclick="addCommand('forward')" class="btn-cmd bg-blue-500 hover:bg-blue-600 text-white p-3 md:p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-xl md:text-2xl mb-1">⬆️</span>
+                        <span class="text-[10px] md:text-xs font-bold">Maju</span>
                     </button>
-                    <button onclick="addCommand('right')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">↪️</span>
-                        <span class="text-xs font-bold">Kanan</span>
+                    <button onclick="addCommand('right')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-3 md:p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-xl md:text-2xl mb-1">↪️</span>
+                        <span class="text-[10px] md:text-xs font-bold">Kanan</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Command Queue -->
-            <div class="flex-1 p-6 flex flex-col min-h-[250px]">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-bold text-slate-700">Kode Kamu:</h2>
-                    <button onclick="undoCommand()" class="text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg text-sm font-bold transition-colors">⟲ Undo</button>
+            <!-- Command Queue (Bisa Scroll) -->
+            <div class="flex-1 p-4 flex flex-col min-h-0">
+                <div class="flex justify-between items-center mb-2 shrink-0">
+                    <h2 class="text-md md:text-lg font-bold text-slate-700">Kode Kamu:</h2>
+                    <button onclick="undoCommand()" class="text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg text-xs md:text-sm font-bold transition-colors">⟲ Undo</button>
                 </div>
                 
                 <div id="command-list" class="flex-1 bg-slate-100 rounded-xl p-3 flex flex-col gap-2 overflow-y-auto border-2 border-dashed border-slate-300">
@@ -147,11 +160,11 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="p-6 bg-slate-50 border-t border-slate-200 flex gap-3">
-                <button onclick="clearCommands()" class="flex-1 bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold py-3 px-4 rounded-xl transition-colors">
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex gap-2 md:gap-3 shrink-0">
+                <button onclick="clearCommands()" class="flex-1 bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold py-2 md:py-3 px-4 rounded-xl transition-colors text-sm md:text-base">
                     Hapus
                 </button>
-                <button id="btn-run" onclick="runCode()" class="flex-[2] bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-lg flex justify-center items-center gap-2">
+                <button id="btn-run" onclick="runCode()" class="flex-[2] bg-green-500 hover:bg-green-600 text-white font-bold py-2 md:py-3 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-base md:text-lg flex justify-center items-center gap-2">
                     ▶️ JALANKAN
                 </button>
             </div>
@@ -170,40 +183,32 @@
 
     <script>
         // --- DATA LEVEL ---
-        // 0: Jalan Kosong, 1: Dinding, 'S': Start, 'F': Finish
+        // 0: Jalan Kosong, 1: Dinding, 'S': Start, 'F': Finish, 'C': Bintang Diam
+        // Properti starPath diisi array jika bintang tersebut bergerak
         const levels = [
             // Level 1: 3x3 (Sangat Mudah)
-            [
-                ['S', 0, 'F'],
-                [1, 1, 1],
-                [0, 0, 0]
-            ],
+            { grid: [['S', 0, 'F'], [1, 1, 1], [0, 0, 0]] },
             // Level 2: 4x4 (Belok)
-            [
-                ['S', 0, 1, 0],
-                [1, 0, 1, 0],
-                [1, 0, 0, 'F'],
-                [0, 0, 1, 1]
-            ],
+            { grid: [['S', 0, 1, 0], [1, 0, 1, 0], [1, 0, 0, 'F'], [0, 0, 1, 1]] },
             // Level 3: 5x5 (Berliku)
-            [
+            { grid: [
                 ['S', 1, 0, 0, 'F'],
                 [0, 1, 0, 1, 1],
                 [0, 1, 0, 0, 0],
                 [0, 0, 0, 1, 0],
                 [1, 1, 1, 1, 0]
-            ],
-            // Level 4: 6x6
-            [
+            ]},
+            // Level 4: 6x6 (Bintang Static)
+            { grid: [
                 [1, 1, 1, 1, 1, 1],
                 ['S', 0, 0, 1, 'C', 'F'],
                 [1, 1, 0, 1, 0, 1],
                 [0, 0, 0, 0, 0, 1],
                 [0, 1, 1, 1, 1, 1],
                 [0, 0, 0, 0, 0, 0]
-            ],
-             // Level 5: 8x8 (Kompleks)
-             [
+            ]},
+            // Level 5: 8x8 (Kompleks Bintang Static)
+            { grid: [
                 ['S', 0, 1, 0, 0, 0, 1, 0],
                 [1, 0, 1, 0, 1, 0, 'C', 0],
                 [1, 0, 0, 0, 1, 0, 0, 0],
@@ -212,32 +217,98 @@
                 [0, 1, 1, 1, 1, 0, 1, 0],
                 [0, 1, 'F', 0, 0, 0, 0, 0],
                 [0, 0, 0, 1, 1, 1, 1, 1]
-            ]
+            ]},
+            // Level 6: 8x8 (Labirin Bercabang - Bintang Static)
+            { grid: [
+                ['S', 0, 0, 1, 0, 0, 0, 1],
+                [1, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0],
+                [1, 0, 1, 1, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0],
+                [0, 1, 1, 1, 1, 0, 0, 0],
+                [0, 0, 0, 'C', 1, 1, 1, 0],
+                [1, 1, 1, 1, 1, 'F', 0, 0]
+            ]},
+            // Level 7: 8x8 (Area Terbuka dengan Rintangan)
+            { grid: [
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 'S', 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 1],
+                [1, 1, 0, 1, 1, 1, 0, 1],
+                [1, 'C', 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 0, 'F', 1],
+                [1, 1, 1, 1, 1, 1, 1, 1]
+            ]},
+            // Level 8: 8x8 (Moving Star 1 - Area Cegat Terbuka)
+            { 
+                grid: [
+                    [1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 'S', 0, 0, 0, 0, 0, 1],
+                    [1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 1, 0, 0, 0, 0, 1],
+                    [1, 0, 0, 0, 1, 1, 0, 1],
+                    [1, 1, 1, 0, 1, 0, 0, 1],
+                    [1, 'F', 0, 0, 0, 0, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1]
+                ],
+                // Bintang mondar-mandir di ruang kosong tengah
+                starPath: [[3,3], [3,4], [3,5], [3,6], [3,5], [3,4]]
+            },
+            // Level 9: 8x8 (Moving Star 2 - Kejar-kejaran memutari pulau)
+            { 
+                grid: [
+                    ['S', 0, 0, 0, 0, 1, 1, 1],
+                    [1, 1, 1, 1, 0, 1, 1, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 1, 0, 0, 1, 0, 1],
+                    [1, 0, 1, 0, 0, 1, 0, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 'F'],
+                    [1, 1, 1, 1, 1, 1, 1, 1]
+                ],
+                // Bintang memutari pulau dinding di tengah
+                starPath: [[2,1], [2,2], [2,3], [2,4], [2,5], [2,6], [3,6], [4,6], [5,6], [6,6], [6,5], [6,4], [6,3], [6,2], [6,1], [5,1], [4,1], [3,1]] 
+            },
+            // Level 10: 8x8 (Moving Star 3 - Padang luas yang mengecoh)
+            { 
+                grid: [
+                    ['S', 0, 1, 0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 1, 0, 1, 0, 1, 1],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 'F', 1, 1, 1]
+                ],
+                // Bintang berjalan menyusuri padang terbuka di baris atas
+                starPath: [[2,2], [2,3], [2,4], [2,5], [2,6], [2,7], [2,6], [2,5], [2,4], [2,3]] 
+            }
         ];
 
         // --- STATE MANAGEMENT ---
         let currentLevel = 0;
         let map = [];
-        let playerState = { r: 0, c: 0, dir: 0 }; // dir: 0=Utara(Atas), 1=Timur(Kanan), 2=Selatan(Bawah), 3=Barat(Kiri)
-        let initialPlayerState = { r: 0, c: 0, dir: 0 }; // Untuk Reset
+        let playerState = { r: 0, c: 0, dir: 0 }; 
+        let initialPlayerState = { r: 0, c: 0, dir: 0 };
+        let starState = { active: false, r: 0, c: 0, pathIndex: 0, path: [] }; // State untuk Bintang Berjalan
+        
         let commandQueue = [];
         let isExecuting = false;
         let itemRequired = false;
         let hasCollectedItem = false;
         
-        const cellSize = 60; // pixel size per grid cell
+        // Ukuran Grid Diperkecil Agar Lebih Rapi
+        const cellSize = 40; 
 
         // Audio Context Setup
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
 
         function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
         function playSound(type) {
@@ -251,7 +322,7 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.1);
             } else if (type === 'collect') {
@@ -265,7 +336,7 @@
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(200, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.2);
             } else if (type === 'win') {
@@ -286,9 +357,24 @@
         }
 
         // --- INISIALISASI GAME ---
+        function initLevelSelect() {
+            const select = document.getElementById('level-select');
+            select.innerHTML = '';
+            levels.forEach((_, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = `Level ${i + 1}`;
+                select.appendChild(opt);
+            });
+        }
+
         function loadLevel() {
-            map = levels[currentLevel];
-            document.getElementById('level-display').innerText = currentLevel + 1;
+            const levelData = levels[currentLevel];
+            map = levelData.grid;
+            
+            // Update UI Dropdown Select
+            const selectEl = document.getElementById('level-select');
+            if(selectEl) selectEl.value = currentLevel;
             
             itemRequired = false;
             hasCollectedItem = false;
@@ -316,13 +402,30 @@
                         cell.classList.add('finish');
                         cell.innerHTML = '🏁';
                     }
+                    // Bintang Static
                     if (map[r][c] === 'C') {
                         itemRequired = true;
-                        cell.innerHTML = '<span class="animate-bounce inline-block text-2xl">⭐</span>';
+                        cell.innerHTML = '<span class="animate-bounce inline-block">⭐</span>';
                     }
-                    
                     board.appendChild(cell);
                 }
+            }
+
+            // Setup Bintang Bergerak jika ada di data level
+            const movingStarEl = document.getElementById('moving-star');
+            if (levelData.starPath) {
+                itemRequired = true;
+                starState = { 
+                    active: true, 
+                    r: levelData.starPath[0][0], 
+                    c: levelData.starPath[0][1], 
+                    pathIndex: 0, 
+                    path: levelData.starPath 
+                };
+                movingStarEl.style.display = 'flex';
+            } else {
+                starState.active = false;
+                movingStarEl.style.display = 'none';
             }
 
             // Atur ukuran container agar muat dengan grid
@@ -338,16 +441,25 @@
             playerState = { ...initialPlayerState };
             hasCollectedItem = false;
             
-            // Kembalikan bintang jika level ini butuh bintang
-            if (itemRequired) {
+            // Kembalikan bintang static jika ada
+            if (itemRequired && !starState.active) {
                 for (let r = 0; r < map.length; r++) {
                     for (let c = 0; c < map[0].length; c++) {
                         if (map[r][c] === 'C') {
                             const cell = document.getElementById(`cell-${r}-${c}`);
-                            if(cell) cell.innerHTML = '<span class="animate-bounce inline-block text-2xl">⭐</span>';
+                            if(cell) cell.innerHTML = '<span class="animate-bounce inline-block">⭐</span>';
                         }
                     }
                 }
+            }
+
+            // Reset Bintang Bergerak
+            if (starState.active) {
+                starState.pathIndex = 0;
+                starState.r = starState.path[0][0];
+                starState.c = starState.path[0][1];
+                document.getElementById('moving-star').style.display = 'flex';
+                updateStarVisual();
             }
             
             updatePlayerVisual();
@@ -358,11 +470,9 @@
             playerEl.style.width = `${cellSize}px`;
             playerEl.style.height = `${cellSize}px`;
             
-            // Posisi berdasarkan grid
             playerEl.style.left = `${playerState.c * cellSize + 8}px`; // +8 offset border
             playerEl.style.top = `${playerState.r * cellSize + 8}px`;
 
-            // Rotasi berdasarkan arah (Roket 🚀 aslinya menghadap atas/Utara)
             let rotation = 0;
             switch(playerState.dir) {
                 case 0: rotation = 0; break;   // Utara
@@ -373,12 +483,44 @@
             playerEl.style.transform = `rotate(${rotation}deg)`;
         }
 
+        function updateStarVisual() {
+            const starEl = document.getElementById('moving-star');
+            starEl.style.width = `${cellSize}px`;
+            starEl.style.height = `${cellSize}px`;
+            
+            starEl.style.left = `${starState.c * cellSize + 8}px`;
+            starEl.style.top = `${starState.r * cellSize + 8}px`;
+        }
+
+        // --- NAVIGASI LEVEL ---
+        function jumpToLevel(index) {
+            if (isExecuting) {
+                // Kembalikan dropdown ke level saat ini jika sedang jalan
+                document.getElementById('level-select').value = currentLevel;
+                return; 
+            }
+            if (index >= 0 && index < levels.length) {
+                currentLevel = index;
+                playSound('click');
+                loadLevel();
+            }
+        }
+
+        function changeLevel(dir) {
+            if (isExecuting) return;
+            let newLevel = currentLevel + dir;
+            if (newLevel >= 0 && newLevel < levels.length) {
+                jumpToLevel(newLevel);
+            } else {
+                playSound('error'); // Bunyi error jika mentok di level 1 atau akhir
+            }
+        }
+
         // --- MANAJEMEN PERINTAH (QUEUE) ---
         function addCommand(cmd) {
             if(isExecuting) return;
-            initAudio(); // Initialize audio on first user interaction
+            initAudio(); 
             playSound('click');
-
             commandQueue.push(cmd);
             renderQueue();
         }
@@ -408,7 +550,6 @@
             const list = document.getElementById('command-list');
             const emptyMsg = document.getElementById('empty-msg');
             
-            // Hapus semua kecuali empty-msg
             Array.from(list.children).forEach(child => {
                 if(child.id !== 'empty-msg') child.remove();
             });
@@ -419,7 +560,7 @@
                 emptyMsg.style.display = 'none';
                 commandQueue.forEach((cmd, index) => {
                     const div = document.createElement('div');
-                    div.className = 'cmd-item w-full bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 flex items-center justify-between gap-2 font-semibold text-slate-700 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors group';
+                    div.className = 'cmd-item shrink-0 w-full bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 flex items-center justify-between gap-2 font-semibold text-slate-700 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors group';
                     div.id = `cmd-${index}`;
                     div.onclick = () => removeCommand(index);
                     
@@ -456,10 +597,9 @@
             isExecuting = true;
             document.getElementById('btn-run').disabled = true;
             document.getElementById('btn-run').classList.add('opacity-50');
-            resetPlayer(); // Mulai ulang dari awal setiap klik Run
+            resetPlayer(); 
 
             for (let i = 0; i < commandQueue.length; i++) {
-                // Highlight perintah yang sedang berjalan
                 const cmdEl = document.getElementById(`cmd-${i}`);
                 if(cmdEl) cmdEl.classList.add('executing');
 
@@ -474,10 +614,10 @@
                     resetUI();
                     return;
                 }
-                await sleep(400); // Jeda antar perintah
+                await sleep(300); // Jeda antar perintah
             }
 
-            // Cek kondisi menang setelah semua perintah selesai
+            // Cek kondisi menang
             if (map[playerState.r][playerState.c] === 'F') {
                 if (itemRequired && !hasCollectedItem) {
                     showModal('missing_item');
@@ -498,21 +638,17 @@
         }
 
         async function executeStep(cmd) {
+            let playerOldR = playerState.r;
+            let playerOldC = playerState.c;
+            let starOldR = starState.r;
+            let starOldC = starState.c;
+
+            // 1. Eksekusi Pergerakan Player
             if (cmd === 'left') {
                 playerState.dir = (playerState.dir + 3) % 4;
-                playSound('move');
-                updatePlayerVisual();
-                await sleep(300); // Waktu animasi muter
-                return true;
-            } 
-            else if (cmd === 'right') {
+            } else if (cmd === 'right') {
                 playerState.dir = (playerState.dir + 1) % 4;
-                playSound('move');
-                updatePlayerVisual();
-                await sleep(300);
-                return true;
-            } 
-            else if (cmd === 'forward') {
+            } else if (cmd === 'forward') {
                 let newR = playerState.r;
                 let newC = playerState.c;
 
@@ -521,29 +657,47 @@
                 if (playerState.dir === 2) newR++; // Selatan
                 if (playerState.dir === 3) newC--; // Barat
 
-                // Cek Tabrakan Dinding & Batas Grid
                 if (newR < 0 || newR >= map.length || newC < 0 || newC >= map[0].length || map[newR][newC] === 1) {
-                    // Gagal
-                    return false;
+                    return false; // Tabrakan
                 }
-
-                // Sukses jalan
                 playerState.r = newR;
                 playerState.c = newC;
-                playSound('move');
-                updatePlayerVisual();
+            }
+            
+            playSound('move');
+            updatePlayerVisual();
+
+            // 2. Eksekusi Pergerakan Bintang (jika ada dan belum diambil)
+            if (starState.active && !hasCollectedItem) {
+                starState.pathIndex = (starState.pathIndex + 1) % starState.path.length;
+                starState.r = starState.path[starState.pathIndex][0];
+                starState.c = starState.path[starState.pathIndex][1];
+                updateStarVisual();
+            }
+
+            await sleep(400); // Waktu animasi visual berjalan
+
+            // 3. Deteksi Pengambilan Item (Static & Moving)
+            if (map[playerState.r][playerState.c] === 'C' && !hasCollectedItem && !starState.active) {
+                hasCollectedItem = true;
+                playSound('collect');
+                const cell = document.getElementById(`cell-${playerState.r}-${playerState.c}`);
+                if(cell) cell.innerHTML = ''; 
+            }
+
+            if (starState.active && !hasCollectedItem) {
+                // Cek apakah berdiri di kotak yang sama ATAU berpapasan (bertukar tempat)
+                let sameSpot = (playerState.r === starState.r && playerState.c === starState.c);
+                let passThrough = (playerOldR === starState.r && playerOldC === starState.c && playerState.r === starOldR && playerState.c === starOldC);
                 
-                // Cek ambil item
-                if (map[newR][newC] === 'C' && !hasCollectedItem) {
+                if (sameSpot || passThrough) {
                     hasCollectedItem = true;
                     playSound('collect');
-                    const cell = document.getElementById(`cell-${newR}-${newC}`);
-                    if(cell) cell.innerHTML = ''; // Hilangkan bintang dari map
+                    document.getElementById('moving-star').style.display = 'none';
                 }
-
-                await sleep(400); // Waktu animasi jalan
-                return true;
             }
+
+            return true;
         }
 
         // --- MODAL & FEEDBACK ---
@@ -556,7 +710,6 @@
             const btn = document.getElementById('modal-btn');
 
             modal.classList.remove('hidden');
-            // Sedikit delay agar transisi CSS jalan
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 content.classList.remove('scale-90');
@@ -641,7 +794,10 @@
         }
 
         // Mulai game saat halaman dimuat
-        window.onload = loadLevel;
+        window.onload = () => {
+            initLevelSelect();
+            loadLevel();
+        };
 
     </script>
 </body>
