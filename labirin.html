@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Bot - Belajar Coding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0fdf4; /* Light green background */
+            touch-action: manipulation;
+        }
+
+        /* Grid Setup */
+        #game-board {
+            position: relative;
+            background-color: #d1d5db;
+            border: 8px solid #4b5563;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            gap: 2px;
+        }
+
+        .cell {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .cell.wall {
+            background-color: #ef4444; /* Red for walls */
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px);
+        }
+
+        .cell.start {
+            background-color: #60a5fa; /* Blue for start */
+        }
+
+        .cell.finish {
+            background-color: #4ade80; /* Green for finish */
+        }
+
+        /* Player Character */
+        #player {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth movement */
+            z-index: 10;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        .dir-indicator {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        /* Command List Animation */
+        .cmd-item {
+            animation: popIn 0.2s ease-out forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .executing {
+            box-shadow: 0 0 0 4px #fbbf24;
+            transform: scale(1.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 text-center z-10">
+        <h1 class="text-3xl font-bold text-green-600">🤖 Logic Bot</h1>
+        <p class="text-slate-500 font-semibold">Level: <span id="level-display" class="text-blue-500 text-xl">1</span></p>
+    </header>
+
+    <!-- Main Game Area -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 flex flex-col md:flex-row gap-6">
+        
+        <!-- Left Side: Game Board -->
+        <section class="flex-1 flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
+            <h2 class="text-xl font-bold mb-4 text-slate-700">Labirin</h2>
+            <div id="game-board-container" class="relative">
+                <div id="game-board"></div>
+                <!-- Player Element -->
+                <div id="player"><span style="transform: rotate(-45deg); display: inline-block;">🚀</span></div>
+            </div>
+            <p class="mt-4 text-slate-500 text-sm text-center">Bawa roket dari kotak <span class="font-bold text-blue-500">Biru</span> ke bendera di kotak <span class="font-bold text-green-500">Hijau</span>!</p>
+        </section>
+
+        <!-- Right Side: Controls & Commands -->
+        <section class="w-full md:w-96 flex flex-col bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+            
+            <!-- Command Inputs -->
+            <div class="p-6 bg-slate-50">
+                <h2 class="text-xl font-bold mb-4 text-slate-700 text-center">Blok Perintah</h2>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="addCommand('left')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-2xl mb-1">↩️</span>
+                        <span class="text-xs font-bold">Kiri</span>
+                    </button>
+                    <button onclick="addCommand('forward')" class="btn-cmd bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-2xl mb-1">⬆️</span>
+                        <span class="text-xs font-bold">Maju</span>
+                    </button>
+                    <button onclick="addCommand('right')" class="btn-cmd bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl shadow-md transition-transform active:scale-95 flex flex-col items-center justify-center">
+                        <span class="text-2xl mb-1">↪️</span>
+                        <span class="text-xs font-bold">Kanan</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Command Queue -->
+            <div class="flex-1 p-6 flex flex-col min-h-[250px]">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-bold text-slate-700">Kode Kamu:</h2>
+                    <button onclick="undoCommand()" class="text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg text-sm font-bold transition-colors">⟲ Undo</button>
+                </div>
+                
+                <div id="command-list" class="flex-1 bg-slate-100 rounded-xl p-3 flex flex-col gap-2 overflow-y-auto border-2 border-dashed border-slate-300">
+                    <!-- Commands will appear here -->
+                    <p id="empty-msg" class="text-slate-400 text-sm w-full text-center mt-4">Belum ada perintah.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-6 bg-slate-50 border-t border-slate-200 flex gap-3">
+                <button onclick="clearCommands()" class="flex-1 bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold py-3 px-4 rounded-xl transition-colors">
+                    Hapus
+                </button>
+                <button id="btn-run" onclick="runCode()" class="flex-[2] bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-lg flex justify-center items-center gap-2">
+                    ▶️ JALANKAN
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full mx-4 text-center transform scale-90 transition-transform duration-300" id="modal-content">
+            <div id="modal-icon" class="text-6xl mb-4"></div>
+            <h2 id="modal-title" class="text-2xl font-bold mb-2"></h2>
+            <p id="modal-desc" class="text-slate-500 mb-6"></p>
+            <button id="modal-btn" onclick="closeModal()" class="w-full font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95"></button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA LEVEL ---
+        // 0: Jalan Kosong, 1: Dinding, 'S': Start, 'F': Finish
+        const levels = [
+            // Level 1: 3x3 (Sangat Mudah)
+            [
+                ['S', 0, 'F'],
+                [1, 1, 1],
+                [0, 0, 0]
+            ],
+            // Level 2: 4x4 (Belok)
+            [
+                ['S', 0, 1, 0],
+                [1, 0, 1, 0],
+                [1, 0, 0, 'F'],
+                [0, 0, 1, 1]
+            ],
+            // Level 3: 5x5 (Berliku)
+            [
+                ['S', 1, 0, 0, 'F'],
+                [0, 1, 0, 1, 1],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [1, 1, 1, 1, 0]
+            ],
+            // Level 4: 6x6
+            [
+                [1, 1, 1, 1, 1, 1],
+                ['S', 0, 0, 1, 'C', 'F'],
+                [1, 1, 0, 1, 0, 1],
+                [0, 0, 0, 0, 0, 1],
+                [0, 1, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 0]
+            ],
+             // Level 5: 8x8 (Kompleks)
+             [
+                ['S', 0, 1, 0, 0, 0, 1, 0],
+                [1, 0, 1, 0, 1, 0, 'C', 0],
+                [1, 0, 0, 0, 1, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0],
+                [0, 1, 1, 1, 1, 0, 1, 0],
+                [0, 1, 'F', 0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 1, 1, 1, 1]
+            ]
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let currentLevel = 0;
+        let map = [];
+        let playerState = { r: 0, c: 0, dir: 0 }; // dir: 0=Utara(Atas), 1=Timur(Kanan), 2=Selatan(Bawah), 3=Barat(Kiri)
+        let initialPlayerState = { r: 0, c: 0, dir: 0 }; // Untuk Reset
+        let commandQueue = [];
+        let isExecuting = false;
+        let itemRequired = false;
+        let hasCollectedItem = false;
+        
+        const cellSize = 60; // pixel size per grid cell
+
+        // Audio Context Setup
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx) initAudio();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'move') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'collect') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'error') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } else if (type === 'win') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            }
+        }
+
+        // --- INISIALISASI GAME ---
+        function loadLevel() {
+            map = levels[currentLevel];
+            document.getElementById('level-display').innerText = currentLevel + 1;
+            
+            itemRequired = false;
+            hasCollectedItem = false;
+
+            const board = document.getElementById('game-board');
+            const rows = map.length;
+            const cols = map[0].length;
+            
+            board.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+            board.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
+            board.innerHTML = '';
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${r}-${c}`;
+                    
+                    if (map[r][c] === 1) cell.classList.add('wall');
+                    if (map[r][c] === 'S') {
+                        cell.classList.add('start');
+                        initialPlayerState = { r, c, dir: 1 }; // Default menghadap Kanan (Timur)
+                    }
+                    if (map[r][c] === 'F') {
+                        cell.classList.add('finish');
+                        cell.innerHTML = '🏁';
+                    }
+                    if (map[r][c] === 'C') {
+                        itemRequired = true;
+                        cell.innerHTML = '<span class="animate-bounce inline-block text-2xl">⭐</span>';
+                    }
+                    
+                    board.appendChild(cell);
+                }
+            }
+
+            // Atur ukuran container agar muat dengan grid
+            const container = document.getElementById('game-board-container');
+            container.style.width = `${cols * cellSize + 16}px`; // +16 for border
+            container.style.height = `${rows * cellSize + 16}px`;
+
+            resetPlayer();
+            clearCommands();
+        }
+
+        function resetPlayer() {
+            playerState = { ...initialPlayerState };
+            hasCollectedItem = false;
+            
+            // Kembalikan bintang jika level ini butuh bintang
+            if (itemRequired) {
+                for (let r = 0; r < map.length; r++) {
+                    for (let c = 0; c < map[0].length; c++) {
+                        if (map[r][c] === 'C') {
+                            const cell = document.getElementById(`cell-${r}-${c}`);
+                            if(cell) cell.innerHTML = '<span class="animate-bounce inline-block text-2xl">⭐</span>';
+                        }
+                    }
+                }
+            }
+            
+            updatePlayerVisual();
+        }
+
+        function updatePlayerVisual() {
+            const playerEl = document.getElementById('player');
+            playerEl.style.width = `${cellSize}px`;
+            playerEl.style.height = `${cellSize}px`;
+            
+            // Posisi berdasarkan grid
+            playerEl.style.left = `${playerState.c * cellSize + 8}px`; // +8 offset border
+            playerEl.style.top = `${playerState.r * cellSize + 8}px`;
+
+            // Rotasi berdasarkan arah (Roket 🚀 aslinya menghadap atas/Utara)
+            let rotation = 0;
+            switch(playerState.dir) {
+                case 0: rotation = 0; break;   // Utara
+                case 1: rotation = 90; break;  // Timur
+                case 2: rotation = 180; break; // Selatan
+                case 3: rotation = 270; break; // Barat
+            }
+            playerEl.style.transform = `rotate(${rotation}deg)`;
+        }
+
+        // --- MANAJEMEN PERINTAH (QUEUE) ---
+        function addCommand(cmd) {
+            if(isExecuting) return;
+            initAudio(); // Initialize audio on first user interaction
+            playSound('click');
+
+            commandQueue.push(cmd);
+            renderQueue();
+        }
+
+        function undoCommand() {
+            if(isExecuting || commandQueue.length === 0) return;
+            playSound('click');
+            commandQueue.pop();
+            renderQueue();
+        }
+
+        function clearCommands() {
+            if(isExecuting) return;
+            playSound('click');
+            commandQueue = [];
+            renderQueue();
+        }
+
+        function removeCommand(index) {
+            if(isExecuting) return;
+            playSound('click');
+            commandQueue.splice(index, 1);
+            renderQueue();
+        }
+
+        function renderQueue() {
+            const list = document.getElementById('command-list');
+            const emptyMsg = document.getElementById('empty-msg');
+            
+            // Hapus semua kecuali empty-msg
+            Array.from(list.children).forEach(child => {
+                if(child.id !== 'empty-msg') child.remove();
+            });
+
+            if (commandQueue.length === 0) {
+                emptyMsg.style.display = 'block';
+            } else {
+                emptyMsg.style.display = 'none';
+                commandQueue.forEach((cmd, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'cmd-item w-full bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 flex items-center justify-between gap-2 font-semibold text-slate-700 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors group';
+                    div.id = `cmd-${index}`;
+                    div.onclick = () => removeCommand(index);
+                    
+                    let icon, text;
+                    if(cmd === 'forward') { icon = '⬆️'; text = 'Maju'; }
+                    if(cmd === 'left') { icon = '↩️'; text = 'Belok Kiri'; }
+                    if(cmd === 'right') { icon = '↪️'; text = 'Belok Kanan'; }
+
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">${index + 1}</span>
+                            <span class="text-lg">${icon}</span>
+                            <span class="text-sm">${text}</span>
+                        </div>
+                        <span class="text-red-400 opacity-0 group-hover:opacity-100 text-xs font-bold" title="Hapus">✕</span>
+                    `;
+                    list.appendChild(div);
+                });
+                
+                // Auto scroll ke bawah
+                list.scrollTop = list.scrollHeight;
+            }
+        }
+
+        // --- LOGIKA EKSEKUSI GAME ---
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function runCode() {
+            if (isExecuting || commandQueue.length === 0) return;
+            
+            initAudio();
+            isExecuting = true;
+            document.getElementById('btn-run').disabled = true;
+            document.getElementById('btn-run').classList.add('opacity-50');
+            resetPlayer(); // Mulai ulang dari awal setiap klik Run
+
+            for (let i = 0; i < commandQueue.length; i++) {
+                // Highlight perintah yang sedang berjalan
+                const cmdEl = document.getElementById(`cmd-${i}`);
+                if(cmdEl) cmdEl.classList.add('executing');
+
+                const cmd = commandQueue[i];
+                const success = await executeStep(cmd);
+                
+                if(cmdEl) cmdEl.classList.remove('executing');
+
+                if (!success) {
+                    showModal('error');
+                    isExecuting = false;
+                    resetUI();
+                    return;
+                }
+                await sleep(400); // Jeda antar perintah
+            }
+
+            // Cek kondisi menang setelah semua perintah selesai
+            if (map[playerState.r][playerState.c] === 'F') {
+                if (itemRequired && !hasCollectedItem) {
+                    showModal('missing_item');
+                } else {
+                    showModal('win');
+                }
+            } else {
+                showModal('incomplete');
+            }
+
+            isExecuting = false;
+            resetUI();
+        }
+
+        function resetUI() {
+            document.getElementById('btn-run').disabled = false;
+            document.getElementById('btn-run').classList.remove('opacity-50');
+        }
+
+        async function executeStep(cmd) {
+            if (cmd === 'left') {
+                playerState.dir = (playerState.dir + 3) % 4;
+                playSound('move');
+                updatePlayerVisual();
+                await sleep(300); // Waktu animasi muter
+                return true;
+            } 
+            else if (cmd === 'right') {
+                playerState.dir = (playerState.dir + 1) % 4;
+                playSound('move');
+                updatePlayerVisual();
+                await sleep(300);
+                return true;
+            } 
+            else if (cmd === 'forward') {
+                let newR = playerState.r;
+                let newC = playerState.c;
+
+                if (playerState.dir === 0) newR--; // Utara
+                if (playerState.dir === 1) newC++; // Timur
+                if (playerState.dir === 2) newR++; // Selatan
+                if (playerState.dir === 3) newC--; // Barat
+
+                // Cek Tabrakan Dinding & Batas Grid
+                if (newR < 0 || newR >= map.length || newC < 0 || newC >= map[0].length || map[newR][newC] === 1) {
+                    // Gagal
+                    return false;
+                }
+
+                // Sukses jalan
+                playerState.r = newR;
+                playerState.c = newC;
+                playSound('move');
+                updatePlayerVisual();
+                
+                // Cek ambil item
+                if (map[newR][newC] === 'C' && !hasCollectedItem) {
+                    hasCollectedItem = true;
+                    playSound('collect');
+                    const cell = document.getElementById(`cell-${newR}-${newC}`);
+                    if(cell) cell.innerHTML = ''; // Hilangkan bintang dari map
+                }
+
+                await sleep(400); // Waktu animasi jalan
+                return true;
+            }
+        }
+
+        // --- MODAL & FEEDBACK ---
+        function showModal(type) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const btn = document.getElementById('modal-btn');
+
+            modal.classList.remove('hidden');
+            // Sedikit delay agar transisi CSS jalan
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-90');
+            }, 10);
+
+            if (type === 'win') {
+                playSound('win');
+                icon.innerText = '🎉';
+                title.innerText = 'Hebat Sekali!';
+                title.className = 'text-2xl font-bold mb-2 text-green-600';
+                desc.innerText = 'Kamu berhasil mengarahkan bot ke bendera finish!';
+                
+                if (currentLevel < levels.length - 1) {
+                    btn.innerText = 'Level Berikutnya ➔';
+                    btn.className = 'w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                    btn.onclick = () => {
+                        currentLevel++;
+                        loadLevel();
+                        closeModal();
+                    };
+                } else {
+                    btn.innerText = 'Main Ulang dari Awal';
+                    btn.className = 'w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                    btn.onclick = () => {
+                        currentLevel = 0;
+                        loadLevel();
+                        closeModal();
+                    };
+                }
+            } else if (type === 'missing_item') {
+                playSound('error');
+                icon.innerText = '⭐';
+                title.innerText = 'Bintang Tertinggal!';
+                title.className = 'text-2xl font-bold mb-2 text-amber-500';
+                desc.innerText = 'Kamu sudah sampai di finish, tapi lupa mengambil bintang. Ambil dulu ya!';
+                
+                btn.innerText = 'Perbaiki Kode';
+                btn.className = 'w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                btn.onclick = () => {
+                    resetPlayer();
+                    closeModal();
+                };
+            } else if (type === 'error') {
+                playSound('error');
+                icon.innerText = '💥';
+                title.innerText = 'Ups, Menabrak!';
+                title.className = 'text-2xl font-bold mb-2 text-red-600';
+                desc.innerText = 'Bot kamu menabrak dinding atau keluar dari jalur. Coba susun ulang perintahnya ya.';
+                
+                btn.innerText = 'Coba Lagi';
+                btn.className = 'w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                btn.onclick = () => {
+                    resetPlayer();
+                    closeModal();
+                };
+            } else if (type === 'incomplete') {
+                playSound('error');
+                icon.innerText = '🤔';
+                title.innerText = 'Belum Sampai!';
+                title.className = 'text-2xl font-bold mb-2 text-amber-500';
+                desc.innerText = 'Bot sudah berhenti tapi belum sampai di bendera hijau. Tambahkan perintah lagi.';
+                
+                btn.innerText = 'Perbaiki Kode';
+                btn.className = 'w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                btn.onclick = () => {
+                    resetPlayer();
+                    closeModal();
+                };
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-90');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Mulai game saat halaman dimuat
+        window.onload = loadLevel;
+
+    </script>
+</body>
+</html>
