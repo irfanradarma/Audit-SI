@@ -46,8 +46,8 @@
             background-color: #4ade80; /* Green for finish */
         }
 
-        /* Player & Moving Star Character */
-        #player, #moving-star {
+        /* Player, Star, and UFO Character */
+        #player, #moving-star, #moving-ufo {
             position: absolute;
             display: flex;
             justify-content: center;
@@ -60,6 +60,11 @@
 
         #moving-star {
             z-index: 5;
+        }
+        
+        #moving-ufo {
+            z-index: 6;
+            transition: all 0.2s linear; /* Bergerak lebih agresif */
         }
 
         /* Command List Animation */
@@ -119,6 +124,8 @@
                     <div id="player"><span style="transform: rotate(-45deg); display: inline-block;">🚀</span></div>
                     <!-- Moving Star Element -->
                     <div id="moving-star" style="display: none;"><span class="animate-bounce">⭐</span></div>
+                    <!-- Moving UFO Element -->
+                    <div id="moving-ufo" style="display: none;"><span class="animate-pulse">🛸</span></div>
                 </div>
             </div>
             <p class="mt-3 text-slate-500 text-xs md:text-sm text-center">Bawa roket dari kotak <span class="font-bold text-blue-500">Biru</span> ke bendera di kotak <span class="font-bold text-green-500">Hijau</span>!</p>
@@ -184,7 +191,8 @@
     <script>
         // --- DATA LEVEL ---
         // 0: Jalan Kosong, 1: Dinding, 'S': Start, 'F': Finish, 'C': Bintang Diam
-        // Properti starPath diisi array jika bintang tersebut bergerak
+        // starPath: Array koordinat bintang bergerak
+        // ufoPath: Array koordinat UFO bergerak (Musuh)
         const levels = [
             // Level 1: 3x3 (Sangat Mudah)
             { grid: [['S', 0, 'F'], [1, 1, 1], [0, 0, 0]] },
@@ -252,7 +260,6 @@
                     [1, 'F', 0, 0, 0, 0, 1, 1],
                     [1, 1, 1, 1, 1, 1, 1, 1]
                 ],
-                // Bintang mondar-mandir di ruang kosong tengah
                 starPath: [[3,3], [3,4], [3,5], [3,6], [3,5], [3,4]]
             },
             // Level 9: 8x8 (Moving Star 2 - Kejar-kejaran memutari pulau)
@@ -267,7 +274,6 @@
                     [1, 0, 0, 0, 0, 0, 0, 'F'],
                     [1, 1, 1, 1, 1, 1, 1, 1]
                 ],
-                // Bintang memutari pulau dinding di tengah
                 starPath: [[2,1], [2,2], [2,3], [2,4], [2,5], [2,6], [3,6], [4,6], [5,6], [6,6], [6,5], [6,4], [6,3], [6,2], [6,1], [5,1], [4,1], [3,1]] 
             },
             // Level 10: 8x8 (Moving Star 3 - Padang luas yang mengecoh)
@@ -282,8 +288,51 @@
                     [0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 1, 1, 1, 'F', 1, 1, 1]
                 ],
-                // Bintang berjalan menyusuri padang terbuka di baris atas
                 starPath: [[2,2], [2,3], [2,4], [2,5], [2,6], [2,7], [2,6], [2,5], [2,4], [2,3]] 
+            },
+            // Level 11: 8x8 (UFO Pertama - Harus dihindari!)
+            { 
+                grid: [
+                    ['S', 0, 0, 0, 1, 1, 1, 1],
+                    [0, 1, 1, 0, 1, 1, 1, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 0, 1],
+                    [1, 'C', 0, 0, 0, 1, 0, 1],
+                    [1, 1, 1, 1, 0, 1, 0, 1],
+                    [1, 'F', 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1]
+                ],
+                ufoPath: [[2,6], [2,5], [2,4], [2,3], [2,2], [2,1], [2,2], [2,3], [2,4], [2,5]]
+            },
+            // Level 12: 8x8 (UFO & Bintang Bergerak)
+            { 
+                grid: [
+                    ['S', 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 0, 0, 1],
+                    [1, 0, 0, 0, 0, 1, 0, 1],
+                    [1, 0, 1, 1, 0, 1, 0, 1],
+                    [1, 0, 1, 'F', 0, 1, 0, 1],
+                    [1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 0, 1]
+                ],
+                starPath: [[6,1], [6,2], [6,3], [6,4], [6,5], [6,4], [6,3], [6,2]],
+                ufoPath: [[0,6], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6], [5,6], [4,6], [3,6], [2,6], [1,6],[0,6],[0,5]]
+            },
+            // Level 13: 8x8 (UFO Kecepatan Tinggi x2)
+            { 
+                grid: [
+                    ['S', 0, 1, 1, 1, 1, 1, 1],
+                    [1, 0, 1, 1, 1, 1, 'F', 1], 
+                    [1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 1], // Lorong mematikan UFO x2
+                    [1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 1, 'C', 1, 1, 0, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1]
+                ],
+                ufoPath: [[3,6], [3,5], [3,4], [3,3], [3,2], [3,1], [4,1], [5,1], [6,1], [6,2], [6,3], [6,4], [6,5], [6,6], [5,6], [4,6]],
+                ufoSpeed: 2
             }
         ];
 
@@ -292,14 +341,15 @@
         let map = [];
         let playerState = { r: 0, c: 0, dir: 0 }; 
         let initialPlayerState = { r: 0, c: 0, dir: 0 };
-        let starState = { active: false, r: 0, c: 0, pathIndex: 0, path: [] }; // State untuk Bintang Berjalan
+        
+        let starState = { active: false, r: 0, c: 0, pathIndex: 0, path: [] }; 
+        let ufoState = { active: false, r: 0, c: 0, pathIndex: 0, path: [], speed: 1 };
         
         let commandQueue = [];
         let isExecuting = false;
         let itemRequired = false;
         let hasCollectedItem = false;
         
-        // Ukuran Grid Diperkecil Agar Lebih Rapi
         const cellSize = 40; 
 
         // Audio Context Setup
@@ -332,13 +382,13 @@
                 gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'error') {
-                osc.type = 'square';
+            } else if (type === 'error' || type === 'ufo') {
+                osc.type = type === 'ufo' ? 'sawtooth' : 'square';
                 osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + (type === 'ufo' ? 0.4 : 0.2));
                 gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.2);
+                osc.stop(audioCtx.currentTime + (type === 'ufo' ? 0.4 : 0.2));
             } else if (type === 'win') {
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(400, audioCtx.currentTime);
@@ -411,7 +461,7 @@
                 }
             }
 
-            // Setup Bintang Bergerak jika ada di data level
+            // Setup Bintang Bergerak
             const movingStarEl = document.getElementById('moving-star');
             if (levelData.starPath) {
                 itemRequired = true;
@@ -426,6 +476,23 @@
             } else {
                 starState.active = false;
                 movingStarEl.style.display = 'none';
+            }
+
+            // Setup UFO Bergerak
+            const movingUfoEl = document.getElementById('moving-ufo');
+            if (levelData.ufoPath) {
+                ufoState = {
+                    active: true,
+                    r: levelData.ufoPath[0][0],
+                    c: levelData.ufoPath[0][1],
+                    pathIndex: 0,
+                    path: levelData.ufoPath,
+                    speed: levelData.ufoSpeed || 1
+                };
+                movingUfoEl.style.display = 'flex';
+            } else {
+                ufoState.active = false;
+                movingUfoEl.style.display = 'none';
             }
 
             // Atur ukuran container agar muat dengan grid
@@ -461,6 +528,15 @@
                 document.getElementById('moving-star').style.display = 'flex';
                 updateStarVisual();
             }
+
+            // Reset UFO
+            if (ufoState.active) {
+                ufoState.pathIndex = 0;
+                ufoState.r = ufoState.path[0][0];
+                ufoState.c = ufoState.path[0][1];
+                document.getElementById('moving-ufo').style.display = 'flex';
+                updateUfoVisual();
+            }
             
             updatePlayerVisual();
         }
@@ -490,6 +566,15 @@
             
             starEl.style.left = `${starState.c * cellSize + 8}px`;
             starEl.style.top = `${starState.r * cellSize + 8}px`;
+        }
+
+        function updateUfoVisual() {
+            const ufoEl = document.getElementById('moving-ufo');
+            ufoEl.style.width = `${cellSize}px`;
+            ufoEl.style.height = `${cellSize}px`;
+            
+            ufoEl.style.left = `${ufoState.c * cellSize + 8}px`;
+            ufoEl.style.top = `${ufoState.r * cellSize + 8}px`;
         }
 
         // --- NAVIGASI LEVEL ---
@@ -603,18 +688,19 @@
                 const cmdEl = document.getElementById(`cmd-${i}`);
                 if(cmdEl) cmdEl.classList.add('executing');
 
-                const cmd = commandQueue[i];
-                const success = await executeStep(cmd);
+                const status = await executeStep(commandQueue[i]);
                 
                 if(cmdEl) cmdEl.classList.remove('executing');
 
-                if (!success) {
-                    showModal('error');
+                // Jika terdeteksi gagal (menabrak dinding atau ditabrak ufo)
+                if (status !== 'ok') {
+                    if (status === 'wall') showModal('error');
+                    else if (status === 'ufo') showModal('ufo');
+                    
                     isExecuting = false;
                     resetUI();
                     return;
                 }
-                await sleep(300); // Jeda antar perintah
             }
 
             // Cek kondisi menang
@@ -642,12 +728,19 @@
             let playerOldC = playerState.c;
             let starOldR = starState.r;
             let starOldC = starState.c;
+            let ufoOldR = ufoState.r;
+            let ufoOldC = ufoState.c;
+            let hitWall = false;
 
             // 1. Eksekusi Pergerakan Player
             if (cmd === 'left') {
                 playerState.dir = (playerState.dir + 3) % 4;
+                playSound('move');
+                updatePlayerVisual();
             } else if (cmd === 'right') {
                 playerState.dir = (playerState.dir + 1) % 4;
+                playSound('move');
+                updatePlayerVisual();
             } else if (cmd === 'forward') {
                 let newR = playerState.r;
                 let newC = playerState.c;
@@ -658,14 +751,16 @@
                 if (playerState.dir === 3) newC--; // Barat
 
                 if (newR < 0 || newR >= map.length || newC < 0 || newC >= map[0].length || map[newR][newC] === 1) {
-                    return false; // Tabrakan
+                    hitWall = true; // Tabrakan dengan dinding
+                } else {
+                    playerState.r = newR;
+                    playerState.c = newC;
+                    playSound('move');
+                    updatePlayerVisual();
                 }
-                playerState.r = newR;
-                playerState.c = newC;
             }
-            
-            playSound('move');
-            updatePlayerVisual();
+
+            if (hitWall) return 'wall';
 
             // 2. Eksekusi Pergerakan Bintang (jika ada dan belum diambil)
             if (starState.active && !hasCollectedItem) {
@@ -675,9 +770,48 @@
                 updateStarVisual();
             }
 
-            await sleep(400); // Waktu animasi visual berjalan
+            // Helper Fungsi untuk pergerakan dan deteksi UFO
+            const moveUfo = () => {
+                ufoOldR = ufoState.r;
+                ufoOldC = ufoState.c;
+                ufoState.pathIndex = (ufoState.pathIndex + 1) % ufoState.path.length;
+                ufoState.r = ufoState.path[ufoState.pathIndex][0];
+                ufoState.c = ufoState.path[ufoState.pathIndex][1];
+                updateUfoVisual();
+            };
 
-            // 3. Deteksi Pengambilan Item (Static & Moving)
+            const checkUfoCollision = (pOldR, pOldC) => {
+                let sameSpot = (playerState.r === ufoState.r && playerState.c === ufoState.c);
+                let passThrough = (pOldR === ufoState.r && pOldC === ufoState.c && playerState.r === ufoOldR && playerState.c === ufoOldC);
+                return sameSpot || passThrough;
+            };
+
+            // 3. Eksekusi Pergerakan UFO & Timing (Animasi)
+            if (ufoState.active) {
+                if (ufoState.speed === 2) {
+                    // Langkah 1 UFO
+                    moveUfo();
+                    await sleep(200);
+                    if (checkUfoCollision(playerOldR, playerOldC)) return 'ufo';
+
+                    // Langkah 2 UFO
+                    moveUfo();
+                    await sleep(200);
+                    // Untuk step kedua, player secara konsep sedang berdiam di tempat, 
+                    // komparasi posisinya cukup pada playerState saat ini
+                    if (checkUfoCollision(playerState.r, playerState.c)) return 'ufo';
+                } else {
+                    // Kecepatan normal
+                    moveUfo();
+                    await sleep(400);
+                    if (checkUfoCollision(playerOldR, playerOldC)) return 'ufo';
+                }
+            } else {
+                await sleep(400); // Waktu default animasi visual berjalan
+            }
+
+            // 4. Deteksi Pengambilan Bintang
+            // - Bintang Statis
             if (map[playerState.r][playerState.c] === 'C' && !hasCollectedItem && !starState.active) {
                 hasCollectedItem = true;
                 playSound('collect');
@@ -685,8 +819,8 @@
                 if(cell) cell.innerHTML = ''; 
             }
 
+            // - Bintang Bergerak
             if (starState.active && !hasCollectedItem) {
-                // Cek apakah berdiri di kotak yang sama ATAU berpapasan (bertukar tempat)
                 let sameSpot = (playerState.r === starState.r && playerState.c === starState.c);
                 let passThrough = (playerOldR === starState.r && playerOldC === starState.c && playerState.r === starOldR && playerState.c === starOldC);
                 
@@ -697,7 +831,7 @@
                 }
             }
 
-            return true;
+            return 'ok';
         }
 
         // --- MODAL & FEEDBACK ---
@@ -761,6 +895,19 @@
                 
                 btn.innerText = 'Coba Lagi';
                 btn.className = 'w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
+                btn.onclick = () => {
+                    resetPlayer();
+                    closeModal();
+                };
+            } else if (type === 'ufo') {
+                playSound('ufo');
+                icon.innerText = '🛸';
+                title.innerText = 'Tertangkap UFO!';
+                title.className = 'text-2xl font-bold mb-2 text-purple-600';
+                desc.innerText = 'Roket kamu tertangkap UFO yang sedang berpatroli! Amati pergerakannya dan hindari.';
+                
+                btn.innerText = 'Coba Lagi';
+                btn.className = 'w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-transform active:scale-95';
                 btn.onclick = () => {
                     resetPlayer();
                     closeModal();
