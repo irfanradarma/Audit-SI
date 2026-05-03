@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRAVITY DROP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+:root {
+  --bg:#080810; --panel:#10101c; --border:#222234;
+  --accent:#00e5ff; --accent2:#ff3d71; --accent3:#ffe066; --green:#22c55e;
+  --text:#dde0f0; --muted:#44465a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Space Mono',monospace;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;overflow:hidden;user-select:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,229,255,0.07) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 90% 100%,rgba(255,61,113,0.06) 0%,transparent 60%);
+}
+header{text-align:center;margin-bottom:12px;}
+h1{
+  font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:10px;
+  color:var(--accent);text-shadow:0 0 30px rgba(0,229,255,0.5),0 0 70px rgba(0,229,255,0.2);line-height:1;
+}
+.level-badge{display:inline-flex;align-items:center;gap:8px;margin-top:5px;}
+.level-pip{width:26px;height:5px;border-radius:3px;background:var(--border);transition:all 0.3s;}
+.level-pip.active{background:var(--accent);box-shadow:0 0 8px rgba(0,229,255,0.6);}
+.level-pip.done{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,0.4);}
+.level-lbl{font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.game-wrapper{display:flex;gap:12px;align-items:flex-start;}
+#gameCanvas{display:block;border:1px solid var(--border);border-radius:4px;cursor:crosshair;
+  box-shadow:0 0 0 1px rgba(0,229,255,0.08),0 20px 60px rgba(0,0,0,0.7);}
+.sidebar{width:146px;display:flex;flex-direction:column;gap:9px;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:11px;}
+.panel-title{font-size:7px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
+  margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.toolbar{display:flex;flex-direction:column;gap:4px;}
+.block-btn{
+  width:100%;height:46px;background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:4px;cursor:grab;display:flex;align-items:center;gap:7px;padding:0 8px;transition:all 0.12s;
+}
+.block-btn:hover{border-color:var(--accent);background:rgba(0,229,255,0.06);transform:translateX(2px);}
+.block-btn.selected{border-color:var(--accent);background:rgba(0,229,255,0.1);}
+.block-btn.disabled{opacity:0.25;pointer-events:none;}
+.block-label{font-size:7px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;line-height:1.4;}
+.btn{
+  width:100%;padding:10px 8px;border:1px solid;border-radius:4px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;cursor:pointer;font-weight:700;transition:all 0.15s;
+}
+.btn-drop{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.btn-drop:hover{background:transparent;color:var(--accent);box-shadow:0 0 20px rgba(0,229,255,0.3);}
+.btn-drop:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-reset{background:transparent;border-color:var(--border);color:var(--muted);}
+.btn-reset:hover{border-color:var(--accent2);color:var(--accent2);}
+.btn-next{background:var(--green);border-color:var(--green);color:var(--bg);display:none;}
+.btn-next:hover{background:transparent;color:var(--green);}
+.ball-row{display:flex;align-items:center;gap:7px;padding-top:8px;}
+.ball-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 35% 35%,#80f7ff,#00e5ff 50%,#0077aa);
+  box-shadow:0 0 7px rgba(0,229,255,0.5);transition:all 0.3s;}
+.ball-dot.bouncy{background:radial-gradient(circle at 35% 35%,#fff3a0,#ffe066 50%,#b45309);
+  box-shadow:0 0 7px rgba(255,224,102,0.6);}
+.ball-type{font-size:7px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.hint{font-size:7px;color:var(--muted);line-height:1.9;letter-spacing:0.3px;}
+.hint strong{color:var(--accent);}
+/* Overlays */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);
+  backdrop-filter:blur(10px);z-index:100;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+}
+.overlay.show{display:flex;}
+.ov-lnum{font-size:10px;letter-spacing:4px;color:var(--muted);}
+.ov-title{
+  font-family:'Bebas Neue',sans-serif;letter-spacing:10px;
+  text-shadow:0 0 40px currentColor;animation:pulse 1.6s ease-in-out infinite;
+}
+.ov-win{font-size:76px;color:var(--accent3);}
+.ov-level{font-size:52px;color:var(--accent);}
+.ov-sub{
+  font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
+  text-align:center;max-width:340px;line-height:2.2;white-space:pre-line;
+}
+.new-pill{
+  background:rgba(255,224,102,0.1);border:1px solid rgba(255,224,102,0.35);
+  border-radius:20px;padding:4px 12px;font-size:7px;letter-spacing:3px;
+  color:var(--accent3);text-transform:uppercase;
+}
+.ov-btns{display:flex;gap:10px;margin-top:8px;}
+.obtn{
+  padding:12px 32px;background:transparent;border:1px solid;border-radius:4px;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+  cursor:pointer;text-transform:uppercase;transition:all 0.2s;
+}
+.obtn-cyan{border-color:var(--accent);color:var(--accent);}
+.obtn-cyan:hover{background:var(--accent);color:var(--bg);}
+.obtn-gold{border-color:var(--accent3);color:var(--accent3);}
+.obtn-gold:hover{background:var(--accent3);color:var(--bg);}
+.obtn-green{border-color:var(--green);color:var(--green);}
+.obtn-green:hover{background:var(--green);color:var(--bg);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+#dragGhost{position:fixed;pointer-events:none;z-index:999;opacity:0.85;display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>GRAVITY DROP</h1>
+  <div class="level-badge">
+    <span class="level-lbl">Level</span>
+    <div class="level-pip" id="pip0"></div>
+    <div class="level-pip" id="pip1"></div>
+    <div class="level-pip" id="pip2"></div>
+    <div class="level-pip" id="pip3"></div>
+    <div class="level-pip" id="pip4"></div>
+  </div>
+</header>
+
+<div class="game-wrapper">
+  <canvas id="gameCanvas" width="540" height="540"></canvas>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Blocks</div>
+      <div class="toolbar" id="toolbar"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Controls</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="btn btn-drop" id="dropBtn">▶ Drop</button>
+        <button class="btn btn-reset" id="resetBtn">↺ Retry</button>
+        <button class="btn btn-next" id="nextBtn">Next Level →</button>
+      </div>
+      <div class="ball-row">
+        <div class="ball-dot" id="ballDot"></div>
+        <span class="ball-type" id="ballType">Standard</span>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title" id="hintTitle">Tutorial</div>
+      <p class="hint" id="hintBody"></p>
+    </div>
+  </div>
+</div>
+
+<canvas id="dragGhost" width="60" height="60"></canvas>
+
+<!-- Intro overlay -->
+<div class="overlay" id="introOv">
+  <div class="ov-lnum" id="introNum">LEVEL 1</div>
+  <div class="ov-title ov-level" id="introTitle">TUTORIAL</div>
+  <div class="new-pill" id="introPill" style="display:none"></div>
+  <div class="ov-sub" id="introSub"></div>
+  <button class="obtn obtn-cyan" onclick="closeIntro()">Play →</button>
+</div>
+
+<!-- Win overlay -->
+<div class="overlay" id="winOv">
+  <div class="ov-lnum" id="winNum">LEVEL 1 COMPLETE</div>
+  <div class="ov-title ov-win">YOU WIN!</div>
+  <div class="ov-sub" id="winSub"></div>
+  <div class="ov-btns">
+    <button class="obtn obtn-gold" onclick="retryLevel()">↺ Retry</button>
+    <button class="obtn obtn-green" id="winNextBtn" onclick="advanceLevel()">Next Level →</button>
+  </div>
+</div>
+
+<!-- All done overlay -->
+<div class="overlay" id="doneOv">
+  <div class="ov-title ov-win" style="font-size:60px;letter-spacing:6px;">ALL CLEAR!</div>
+  <div class="ov-sub">All 5 levels conquered.\nPhysics mastered.</div>
+  <button class="obtn obtn-cyan" onclick="startLevel(0)">↺ Play Again</button>
+</div>
+
+<script>
+const {Engine,Bodies,Body,World,Events,Composite} = Matter;
+
+const CS=540, COLS=9, ROWS=9, CELL=CS/COLS;
+
+// ── Level data ────────────────────────────────────────────────────────────────
+const LEVELS = [
+  {
+    id:0, name:"TUTORIAL", pill:null,
+    sub:"The goal is right below the ball.\nJust press DROP — no blocks needed!\nOr place a block to explore the mechanics.",
+    ballCol:4, holeCol:4, holeMoving:false, bouncyBall:false,
+    hurdles:[], maxBlocks:3,
+    hint:"<strong>Drag</strong> blocks from toolbar to grid.\n<strong>Click</strong> a placed block to rotate 90°.\n<strong>Right-click</strong> a block to remove it.\n<strong>▶ Drop</strong> releases the ball."
+  },
+  {
+    id:1, name:"OFF-CENTER", pill:null,
+    sub:"The goal is no longer below the ball.\nUse ramps or curves to redirect the path.",
+    ballCol:4, holeCol:1, holeMoving:false, bouncyBall:false,
+    hurdles:[], maxBlocks:4,
+    hint:"The hole is to the <strong>far left</strong>.\n\nUse <strong>Ramp ←</strong> or <strong>Curve ←</strong>\nto bend the ball's trajectory.\nRotate blocks by clicking them."
+  },
+  {
+    id:2, name:"HURDLES", pill:"NEW: Permanent Blocks",
+    sub:"Orange blocks are fixed obstacles.\nRoute the ball around them to reach the goal.",
+    ballCol:4, holeCol:7, holeMoving:false, bouncyBall:false,
+    hurdles:[{col:3,row:3,type:0},{col:4,row:3,type:0},{col:5,row:3,type:0},{col:4,row:5,type:0}],
+    maxBlocks:5,
+    hint:"<strong>🔒 Orange blocks</strong> are fixed.\nYou can't remove or rotate them.\n\nBuild a path around them\nto reach the right-side goal."
+  },
+  {
+    id:3, name:"MOVING TARGET", pill:"NEW: Moving Hole",
+    sub:"The goal slides left and right.\nTime your drop — or funnel the ball to intercept it.",
+    ballCol:4, holeCol:4, holeMoving:true, holeSpeed:1.5, bouncyBall:false,
+    hurdles:[{col:2,row:3,type:0},{col:6,row:5,type:0},{col:3,row:6,type:0}],
+    maxBlocks:5,
+    hint:"The <strong>◀ ▶ red goal</strong> is moving!\n\nTime your drop carefully,\nor use blocks to guide the ball\ntoward the center path."
+  },
+  {
+    id:4, name:"BOUNCY BALL", pill:"NEW: High Restitution Ball",
+    sub:"This ball bounces with high energy.\nPlan for extra deflections — curves will help absorb it.",
+    ballCol:4, holeCol:2, holeMoving:false, bouncyBall:true,
+    hurdles:[{col:1,row:2,type:0},{col:5,row:3,type:1},{col:6,row:5,type:0},{col:2,row:6,type:0}],
+    maxBlocks:6,
+    hint:"<strong>Bouncy ball</strong> — high restitution!\n\nIt will ricochet off surfaces.\nCurved ramps help absorb energy\nand redirect it smoothly."
+  }
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let engine,world,ball,holeSensor;
+let holeVX=0, holeDir=1;
+let placedBlocks=[],hurdleBodies=[];
+let gameRunning=false,won=false;
+let currentLevel=0,selectedType=0,blockCount=0;
+let dragging=null,mouseX=0,mouseY=0,ghostVisible=false;
+
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+const ghostCanvas=document.getElementById('dragGhost');
+const ghostCtx=ghostCanvas.getContext('2d');
+
+// ── Block types ───────────────────────────────────────────────────────────────
+const BTYPES=[
+  {id:0,name:'Solid',   color:'#3730a3'},
+  {id:1,name:'Ramp →', color:'#6d28d9'},
+  {id:2,name:'Ramp ←', color:'#7e22ce'},
+  {id:3,name:'Curve →',color:'#0e7490'},
+  {id:4,name:'Curve ←',color:'#0369a1'},
+];
+
+// Draw block visually (canvas 2d, from top-left corner, size x size)
+function drawBV(c,type,size,color,alpha=1){
+  c.save(); c.globalAlpha=alpha;
+  const m=2.5, s=size-m*2;
+  c.fillStyle=color;
+  c.beginPath();
+  if(type===0){
+    c.roundRect(m,m,s,s,3);
+  } else if(type===1){
+    // Ramp →: flat bottom+right, slope top-left→bottom-right
+    c.moveTo(m,m); c.lineTo(size-m,size-m); c.lineTo(m,size-m); c.closePath();
+  } else if(type===2){
+    // Ramp ←: flat bottom+left, slope top-right→bottom-left
+    c.moveTo(size-m,m); c.lineTo(size-m,size-m); c.lineTo(m,size-m); c.closePath();
+  } else if(type===3){
+    // Concave quarter-pipe →: solid region bottom+right, concave arc from top-right→bottom-left
+    // The ball rolls INTO the curved wall (like a skateboard ramp)
+    // Arc center at bottom-right corner
+    c.moveTo(m,size-m);       // bottom-left
+    c.lineTo(size-m,size-m);  // bottom-right
+    c.lineTo(size-m,m);       // top-right
+    c.arc(m,m,s,0,-Math.PI/2,true); // arc centered at top-left, sweeps to meet top-right... 
+    // Actually: concave means the curved surface faces inward.
+    // Shape: bottom-left, bottom-right, then arc up to top-left
+    // Let me redo: arc centered at bottom-right, from top-right (angle=-π/2) to bottom-left (angle=π)
+    c.restore(); c.save(); c.globalAlpha=alpha; c.fillStyle=color; c.beginPath();
+    // The concave curved ramp: bottom-left and bottom-right and the right wall going up,
+    // then a concave arc from top-right back down to bottom-left
+    // Concave arc: center at bottom-right (size-m, size-m), radius s
+    // from angle -π/2 (= top-right at size-m, m) sweeping backwards (clockwise=false=ccw)
+    // to angle π (= left side, m, size-m = bottom-left)
+    c.moveTo(size-m,size-m);  // bottom-right center of arc
+    c.arc(size-m,size-m,s,-Math.PI/2,Math.PI,false); // this draws the arc ccw
+    c.closePath();
+    c.fill();
+  } else if(type===4){
+    // Concave quarter-pipe ←: mirror of type 3
+    c.restore(); c.save(); c.globalAlpha=alpha; c.fillStyle=color; c.beginPath();
+    // Arc center at bottom-left (m, size-m), radius s
+    // from angle -π/2 (top-left at m,m) to angle 0 (right: size-m, size-m=bottom-right)
+    // going clockwise (true)
+    c.moveTo(m,size-m);
+    c.arc(m,size-m,s,-Math.PI/2,0,true);
+    c.closePath();
+    c.fill();
+  }
+  if(type===0||type===1||type===2){ c.fill(); }
+  c.strokeStyle='rgba(255,255,255,0.12)'; c.lineWidth=1; c.stroke();
+  c.restore();
+}
+
+function drawBlockAt(c,type,x,y,size,rot=0,alpha=1,hurdle=false){
+  const color=hurdle?'#c2410c':BTYPES[type].color;
+  c.save();
+  c.translate(x+size/2,y+size/2);
+  c.rotate(rot);
+  c.translate(-size/2,-size/2);
+  drawBV(c,type,size,color,alpha);
+  c.restore();
+}
+
+// ── Physics bodies ────────────────────────────────────────────────────────────
+function makeBlockBody(type,col,row,rot=0){
+  const cx=col*CELL+CELL/2, cy=row*CELL+CELL/2;
+  const h=CELL/2-3;
+  const o={isStatic:true,friction:0.4,restitution:0.25,label:'block',
+           collisionFilter:{category:0x0004,mask:0x0001}};
+  let body;
+  if(type===0){
+    body=Bodies.rectangle(cx,cy,CELL-5,CELL-5,o);
+  } else if(type===1){
+    // flat bottom, slope top-left → bottom-right
+    const v=[{x:-h,y:-h},{x:-h,y:h},{x:h,y:h}];
+    body=Bodies.fromVertices(cx,cy,v,o,true);
+  } else if(type===2){
+    const v=[{x:h,y:-h},{x:-h,y:h},{x:h,y:h}];
+    body=Bodies.fromVertices(cx,cy,v,o,true);
+  } else if(type===3){
+    // Concave quarter-pipe → : polygon approximation
+    // The physics surface curves from top-right down to bottom-left (concave inward)
+    const steps=10;
+    const verts=[];
+    // The curved surface: starts at top-right (-h angle), sweeps around center (h,h)=bottom-right
+    // Actually build: bottom-right as pivot, arc from top (angle=-π/2) CCW to left (angle=π)
+    // giving points going along concave arc, then close along edges
+    for(let i=0;i<=steps;i++){
+      const t=-Math.PI/2+i*(3*Math.PI/2)/steps; // from -π/2 to π
+      verts.push({x:h+h*Math.cos(t), y:h+h*Math.sin(t)});
+    }
+    body=Bodies.fromVertices(cx,cy,verts,o,true);
+  } else if(type===4){
+    const steps=10;
+    const verts=[];
+    for(let i=0;i<=steps;i++){
+      const t=-Math.PI/2+i*(3*Math.PI/2)/steps;
+      // mirror x
+      verts.push({x:-(h+h*Math.cos(t)), y:h+h*Math.sin(t)});
+    }
+    body=Bodies.fromVertices(cx,cy,verts,o,true);
+  }
+  if(!body) return null;
+  if(rot!==0) Body.setAngle(body,rot);
+  Body.setPosition(body,{x:cx,y:cy});
+  return body;
+}
+
+// ── Level setup ───────────────────────────────────────────────────────────────
+function createPhysics(){
+  engine=Engine.create({gravity:{x:0,y:0}});
+  world=engine.world;
+  const wo={isStatic:true,friction:0.3,restitution:0.2,label:'wall',
+            collisionFilter:{category:0x0004,mask:0x0001}};
+  World.add(world,[
+    Bodies.rectangle(CS/2,-10,CS+40,20,wo),
+    Bodies.rectangle(-10,CS/2,20,CS+40,wo),
+    Bodies.rectangle(CS+10,CS/2,20,CS+40,wo),
+    Bodies.rectangle(CS/2,CS+10,CS+40,20,wo),
+  ]);
+  Events.on(engine,'collisionStart',e=>{
+    e.pairs.forEach(p=>{
+      const l=[p.bodyA.label,p.bodyB.label];
+      if(l.includes('ball')&&l.includes('hole')) triggerWin();
+    });
+  });
+}
+
+function startLevel(idx){
+  currentLevel=idx;
+  const lvl=LEVELS[idx];
+  won=false; gameRunning=false; blockCount=0;
+  if(engine){World.clear(world);Engine.clear(engine);}
+  placedBlocks=[]; hurdleBodies=[];
+
+  createPhysics();
+
+  // Ball
+  const bx=lvl.ballCol*CELL+CELL/2, by=CELL*0.5;
+  ball=Bodies.circle(bx,by,CELL*0.35,{
+    restitution:lvl.bouncyBall?0.85:0.35,
+    friction:lvl.bouncyBall?0.05:0.3,
+    frictionAir:lvl.bouncyBall?0.005:0.012,
+    density:lvl.bouncyBall?0.0004:0.001,
+    isStatic:true,label:'ball',
+    collisionFilter:{category:0x0001,mask:0x0002|0x0004}
+  });
+  World.add(world,ball);
+
+  // Hole
+  const hx=lvl.holeCol*CELL+CELL/2, hy=CS-CELL*0.5;
+  holeVX=hx; holeDir=1;
+  holeSensor=Bodies.circle(hx,hy,CELL*0.44,{
+    isStatic:true,isSensor:true,label:'hole',
+    collisionFilter:{category:0x0002,mask:0x0001}
+  });
+  World.add(world,holeSensor);
+
+  // Hurdles
+  lvl.hurdles.forEach(h=>{
+    const b=makeBlockBody(h.type,h.col,h.row,0);
+    if(b){b.label='hurdle';World.add(world,b);hurdleBodies.push({body:b,...h,rotation:0});}
+  });
+
+  // UI
+  updatePips();buildToolbar();updateHint();updateBallUI();
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('dropBtn').disabled=false;
+  document.getElementById('winOv').classList.remove('show');
+  document.getElementById('doneOv').classList.remove('show');
+
+  // Intro
+  document.getElementById('introNum').textContent=`LEVEL ${idx+1}`;
+  document.getElementById('introTitle').textContent=lvl.name;
+  document.getElementById('introSub').textContent=lvl.sub;
+  const pill=document.getElementById('introPill');
+  if(lvl.pill){pill.textContent=lvl.pill;pill.style.display='block';}
+  else pill.style.display='none';
+  document.getElementById('introOv').classList.add('show');
+}
+
+function closeIntro(){document.getElementById('introOv').classList.remove('show');}
+function retryLevel(){startLevel(currentLevel);closeIntro();}
+function advanceLevel(){
+  const next=currentLevel+1;
+  document.getElementById('winOv').classList.remove('show');
+  if(next>=LEVELS.length) document.getElementById('doneOv').classList.add('show');
+  else startLevel(next);
+}
+
+function updatePips(){
+  for(let i=0;i<5;i++){
+    const p=document.getElementById('pip'+i);
+    p.className='level-pip';
+    if(i<currentLevel) p.classList.add('done');
+    else if(i===currentLevel) p.classList.add('active');
+  }
+}
+function updateHint(){
+  const lvl=LEVELS[currentLevel];
+  document.getElementById('hintTitle').textContent=`Level ${currentLevel+1} — ${lvl.name}`;
+  document.getElementById('hintBody').innerHTML=lvl.hint.replace(/\n/g,'<br>');
+}
+function updateBallUI(){
+  const lvl=LEVELS[currentLevel];
+  document.getElementById('ballDot').className='ball-dot'+(lvl.bouncyBall?' bouncy':'');
+  document.getElementById('ballType').textContent=lvl.bouncyBall?'Bouncy':'Standard';
+}
+
+// ── Toolbar ───────────────────────────────────────────────────────────────────
+function buildToolbar(){
+  const lvl=LEVELS[currentLevel];
+  const tb=document.getElementById('toolbar');tb.innerHTML='';
+  BTYPES.forEach((bt,i)=>{
+    const avail=lvl.availableBlocks===undefined||lvl.availableBlocks.includes(i);
+    const btn=document.createElement('div');
+    btn.className='block-btn'+(i===selectedType?' selected':'')+(!avail?' disabled':'');
+    const mc=document.createElement('canvas');mc.width=30;mc.height=30;
+    drawBV(mc.getContext('2d'),i,30,bt.color);
+    const lbl=document.createElement('span');lbl.className='block-label';lbl.textContent=bt.name;
+    btn.appendChild(mc);btn.appendChild(lbl);
+    if(avail){
+      btn.addEventListener('click',()=>{selectedType=i;buildToolbar();});
+      btn.addEventListener('mousedown',e=>{if(gameRunning)return;selectedType=i;startDrag(e,i);});
+    }
+    tb.appendChild(btn);
+  });
+}
+
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
+function startDrag(e,type){
+  const lvl=LEVELS[currentLevel];
+  dragging={type};
+  const g=document.getElementById('dragGhost');
+  g.style.display='block';ghostVisible=true;
+  ghostCtx.clearRect(0,0,60,60);
+  drawBV(ghostCtx,type,60,BTYPES[type].color,0.85);
+  moveGhost(e.clientX,e.clientY);
+}
+function moveGhost(cx,cy){
+  const g=document.getElementById('dragGhost');
+  g.style.left=(cx-30)+'px';g.style.top=(cy-30)+'px';
+}
+document.addEventListener('mousemove',e=>{
+  mouseX=e.clientX;mouseY=e.clientY;
+  if(dragging)moveGhost(e.clientX,e.clientY);
+});
+document.addEventListener('mouseup',e=>{
+  if(!dragging)return;
+  document.getElementById('dragGhost').style.display='none';ghostVisible=false;
+  const rect=canvas.getBoundingClientRect();
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  if(x>=0&&x<CS&&y>=0&&y<CS) doPlace(dragging.type,x,y);
+  dragging=null;
+});
+
+function doPlace(type,x,y){
+  if(gameRunning)return;
+  const lvl=LEVELS[currentLevel];
+  const col=Math.floor(x/CELL),row=Math.floor(y/CELL);
+  if(col<0||col>=COLS||row<=0||row>=ROWS-1)return;
+  if(hurdleBodies.find(h=>h.col===col&&h.row===row))return;
+  const existing=placedBlocks.findIndex(b=>b.col===col&&b.row===row);
+  const replacing=existing>=0;
+  if(!replacing&&blockCount>=lvl.maxBlocks)return;
+  if(replacing){World.remove(world,placedBlocks[existing].body);placedBlocks.splice(existing,1);blockCount--;}
+  const body=makeBlockBody(type,col,row,0);
+  if(!body)return;
+  World.add(world,body);
+  placedBlocks.push({body,type,col,row,rotation:0});
+  blockCount++;
+}
+
+canvas.addEventListener('click',e=>{
+  if(gameRunning||dragging)return;
+  const rect=canvas.getBoundingClientRect();
+  const col=Math.floor((e.clientX-rect.left)/CELL);
+  const row=Math.floor((e.clientY-rect.top)/CELL);
+  const bd=placedBlocks.find(b=>b.col===col&&b.row===row);
+  if(!bd)return;
+  bd.rotation=(bd.rotation+Math.PI/2)%(Math.PI*2);
+  World.remove(world,bd.body);
+  const nb=makeBlockBody(bd.type,bd.col,bd.row,bd.rotation);
+  bd.body=nb;World.add(world,nb);
+});
+
+canvas.addEventListener('contextmenu',e=>{
+  e.preventDefault();if(gameRunning)return;
+  const rect=canvas.getBoundingClientRect();
+  const col=Math.floor((e.clientX-rect.left)/CELL);
+  const row=Math.floor((e.clientY-rect.top)/CELL);
+  const idx=placedBlocks.findIndex(b=>b.col===col&&b.row===row);
+  if(idx>=0){World.remove(world,placedBlocks[idx].body);placedBlocks.splice(idx,1);blockCount--;}
+});
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+document.getElementById('dropBtn').addEventListener('click',()=>{
+  if(gameRunning||won)return;
+  gameRunning=true;engine.gravity.y=1.2;Body.setStatic(ball,false);
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{startLevel(currentLevel);closeIntro();});
+document.getElementById('nextBtn').addEventListener('click',advanceLevel);
+
+function triggerWin(){
+  if(won)return;won=true;gameRunning=false;
+  Body.setStatic(ball,true);Body.setVelocity(ball,{x:0,y:0});
+  setTimeout(()=>{
+    document.getElementById('winNum').textContent=`LEVEL ${currentLevel+1} COMPLETE`;
+    const subs=["Straight down — nice!","Redirected perfectly!","Navigated the hurdles!","Timed the moving target!","Tamed the bouncy beast!"];
+    document.getElementById('winSub').textContent=subs[currentLevel]||'';
+    document.getElementById('winNextBtn').textContent=currentLevel>=LEVELS.length-1?'★ Finish':'Next Level →';
+    document.getElementById('winOv').classList.add('show');
+  },500);
+}
+
+// ── Moving hole ───────────────────────────────────────────────────────────────
+function tickHole(){
+  const lvl=LEVELS[currentLevel];
+  if(!lvl.holeMoving||won)return;
+  const spd=lvl.holeSpeed||1.4;
+  holeVX+=holeDir*spd;
+  if(holeVX>CS-CELL*0.5){holeVX=CS-CELL*0.5;holeDir=-1;}
+  if(holeVX<CELL*0.5){holeVX=CELL*0.5;holeDir=1;}
+  Body.setPosition(holeSensor,{x:holeVX,y:holeSensor.position.y});
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render(){
+  Engine.update(engine,1000/60);
+  tickHole();
+
+  ctx.clearRect(0,0,CS,CS);
+  ctx.fillStyle='#0b0b14';ctx.fillRect(0,0,CS,CS);
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.042)';ctx.lineWidth=1;
+  for(let c=0;c<=COLS;c++){ctx.beginPath();ctx.moveTo(c*CELL,0);ctx.lineTo(c*CELL,CS);ctx.stroke();}
+  for(let r=0;r<=ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*CELL);ctx.lineTo(CS,r*CELL);ctx.stroke();}
+
+  // Reserved row tints
+  ctx.fillStyle='rgba(0,229,255,0.025)';ctx.fillRect(0,0,CS,CELL);
+  ctx.fillStyle='rgba(255,61,113,0.025)';ctx.fillRect(0,CS-CELL,CS,CELL);
+
+  // Block counter
+  const lvl=LEVELS[currentLevel];
+  const rem=lvl.maxBlocks-blockCount;
+  ctx.fillStyle=rem>0?'rgba(0,229,255,0.5)':'rgba(255,61,113,0.6)';
+  ctx.font='700 8px Space Mono';ctx.textAlign='left';
+  ctx.fillText(`BLOCKS ${blockCount}/${lvl.maxBlocks}`,5,CS-5);
+
+  // Hurdles
+  hurdleBodies.forEach(h=>{
+    drawBlockAt(ctx,h.type,h.col*CELL,h.row*CELL,CELL,h.rotation,1,true);
+    ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText('🔒',h.col*CELL+CELL/2,h.row*CELL+CELL/2+4);
+  });
+
+  // Placed blocks
+  placedBlocks.forEach(bd=>{
+    drawBlockAt(ctx,bd.type,bd.col*CELL,bd.row*CELL,CELL,bd.rotation);
+    ctx.strokeStyle='rgba(0,229,255,0.15)';ctx.lineWidth=1;
+    ctx.strokeRect(bd.col*CELL+1,bd.row*CELL+1,CELL-2,CELL-2);
+  });
+
+  // Hole
+  const hx=holeSensor.position.x, hy=holeSensor.position.y, hr=CELL*0.41;
+  const hg=ctx.createRadialGradient(hx,hy,0,hx,hy,hr*2.4);
+  hg.addColorStop(0,'rgba(255,61,113,0.4)');hg.addColorStop(1,'transparent');
+  ctx.fillStyle=hg;ctx.beginPath();ctx.arc(hx,hy,hr*2.4,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#ff3d71';ctx.lineWidth=2;ctx.beginPath();ctx.arc(hx,hy,hr,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='rgba(255,61,113,0.18)';ctx.beginPath();ctx.arc(hx,hy,hr,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#ff3d71';ctx.beginPath();ctx.arc(hx,hy,hr*0.32,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,61,113,0.65)';ctx.font='700 7px Space Mono';ctx.textAlign='center';
+  ctx.fillText(lvl.holeMoving?'◀  ▶':'GOAL',hx,hy+hr+12);
+
+  // Ball
+  const bp=ball.position, br=CELL*0.35;
+  const bouncy=lvl.bouncyBall;
+  const bg=ctx.createRadialGradient(bp.x,bp.y,0,bp.x,bp.y,br*2.5);
+  bg.addColorStop(0,bouncy?'rgba(255,224,102,0.4)':'rgba(0,229,255,0.35)');
+  bg.addColorStop(1,'transparent');
+  ctx.fillStyle=bg;ctx.beginPath();ctx.arc(bp.x,bp.y,br*2.5,0,Math.PI*2);ctx.fill();
+  const bbg=ctx.createRadialGradient(bp.x-br*0.3,bp.y-br*0.3,0,bp.x,bp.y,br);
+  if(bouncy){bbg.addColorStop(0,'#fff3a0');bbg.addColorStop(0.55,'#ffe066');bbg.addColorStop(1,'#92400e');}
+  else{bbg.addColorStop(0,'#9efeff');bbg.addColorStop(0.55,'#00e5ff');bbg.addColorStop(1,'#005f7a');}
+  ctx.fillStyle=bbg;ctx.beginPath();ctx.arc(bp.x,bp.y,br,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.28)';ctx.beginPath();ctx.arc(bp.x-br*0.27,bp.y-br*0.27,br*0.2,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=bouncy?'rgba(255,224,102,0.65)':'rgba(0,229,255,0.55)';
+  ctx.font='700 7px Space Mono';ctx.textAlign='center';
+  ctx.fillText(bouncy?'BOUNCY':'BALL',bp.x,bp.y-br-5);
+
+  // Drag preview
+  if(dragging&&ghostVisible){
+    const rect=canvas.getBoundingClientRect();
+    const mx=mouseX-rect.left,my=mouseY-rect.top;
+    if(mx>=0&&mx<CS&&my>=0&&my<CS){
+      const pc=Math.floor(mx/CELL),pr=Math.floor(my/CELL);
+      const ok=pr>0&&pr<ROWS-1&&!hurdleBodies.find(h=>h.col===pc&&h.row===pr);
+      const canPlace=ok&&(blockCount<lvl.maxBlocks||placedBlocks.find(b=>b.col===pc&&b.row===pr));
+      if(ok){
+        ctx.strokeStyle=canPlace?'rgba(0,229,255,0.6)':'rgba(255,61,113,0.6)';
+        ctx.lineWidth=2;ctx.strokeRect(pc*CELL+2,pr*CELL+2,CELL-4,CELL-4);
+        if(canPlace) drawBlockAt(ctx,dragging.type,pc*CELL,pr*CELL,CELL,0,0.38);
+      }
+    }
+  }
+
+  requestAnimationFrame(render);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+startLevel(0);
+render();
+</script>
+</body>
+</html>
