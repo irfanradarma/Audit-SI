@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Utang Ikatan Dinas ASN</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' },
+                        surface: '#f8fafc'
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'float': '0 10px 30px -5px rgba(99, 102, 241, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Libraries CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/id.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; color: #334155; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .modal-overlay {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* Form Inputs Customization */
+        input[type="date"], input[type="text"], input[type="number"], select {
+            transition: all 0.2s ease;
+        }
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- SETUP MODAL -->
+    <div id="setupModal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden">
+        <div class="bg-white rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl fade-in relative overflow-hidden">
+            <!-- Decorative Blob -->
+            <div class="absolute -top-16 -right-16 w-32 h-32 bg-primary-100 rounded-full blur-3xl opacity-60"></div>
+            <div class="absolute -bottom-16 -left-16 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-60"></div>
+            
+            <div class="relative z-10">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-primary-500 to-blue-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl shadow-lg shadow-primary-500/30 transform rotate-3">
+                        <i class="fa-solid fa-building-user -rotate-3"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Data Profil Anda</h2>
+                    <p class="text-slate-500 text-sm mt-2 font-medium">Mari mulai dengan mengatur data dasar CPNS Anda.</p>
+                </div>
+                <form id="setupForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal TMT CPNS</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-regular fa-calendar text-slate-400"></i>
+                            </div>
+                            <input type="date" id="setupTmt" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none text-slate-700 font-medium">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-3">Latar Belakang Pendidikan Awal</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="setupType" value="D3" class="peer sr-only" required>
+                                <div class="text-center px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl peer-checked:bg-primary-50 peer-checked:border-primary-500 peer-checked:text-primary-700 group-hover:border-primary-300 transition-all">
+                                    <i class="fa-solid fa-graduation-cap mb-2 text-lg opacity-70 peer-checked:opacity-100"></i>
+                                    <span class="block font-bold text-sm">Lulusan D3</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="setupType" value="Non-D3" class="peer sr-only">
+                                <div class="text-center px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl peer-checked:bg-primary-50 peer-checked:border-primary-500 peer-checked:text-primary-700 group-hover:border-primary-300 transition-all">
+                                    <i class="fa-solid fa-briefcase mb-2 text-lg opacity-70 peer-checked:opacity-100"></i>
+                                    <span class="block font-bold text-sm">S1 / Non-D3</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-primary-600 transition-colors shadow-lg">
+                        Mulai Kalkulasi <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="glass-header sticky top-0 z-40 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+                    <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-800 leading-tight hidden sm:block">Kalkulator Ikatan Dinas</h1>
+                    <h1 class="font-bold text-slate-800 leading-tight sm:hidden">Kalkulator ASN</h1>
+                    <p class="text-xs text-slate-500 font-medium">Dashboard Evaluasi TGR</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="app.resetData()" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-xl text-sm transition-all font-semibold flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Reset</span>
+                </button>
+                <button onclick="app.exportPDF()" class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-sm transition-all font-semibold flex items-center gap-2 shadow-float">
+                    <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="export-container" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- KOLOM KIRI: INPUT DATA -->
+            <div class="lg:col-span-4 flex flex-col gap-5" data-html2canvas-ignore="true">
+                
+                <!-- Profil Info -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                <i class="fa-solid fa-id-badge"></i>
+                            </div>
+                            Data Profil
+                        </h3>
+                        <button onclick="app.openSetup()" class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-pencil"></i> Edit
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                            <p class="text-slate-500 text-[11px] uppercase tracking-wider font-bold mb-1">TMT CPNS</p>
+                            <p class="font-extrabold text-slate-800" id="displayTmt">-</p>
+                        </div>
+                        <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                            <p class="text-slate-500 text-[11px] uppercase tracking-wider font-bold mb-1">Status Awal</p>
+                            <p class="font-extrabold text-slate-800 text-sm mt-1" id="displayType">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Setup Simulasi Tanggal -->
+                <div class="card p-6 bg-gradient-to-br from-white to-blue-50/30 border-blue-100" data-html2canvas-ignore="true">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2.5 mb-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </div>
+                        Tanggal Evaluasi
+                    </h3>
+                    <p class="text-[13px] text-slate-500 mb-4 leading-relaxed">Pilih tanggal untuk melihat proyeksi sisa utang dan TGR pada titik waktu tertentu.</p>
+                    <div class="relative">
+                        <input type="date" id="simDateInput" onchange="app.updateSimulationDate(this.value)" class="w-full text-sm pl-4 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none font-bold text-slate-700 shadow-sm cursor-pointer transition-all">
+                    </div>
+                </div>
+
+                <!-- Tugas Belajar -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            Tugas Belajar
+                        </h3>
+                        <button onclick="app.addTB()" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg hover:bg-primary-600 transition shadow-sm font-bold">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah
+                        </button>
+                    </div>
+                    <div id="tbList" class="space-y-4">
+                        <!-- List Item TB akan dirender di sini -->
+                    </div>
+                </div>
+
+                <!-- CLTN -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                                <i class="fa-solid fa-person-walking-luggage"></i>
+                            </div>
+                            Cuti (CLTN)
+                        </h3>
+                        <button onclick="app.addCLTN()" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg hover:bg-primary-600 transition shadow-sm font-bold">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah
+                        </button>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3 items-start mb-4">
+                        <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                        <p class="text-[12px] text-amber-800 font-medium leading-relaxed">Masa CLTN tidak dihitung sebagai masa kerja efektif untuk cicilan ikatan dinas.</p>
+                    </div>
+                    <div id="cltnList" class="space-y-4">
+                        <!-- List Item CLTN akan dirender di sini -->
+                    </div>
+                </div>
+
+                <!-- Action Button Hitung (Sticky) -->
+                <div class="mt-2 sticky bottom-6 z-10" data-html2canvas-ignore="true">
+                    <button onclick="app.calculate()" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-4 rounded-2xl shadow-float transition-all flex items-center justify-center gap-2 text-base transform hover:-translate-y-1">
+                        <i class="fa-solid fa-calculator"></i> Kalkulasi Sekarang
+                    </button>
+                    <p class="text-center text-[11px] text-slate-400 mt-3 font-medium">Klik untuk memperbarui dashboard setelah mengubah data.</p>
+                </div>
+
+            </div>
+
+            <!-- KOLOM KANAN: DASHBOARD HASIL -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                
+                <!-- Ringkasan Statistik -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="card p-5 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                            <i class="fa-solid fa-briefcase text-4xl"></i>
+                        </div>
+                        <p class="text-slate-500 text-[11px] uppercase tracking-wider font-bold mb-1">Kerja Efektif</p>
+                        <h4 class="text-3xl font-extrabold text-slate-800 flex items-baseline gap-1" id="summaryEfektif">0 <span class="text-sm font-semibold text-slate-500">Bln</span></h4>
+                    </div>
+                    <div class="card p-5 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                            <i class="fa-solid fa-file-contract text-4xl text-slate-900"></i>
+                        </div>
+                        <p class="text-slate-500 text-[11px] uppercase tracking-wider font-bold mb-1">Total Utang</p>
+                        <h4 class="text-3xl font-extrabold text-slate-800 flex items-baseline gap-1" id="summaryUtangAwal">0 <span class="text-sm font-semibold text-slate-500">Bln</span></h4>
+                    </div>
+                    <div class="card p-5 relative overflow-hidden group border-amber-200 bg-amber-50/30">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110">
+                            <i class="fa-solid fa-hourglass-half text-4xl text-amber-500"></i>
+                        </div>
+                        <p class="text-amber-700 text-[11px] uppercase tracking-wider font-bold mb-1">Sisa Utang</p>
+                        <h4 class="text-3xl font-extrabold text-amber-600 flex items-baseline gap-1" id="summarySisaUtang">0 <span class="text-sm font-semibold text-amber-700/60">Bln</span></h4>
+                    </div>
+                    <div class="card p-5 relative overflow-hidden group border-emerald-200 bg-emerald-50/50">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110">
+                            <i class="fa-solid fa-flag-checkered text-4xl text-emerald-500"></i>
+                        </div>
+                        <p class="text-emerald-700 text-[11px] uppercase tracking-wider font-bold mb-1">Estimasi Lunas</p>
+                        <h4 class="text-lg font-extrabold text-emerald-700 mt-2 leading-tight" id="summaryLunas">-</h4>
+                    </div>
+                </div>
+
+                <!-- Highlight TGR & Chart -->
+                <div class="card p-0 overflow-hidden flex flex-col md:flex-row">
+                    <div class="p-8 md:w-3/5 flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-100 bg-gradient-to-br from-white to-slate-50">
+                        <div class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-3 py-1 rounded-full text-xs font-bold w-max mb-4">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Kewajiban TGR Tersisa
+                        </div>
+                        <p class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-3 tracking-tight" id="summaryTGR">Rp 0</p>
+                        <p class="text-sm text-slate-500 leading-relaxed font-medium">Berdasarkan perhitungan skema LIFO (Last In, First Out). TGR akan menyusut secara otomatis seiring bertambahnya masa kerja efektif Anda.</p>
+                    </div>
+                    <div class="p-8 md:w-2/5 flex flex-col items-center justify-center bg-white relative">
+                        <div class="h-40 w-full relative">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-400 mt-4 uppercase tracking-wider">Progres Pelunasan</p>
+                    </div>
+                </div>
+
+                <!-- Timeline / Progress Hutang -->
+                <div class="card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+                            <i class="fa-solid fa-timeline text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Timeline Ikatan Dinas (LIFO)</h3>
+                            <p class="text-xs font-medium text-slate-500">Urutan prioritas pelunasan utang masa kerja.</p>
+                        </div>
+                    </div>
+                    <div id="timelineContainer" class="space-y-4">
+                        <!-- Timeline items render here -->
+                    </div>
+                </div>
+
+                <!-- Tabel Detail -->
+                <div class="card overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+                            <i class="fa-solid fa-table-list text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Detail Perhitungan Tabel</h3>
+                            <p class="text-xs font-medium text-slate-500">Rincian komprehensif per item ikatan dinas.</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50/80 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4">Nama / Jenis</th>
+                                    <th class="px-6 py-4 text-center">Masa Studi</th>
+                                    <th class="px-6 py-4 text-center">Utang Awal</th>
+                                    <th class="px-6 py-4 text-center">Terbayar</th>
+                                    <th class="px-6 py-4 text-center">Sisa</th>
+                                    <th class="px-6 py-4 text-right">Nilai TGR Sisa</th>
+                                    <th class="px-6 py-4 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailTableBody" class="divide-y divide-slate-100 font-medium">
+                                <!-- Tabel rows render here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-sm font-medium text-slate-400 mt-auto">
+        &copy; 2026 Kalkulator Ikatan Dinas ASN. Single-File Application.
+    </footer>
+
+    <script>
+        // Inisialisasi locale Day.js ke Bahasa Indonesia
+        dayjs.locale('id');
+
+        // State Utama Aplikasi
+        const AppState = {
+            tmt: null,
+            type: null,
+            simulationDate: dayjs().format('YYYY-MM-DD'),
+            tb: [],
+            cltn: [],
+            results: {}
+        };
+
+        let chartInstance = null;
+
+        // Dummy Data untuk pemuatan awal jika kosong
+        const DummyData = {
+            tmt: '2015-01-01',
+            type: 'D3',
+            simulationDate: dayjs().format('YYYY-MM-DD'),
+            tb: [
+                { id: 'd3-stan', name: 'Ikatan Dinas D3 STAN', type: 'D3', start: '2015-01-01', end: '2015-01-01', value: 0, isFixed: true, forcedDebt: 120 },
+                { id: generateId(), name: 'S1 Akuntansi Publik', type: 'S1', start: '2018-09-02', end: '2020-08-31', value: 45000000 },
+                { id: generateId(), name: 'S2 Kebijakan Publik', type: 'S2', start: '2023-01-10', end: '2024-12-15', value: 80000000 }
+            ],
+            cltn: [
+                { id: generateId(), start: '2021-02-01', end: '2021-07-31' }
+            ]
+        };
+
+        // Utility: Generate Random ID
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // Utility: Format Rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        }
+
+        // Utility: Format Date
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            return dayjs(dateStr).format('DD MMM YYYY');
+        }
+
+        // Utility: Format Month Year (Untuk estimasi lunas)
+        function formatMonthYear(dateStr) {
+            if (!dateStr) return '-';
+            return dayjs(dateStr).format('MMMM YYYY');
+        }
+
+        function getMonthsCovered(startDate, endDate) {
+            let covered = [];
+            if (!startDate || !endDate) return covered;
+            let start = dayjs(startDate);
+            let end = dayjs(endDate);
+            if (end.isBefore(start)) return covered;
+
+            let currentMonth = start.startOf('month');
+            let endMonth = end.startOf('month');
+
+            while (currentMonth.isBefore(endMonth) || currentMonth.isSame(endMonth, 'month')) {
+                let monthStart = currentMonth.startOf('month');
+                let monthEnd = currentMonth.endOf('month');
+
+                // Tentukan range hari di dalam bulan spesifik ini
+                let actualStart = start.isAfter(monthStart) ? start : monthStart;
+                let actualEnd = end.isBefore(monthEnd) ? end : monthEnd;
+
+                let daysInMonth = actualEnd.diff(actualStart, 'day') + 1;
+
+                // ATURAN: Diakui 1 bulan jika > 15 hari
+                if (daysInMonth > 15) {
+                    covered.push(currentMonth.format('YYYY-MM'));
+                }
+                
+                currentMonth = currentMonth.add(1, 'month');
+            }
+            return covered;
+        }
+
+        function calculateCoreLogic() {
+            // Gunakan tanggal simulasi dari state untuk memproyeksikan hari evaluasi
+            const today = dayjs(AppState.simulationDate || dayjs());
+            let tmtDate = dayjs(AppState.tmt);
+            
+            // 1. Kumpulkan bulan yang masuk masa TB dan CLTN (Tidak Efektif)
+            let nonEffectiveSet = new Set();
+            let totalTBMonths = 0;
+            let totalCLTNMonths = 0;
+
+            AppState.tb.forEach(tb => {
+                let covered = getMonthsCovered(tb.start, tb.end);
+                // Jika isFixed (D3), abaikan pemotongan masa kerja karena masa studi terjadi sebelum TMT
+                if (!tb.isFixed) {
+                    covered.forEach(m => nonEffectiveSet.add(m));
+                    totalTBMonths += covered.length;
+                }
+                tb._studyMonths = covered.length; 
+            });
+
+            AppState.cltn.forEach(cltn => {
+                let covered = getMonthsCovered(cltn.start, cltn.end);
+                covered.forEach(m => nonEffectiveSet.add(m));
+                totalCLTNMonths += covered.length;
+            });
+
+            // 2. Inisialisasi Daftar Utang
+            let debts = [];
+            
+            AppState.tb.forEach(tb => {
+                let sMonths = tb.isFixed ? 0 : tb._studyMonths;
+                let debtM = tb.forcedDebt || (sMonths * 2);
+                
+                if (debtM > 0) {
+                    debts.push({
+                        id: tb.id,
+                        type: tb.type,
+                        name: tb.name,
+                        start: tb.start,
+                        triggerDate: tb.isFixed ? dayjs(AppState.tmt).startOf('month') : dayjs(tb.end).startOf('month'),
+                        studyMonths: tb.isFixed ? '-' : sMonths,
+                        debtMonths: debtM,
+                        value: parseFloat(tb.value) || 0,
+                        paid: 0,
+                        remaining: debtM,
+                        estCompletionDate: null
+                    });
+                }
+            });
+
+            // 3. Simulasi Kronologis Historis Bulan-per-Bulan
+            let simMonth = tmtDate.startOf('month');
+            let todayMonth = today.startOf('month');
+            
+            let grossMonths = 0;
+            let effectiveWorkingMonths = 0;
+
+            while (simMonth.isBefore(todayMonth) || simMonth.isSame(todayMonth, 'month')) {
+                let monthStr = simMonth.format('YYYY-MM');
+
+                let isGross = true;
+                if (simMonth.isSame(tmtDate, 'month')) {
+                    if (simMonth.endOf('month').diff(tmtDate, 'day') + 1 <= 15) isGross = false;
+                }
+                if (simMonth.isSame(todayMonth, 'month')) {
+                    if (today.diff(todayMonth, 'day') + 1 <= 15) isGross = false;
+                }
+
+                if (isGross) {
+                    grossMonths++;
+                    let isEffective = !nonEffectiveSet.has(monthStr);
+
+                    if (isEffective) {
+                        effectiveWorkingMonths++;
+
+                        let activeDebts = debts.filter(d => 
+                            (simMonth.isAfter(d.triggerDate) || simMonth.isSame(d.triggerDate, 'month')) && 
+                            d.remaining > 0
+                        );
+
+                        if (activeDebts.length > 0) {
+                            activeDebts.sort((a, b) => b.triggerDate.valueOf() - a.triggerDate.valueOf());
+                            
+                            activeDebts[0].paid += 1;
+                            activeDebts[0].remaining -= 1;
+
+                            // Tandai kapan utang ini lunas secara riil pada historis
+                            if (activeDebts[0].remaining === 0) {
+                                activeDebts[0].estCompletionDate = simMonth.format('YYYY-MM-DD');
+                            }
+                        }
+                    }
+                }
+                simMonth = simMonth.add(1, 'month');
+            }
+
+            // 3B. Simulasi Proyeksi (Masa Depan) untuk memprediksi estCompletionDate
+            // Asumsi masa depan = 100% masuk (tidak ada rencana TB/CLTN lagi)
+            let projDebts = debts.map(d => ({ ...d }));
+            let projMonth = todayMonth.add(1, 'month').startOf('month');
+            let safetyCounter = 0;
+            
+            while (projDebts.some(d => d.remaining > 0) && safetyCounter < 1200) { // Limit 100 tahun
+                let activeProjDebts = projDebts.filter(d => 
+                    (projMonth.isAfter(d.triggerDate) || projMonth.isSame(d.triggerDate, 'month')) && 
+                    d.remaining > 0
+                );
+
+                if (activeProjDebts.length > 0) {
+                    activeProjDebts.sort((a, b) => b.triggerDate.valueOf() - a.triggerDate.valueOf());
+                    activeProjDebts[0].remaining -= 1;
+                    
+                    if (activeProjDebts[0].remaining === 0) {
+                        let origDebt = debts.find(d => d.id === activeProjDebts[0].id);
+                        if (origDebt && !origDebt.estCompletionDate) {
+                            origDebt.estCompletionDate = projMonth.format('YYYY-MM-DD');
+                        }
+                    }
+                }
+                projMonth = projMonth.add(1, 'month');
+                safetyCounter++;
+            }
+
+            // 4. Hitung Persentase dan Sisa TGR
+            let totalDebtInitial = 0;
+            let totalDebtRemaining = 0;
+            let totalTgrRemaining = 0;
+
+            debts.forEach(debt => {
+                totalDebtInitial += debt.debtMonths;
+                totalDebtRemaining += debt.remaining;
+
+                debt.progress = debt.debtMonths > 0 ? Math.min(100, (debt.paid / debt.debtMonths) * 100) : 100;
+                debt.tgr = debt.debtMonths > 0 ? (debt.remaining / debt.debtMonths) * debt.value : 0;
+                
+                if (debt.remaining === 0 && debt.debtMonths > 0) debt.status = 'Lunas';
+                else if (debt.paid > 0) debt.status = 'Berjalan';
+                else debt.status = 'Belum Terbayar';
+
+                totalTgrRemaining += debt.tgr;
+            });
+
+            // 5. Estimasi Kapan Seluruh Utang Lunas
+            let estLunasDate = 'Sudah Lunas';
+            if (totalDebtRemaining > 0) {
+                let dates = debts.filter(d => d.estCompletionDate).map(d => dayjs(d.estCompletionDate));
+                if (dates.length > 0) {
+                    let maxDate = dates.reduce((max, d) => d.isAfter(max) ? d : max, dates[0]);
+                    estLunasDate = maxDate.format('YYYY-MM-DD');
+                }
+            }
+
+            // Simpan ke state results
+            AppState.results = {
+                grossMonths,
+                totalTBMonths,
+                totalCLTNMonths,
+                effectiveWorkingMonths,
+                totalDebtInitial,
+                totalDebtRemaining,
+                totalTgrRemaining,
+                estLunasDate,
+                debts
+            };
+        }
+
+        const app = {
+            init() {
+                const saved = localStorage.getItem('asnCalcData');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(AppState, parsed);
+                    if (!AppState.simulationDate) AppState.simulationDate = dayjs().format('YYYY-MM-DD');
+                    this.renderAll();
+                } else {
+                    // Show Setup Modal if no data
+                    this.openSetup();
+                    
+                    // Pre-fill setup modal with dummy data for demo purposes
+                    document.getElementById('setupTmt').value = DummyData.tmt;
+                    document.querySelector(`input[name="setupType"][value="${DummyData.type}"]`).checked = true;
+                }
+
+                this.setupEventListeners();
+            },
+
+            openSetup() {
+                if (AppState.tmt) {
+                    document.getElementById('setupTmt').value = AppState.tmt;
+                }
+                if (AppState.type) {
+                    document.querySelector(`input[name="setupType"][value="${AppState.type}"]`).checked = true;
+                }
+                document.getElementById('setupModal').classList.remove('hidden');
+            },
+
+            setupEventListeners() {
+                document.getElementById('setupForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const oldType = AppState.type;
+                    AppState.tmt = document.getElementById('setupTmt').value;
+                    AppState.type = document.querySelector('input[name="setupType"]:checked').value;
+                    
+                    // Reset simulasi date ke hari ini jika belum ada (atau jika baru mulai)
+                    if (!AppState.simulationDate) AppState.simulationDate = dayjs().format('YYYY-MM-DD');
+                    
+                    // Jika baru mulai (initial run), injeksi dummy data
+                    if (AppState.tb.length === 0 && AppState.cltn.length === 0 && !localStorage.getItem('asnCalcData')) {
+                        AppState.tb = [...DummyData.tb];
+                        AppState.cltn = [...DummyData.cltn];
+                    }
+
+                    // Handle Dinamika Perubahan Tipe Akun (D3 <-> Non-D3)
+                    if (AppState.type === 'D3') {
+                        let d3Item = AppState.tb.find(i => i.isFixed);
+                        if (!d3Item) {
+                            AppState.tb.unshift({
+                                id: 'd3-stan', name: 'Ikatan Dinas D3 STAN', type: 'D3',
+                                start: AppState.tmt, end: AppState.tmt, value: 0,
+                                isFixed: true, forcedDebt: 120
+                            });
+                        } else {
+                            // Sinkronkan ulang tanggal jika TMT diupdate
+                            d3Item.start = AppState.tmt;
+                            d3Item.end = AppState.tmt;
+                        }
+                    } else if (AppState.type === 'Non-D3' && oldType === 'D3') {
+                        // Jika diubah menjadi S1/Non-D3, cabut utang default D3 STAN
+                        AppState.tb = AppState.tb.filter(i => !i.isFixed);
+                    }
+
+                    document.getElementById('setupModal').classList.add('hidden');
+                    this.saveData();
+                    this.renderAll();
+                });
+            },
+
+            saveData() {
+                localStorage.setItem('asnCalcData', JSON.stringify({
+                    tmt: AppState.tmt,
+                    type: AppState.type,
+                    simulationDate: AppState.simulationDate,
+                    tb: AppState.tb,
+                    cltn: AppState.cltn
+                }));
+            },
+
+            calculate() {
+                calculateCoreLogic();
+                this.renderDashboard();
+                this.renderTimeline();
+                this.renderTable();
+                this.renderChart();
+                this.saveData();
+            },
+
+            resetData() {
+                if(confirm("Yakin ingin menghapus seluruh data dan memulai ulang?")){
+                    localStorage.removeItem('asnCalcData');
+                    location.reload();
+                }
+            },
+
+            updateSimulationDate(dateStr) {
+                if (dateStr) {
+                    AppState.simulationDate = dateStr;
+                    this.saveData();
+                }
+            },
+
+            // CRUD Tugas Belajar
+            addTB() {
+                AppState.tb.push({ id: generateId(), name: '', type: 'S1', start: '', end: '', value: 0 });
+                this.saveData();
+                this.renderTBList();
+            },
+            updateTB(id, field, value) {
+                const item = AppState.tb.find(i => i.id === id);
+                if (item) { item[field] = value; this.saveData(); }
+            },
+            deleteTB(id) {
+                if(confirm("Hapus data tugas belajar ini?")) {
+                    AppState.tb = AppState.tb.filter(i => i.id !== id);
+                    this.saveData();
+                    this.renderTBList();
+                }
+            },
+
+            // CRUD CLTN
+            addCLTN() {
+                AppState.cltn.push({ id: generateId(), start: '', end: '' });
+                this.saveData();
+                this.renderCLTNList();
+            },
+            updateCLTN(id, field, value) {
+                const item = AppState.cltn.find(i => i.id === id);
+                if (item) { item[field] = value; this.saveData(); }
+            },
+            deleteCLTN(id) {
+                AppState.cltn = AppState.cltn.filter(i => i.id !== id);
+                this.saveData();
+                this.renderCLTNList();
+            },
+
+            renderAll() {
+                // Ensure TMT/Type display is updated
+                document.getElementById('displayTmt').innerText = formatDate(AppState.tmt);
+                document.getElementById('displayType').innerText = AppState.type === 'D3' ? 'Lulusan D3 STAN' : 'S1 / Non-D3';
+
+                this.renderTBList();
+                this.renderCLTNList();
+                
+                this.calculate();
+            },
+
+            renderTBList() {
+                const container = document.getElementById('tbList');
+                container.innerHTML = AppState.tb.length === 0 ? '<div class="text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-300"><p class="text-sm font-bold text-slate-400">Belum ada riwayat tugas belajar.</p></div>' : '';
+                
+                AppState.tb.forEach(item => {
+                    let isReadonly = item.isFixed;
+                    let inputClass = isReadonly 
+                        ? 'w-full text-sm px-3 py-2 border border-slate-200 rounded-lg bg-slate-100/50 text-slate-500 cursor-not-allowed font-medium' 
+                        : 'w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-slate-50 focus:bg-white outline-none font-medium transition-all';
+                    
+                    let selectClass = isReadonly 
+                        ? 'w-full text-sm px-3 py-2 border border-slate-200 rounded-lg bg-slate-100/50 text-slate-500 pointer-events-none cursor-not-allowed font-medium' 
+                        : 'w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-slate-50 focus:bg-white outline-none font-medium transition-all';
+
+                    container.innerHTML += `
+                        <div class="bg-white border ${item.isFixed ? 'border-indigo-100 shadow-sm' : 'border-slate-200 shadow-sm hover:border-slate-300'} rounded-xl p-4 relative fade-in transition-all">
+                            ${item.isFixed 
+                                ? `<div class="absolute top-3 right-3 text-indigo-700 text-[10px] font-extrabold bg-indigo-50 px-2.5 py-1 rounded-md flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Default</div>`
+                                : `<button onclick="app.deleteTB('${item.id}')" class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>`
+                            }
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama Pendidikan</label>
+                                    <input type="text" value="${item.name}" placeholder="Cth: S1 Manajemen" onchange="app.updateTB('${item.id}', 'name', this.value)" ${isReadonly ? 'readonly' : ''} class="${inputClass}">
+                                </div>
+                                <div class="${item.isFixed ? 'pr-20' : ''}">
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Jenis</label>
+                                    <select onchange="app.updateTB('${item.id}', 'type', this.value)" ${isReadonly ? 'tabindex="-1"' : ''} class="${selectClass}">
+                                        <option value="D3" ${item.type === 'D3' ? 'selected' : ''}>D3</option>
+                                        <option value="S1" ${item.type === 'S1' ? 'selected' : ''}>S1</option>
+                                        <option value="S2" ${item.type === 'S2' ? 'selected' : ''}>S2</option>
+                                        <option value="S3" ${item.type === 'S3' ? 'selected' : ''}>S3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-slate-100 pt-4">
+                                ${item.isFixed ? '' : `
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tgl Mulai</label>
+                                    <input type="date" value="${item.start}" onchange="app.updateTB('${item.id}', 'start', this.value)" class="${inputClass}">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tgl Selesai</label>
+                                    <input type="date" value="${item.end}" onchange="app.updateTB('${item.id}', 'end', this.value)" class="${inputClass}">
+                                </div>
+                                `}
+                                <div class="${item.isFixed ? 'col-span-2 md:col-span-3' : 'col-span-2 md:col-span-1'}">
+                                    <label class="block text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-sack-dollar text-emerald-500"></i> Nilai TGR (Rp)</label>
+                                    <input type="number" value="${item.value}" onchange="app.updateTB('${item.id}', 'value', this.value)" placeholder="Mis: 50000000" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none font-bold text-slate-700 bg-emerald-50/30">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            renderCLTNList() {
+                const container = document.getElementById('cltnList');
+                container.innerHTML = AppState.cltn.length === 0 ? '<div class="text-center py-5 bg-slate-50 rounded-xl border border-dashed border-slate-300"><p class="text-sm font-bold text-slate-400">Belum ada riwayat CLTN.</p></div>' : '';
+                
+                AppState.cltn.forEach(item => {
+                    container.innerHTML += `
+                        <div class="bg-white border border-slate-200 rounded-xl p-4 relative fade-in flex flex-col sm:flex-row gap-4 items-end shadow-sm hover:border-slate-300 transition-colors">
+                            <div class="flex-1 w-full">
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tanggal Mulai</label>
+                                <input type="date" value="${item.start}" onchange="app.updateCLTN('${item.id}', 'start', this.value)" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-slate-50 focus:bg-white outline-none font-medium transition-all">
+                            </div>
+                            <div class="flex-1 w-full">
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tanggal Selesai</label>
+                                <input type="date" value="${item.end}" onchange="app.updateCLTN('${item.id}', 'end', this.value)" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-slate-50 focus:bg-white outline-none font-medium transition-all">
+                            </div>
+                            <button onclick="app.deleteCLTN('${item.id}')" class="w-full sm:w-10 h-10 flex items-center justify-center bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors border border-red-100 sm:border-0"><i class="fa-solid fa-trash text-sm"></i> <span class="ml-2 sm:hidden font-bold">Hapus Cuti</span></button>
+                        </div>
+                    `;
+                });
+            },
+
+            renderDashboard() {
+                const res = AppState.results;
+                document.getElementById('summaryEfektif').innerHTML = `${res.effectiveWorkingMonths} <span class="text-sm font-semibold text-slate-500 ml-1">Bln</span>`;
+                document.getElementById('summaryUtangAwal').innerHTML = `${res.totalDebtInitial} <span class="text-sm font-semibold text-slate-500 ml-1">Bln</span>`;
+                document.getElementById('summarySisaUtang').innerHTML = `${res.totalDebtRemaining} <span class="text-sm font-semibold text-amber-700/60 ml-1">Bln</span>`;
+                
+                document.getElementById('summaryLunas').innerText = res.estLunasDate === 'Sudah Lunas' ? 'Lunas Sepenuhnya' : formatMonthYear(res.estLunasDate);
+                document.getElementById('summaryTGR').innerText = formatRupiah(res.totalTgrRemaining);
+
+                // Sinkronisasi value pada input Simulasi
+                const simInput = document.getElementById('simDateInput');
+                if (simInput && AppState.simulationDate) {
+                    simInput.value = AppState.simulationDate;
+                }
+            },
+
+            renderTimeline() {
+                const container = document.getElementById('timelineContainer');
+                const res = AppState.results;
+                container.innerHTML = '';
+
+                if (res.debts.length === 0) {
+                    container.innerHTML = '<div class="text-center py-8"><i class="fa-solid fa-clipboard-check text-4xl text-slate-200 mb-3"></i><p class="text-sm font-bold text-slate-400">Tidak ada tanggungan ikatan dinas aktif.</p></div>';
+                    return;
+                }
+
+                res.debts.forEach((debt, index) => {
+                    let badgeClass = debt.status === 'Lunas' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : (debt.status === 'Berjalan' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'bg-slate-100 text-slate-600 border-slate-200');
+                    let pBarColor = debt.status === 'Lunas' ? 'bg-emerald-500' : 'bg-primary-500';
+                    let labelTgr = debt.value > 0 ? `<span class="text-slate-600 font-bold ml-1">${formatRupiah(debt.value)}</span>` : '<span class="text-slate-400 ml-1">Non-TGR</span>';
+                    
+                    let estLunasText = debt.estCompletionDate ? formatMonthYear(debt.estCompletionDate) : 'Sedang Kalkulasi...';
+                    let iconLunas = debt.status === 'Lunas' 
+                        ? `<i class="fa-solid fa-circle-check text-emerald-500 text-base"></i> <span class="text-emerald-700 font-bold">Lunas: ${estLunasText}</span>` 
+                        : `<i class="fa-solid fa-hourglass-half text-amber-500 text-base"></i> <span class="text-slate-600 font-bold">Estimasi Lunas: <span class="text-slate-800">${estLunasText}</span></span>`;
+
+                    let isLast = index === res.debts.length - 1;
+
+                    container.innerHTML += `
+                        <div class="relative pl-6 sm:pl-8 pb-6 fade-in group">
+                            <!-- Timeline Line -->
+                            ${!isLast ? '<div class="absolute left-2.5 sm:left-[1.125rem] top-8 bottom-0 w-0.5 bg-slate-200 group-hover:bg-primary-200 transition-colors"></div>' : ''}
+                            
+                            <!-- Timeline Dot -->
+                            <div class="absolute left-0 sm:left-2 top-1.5 w-5 h-5 rounded-full border-4 border-white shadow-sm bg-primary-500 flex items-center justify-center text-[8px] text-white font-bold z-10">${index + 1}</div>
+                            
+                            <div class="bg-white border border-slate-100 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                                            <span class="text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md">Prioritas LIFO #${index + 1}</span>
+                                            <span class="px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-md border ${badgeClass}">${debt.status}</span>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">${debt.name} <span class="text-slate-400 font-medium text-sm">(${debt.type})</span></h4>
+                                        <p class="text-[12px] text-slate-500 mt-1 flex items-center gap-1"><i class="fa-regular fa-calendar opacity-70"></i> TMT Utang: <span class="font-semibold text-slate-700 mr-2">${formatDate(debt.start)}</span> | <i class="fa-solid fa-sack-dollar opacity-70 ml-1"></i> TGR Awal: ${labelTgr}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                                    <div class="flex justify-between text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-wide">
+                                        <span class="text-primary-700">Terbayar: ${debt.paid} Bln</span>
+                                        <span class="text-slate-800">Total: ${debt.debtMonths} Bln</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-full bg-slate-200/70 rounded-full h-2.5 overflow-hidden shadow-inner">
+                                            <div class="${pBarColor} h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: ${debt.progress}%"></div>
+                                        </div>
+                                        <span class="text-xs font-extrabold text-slate-700 w-10 text-right">${Math.round(debt.progress)}%</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center gap-1.5 text-xs">
+                                        ${iconLunas}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            renderTable() {
+                const tbody = document.getElementById('detailTableBody');
+                const res = AppState.results;
+                tbody.innerHTML = '';
+
+                if (res.debts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-400 font-bold bg-white">Tidak ada data untuk ditampilkan</td></tr>';
+                    return;
+                }
+
+                res.debts.forEach((debt, index) => {
+                    let statusColor = debt.status === 'Lunas' ? 'text-emerald-600 bg-emerald-50' : (debt.status === 'Berjalan' ? 'text-primary-700 bg-primary-50' : 'text-slate-600 bg-slate-100');
+                    let rowClass = index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50';
+                    
+                    tbody.innerHTML += `
+                        <tr class="${rowClass} hover:bg-slate-50 transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-800">${debt.name}</div>
+                                <div class="text-[11px] text-slate-500 font-semibold mt-0.5">${debt.type} &bull; Mulai: ${formatDate(debt.start)}</div>
+                            </td>
+                            <td class="px-6 py-4 text-center text-slate-600">${debt.studyMonths}</td>
+                            <td class="px-6 py-4 text-center font-bold text-slate-800">${debt.debtMonths} <span class="text-xs font-medium text-slate-400">bln</span></td>
+                            <td class="px-6 py-4 text-center font-bold text-primary-600">${debt.paid} <span class="text-xs font-medium text-primary-400">bln</span></td>
+                            <td class="px-6 py-4 text-center font-bold ${debt.remaining > 0 ? 'text-red-500' : 'text-slate-400'}">${debt.remaining} <span class="text-xs font-medium ${debt.remaining > 0 ? 'text-red-300' : 'text-slate-300'}">bln</span></td>
+                            <td class="px-6 py-4 text-right font-extrabold ${debt.tgr > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatRupiah(debt.tgr)}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md ${statusColor}">${debt.status}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            },
+
+            renderChart() {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                const res = AppState.results;
+                
+                let paidTotal = res.totalDebtInitial - res.totalDebtRemaining;
+                
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Terbayar (Bulan)', 'Sisa Utang (Bulan)'],
+                        datasets: [{
+                            data: [paidTotal, res.totalDebtRemaining],
+                            backgroundColor: ['#6366f1', '#f1f5f9'], // Primary and slate-100
+                            hoverBackgroundColor: ['#4f46e5', '#e2e8f0'],
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            hoverOffset: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '80%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleFont: { family: 'Plus Jakarta Sans', size: 13 },
+                                bodyFont: { family: 'Plus Jakarta Sans', size: 13, weight: 'bold' },
+                                padding: 12,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.raw + ' Bulan';
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    plugins: [{
+                        id: 'textCenter',
+                        beforeDraw: function(chart) {
+                            var width = chart.width,
+                                height = chart.height,
+                                ctx = chart.ctx;
+
+                            ctx.restore();
+                            var fontSize = (height / 114).toFixed(2);
+                            ctx.font = "bold " + fontSize + "em 'Plus Jakarta Sans'";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStyle = "#1e293b";
+
+                            var text = res.totalDebtRemaining > 0 ? res.totalDebtRemaining + " Bln" : "Lunas",
+                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                textY = height / 2;
+
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                    }]
+                });
+            },
+
+            exportPDF() {
+                const element = document.getElementById('export-container');
+                const opt = {
+                    margin:       0.4,
+                    filename:     `Laporan_Ikatan_Dinas_ASN_${dayjs().format('YYYYMMDD')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, ignoreElements: (node) => node.hasAttribute('data-html2canvas-ignore') },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+                };
+
+                // Penyesuaian agar grid render sempurna di PDF
+                element.classList.remove('lg:grid-cols-12');
+                element.classList.add('flex', 'flex-col', 'gap-6'); 
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.classList.add('lg:grid-cols-12');
+                    element.classList.remove('flex', 'flex-col', 'gap-6');
+                });
+            }
+        };
+
+        // Initialize App on DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>

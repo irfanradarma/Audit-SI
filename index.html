@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Sistem Informasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f4f2ed;
+  --surface: #ffffff;
+  --surface2: #f0ede7;
+  --border: #e2ddd5;
+  --border2: #cec8be;
+  --text: #1a1916;
+  --text2: #5a5650;
+  --text3: #96918a;
+  --accent: #2d5a3d;
+  --accent-light: #e6efe9;
+  --accent-mid: #4a8c61;
+  --header-bg: #1a2e22;
+  --link: #2d5a3d;
+  --link-hover: #4a8c61;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--header-bg);
+  padding: 2.2rem 2rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -70px; right: 80px;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.035);
+  pointer-events: none;
+}
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.header-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  color: #fff;
+  font-weight: 400;
+  line-height: 1.15;
+}
+header h1 em { font-style: italic; color: rgba(255,255,255,0.55); }
+.header-meta { font-size: 12.5px; color: rgba(255,255,255,0.4); margin-top: 0.4rem; }
+.header-actions { margin-top: 1.4rem; }
+.rps-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.13);
+  color: rgba(255,255,255,0.8);
+  padding: 6px 13px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 12px;
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.2s, border-color 0.2s;
+}
+.rps-btn:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.22); }
+.rps-btn svg { width: 13px; height: 13px; opacity: 0.75; flex-shrink: 0; }
+
+/* ── SEMESTER SWITCHER (top-right in header) ── */
+.header-switcher {
+  display: inline-flex;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.header-switcher button {
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 4px 11px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255,255,255,0.35);
+  transition: all 0.18s;
+}
+.header-switcher button.active {
+  background: rgba(255,255,255,0.11);
+  color: rgba(255,255,255,0.88);
+}
+.header-switcher button:not(.active):hover {
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ── MAIN ── */
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 2rem 5rem;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 1.6rem 0 0.6rem;
+}
+
+/* ── TABLE ── */
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  table-layout: fixed;
+}
+
+.course-table thead th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  background: var(--surface2);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.course-table thead th:first-child {
+  width: 46px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.col-topik  { width: 22%; }
+.col-bahan  { width: 26%; }
+.col-prak   { width: 26%; }
+.col-lain   { width: 26%; }
+
+.course-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.course-table tbody tr:last-child { border-bottom: none; }
+.course-table tbody tr:hover td { background: #faf9f7; }
+
+.course-table td {
+  padding: 11px 14px;
+  vertical-align: top;
+  font-size: 13px;
+  color: var(--text);
+}
+td.num-cell {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--surface2);
+  border-right: 1px solid var(--border);
+  vertical-align: middle;
+}
+td.topic-cell {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+  vertical-align: middle;
+}
+
+/* Exam row */
+tr.exam-row td {
+  background: var(--header-bg) !important;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 14px;
+  vertical-align: middle;
+}
+tr.exam-row td.num-cell {
+  background: rgba(255,255,255,0.06) !important;
+  color: rgba(255,255,255,0.4);
+  border-right-color: rgba(255,255,255,0.08);
+  font-family: 'DM Mono', monospace;
+  font-style: normal;
+  font-size: 11px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Links inside cells */
+.cell-links { display: flex; flex-direction: column; gap: 5px; }
+.cell-link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 5px;
+  color: var(--link);
+  text-decoration: none;
+  font-size: 12.5px;
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+.cell-link:hover { color: var(--link-hover); text-decoration: underline; }
+.cell-link svg { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.55; margin-top: 2px; }
+.cell-text { font-size: 12.5px; color: var(--text2); font-style: italic; }
+td.empty-cell { color: var(--text3); font-size: 12px; }
+
+@media (max-width: 700px) {
+  header, main { padding-left: 1rem; padding-right: 1rem; }
+  .course-table { display: block; overflow-x: auto; }
+  header h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top-row">
+      <div>
+        <div class="header-label">Politeknik Keuangan Negara STAN</div>
+        <h1>Audit <em>Sistem</em> Informasi</h1>
+      </div>
+      <div class="header-switcher">
+        <button id="btn-genap2026" class="active" onclick="switchSemester('genap2026')">Genap 2026</button>
+        <button id="btn-ganjil2025" onclick="switchSemester('ganjil2025')">Ganjil 2025</button>
+      </div>
+    </div>
+    <div class="header-meta">Teuku Raja Irfan Radarma &nbsp;&middot;&nbsp; <span id="header-semester">Genap 2026</span></div>
+    <div class="header-actions">
+      <a href="https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf" target="_blank" class="rps-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.877a2 2 0 0 0 1.94-1.515L22 17"/></svg>
+        Unduh RPS
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="content-genap2026"></div>
+  <div id="content-ganjil2025" style="display:none"></div>
+</main>
+
+<script>
+/* ─────────────────────────────────────────
+   ICON HELPERS
+───────────────────────────────────────── */
+const I = {
+  link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  file: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  video:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`
+};
+
+/* ─────────────────────────────────────────
+   DATA HELPERS  — edit the arrays below
+   to update course content
+───────────────────────────────────────── */
+function L(href, text, icon) {
+  // Creates a clickable link item
+  return { type:'link', href, text, icon: icon || I.link };
+}
+function T(text) {
+  // Creates a plain-text note (e.g. "Quiz via LMS")
+  return { type:'text', text };
+}
+
+/* ─────────────────────────────────────────
+   SEMESTER DATA
+   Each week: { num, topic, slides, praktikum, lain }
+   Exam week: { num, exam }
+───────────────────────────────────────── */
+const GANJIL_2025 = [
+  {
+    num: 1, topic: "IT Governance",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx", "01 – IT Governance: Concept", I.file) ],
+    praktikum: [],
+    lain:      [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Introduction.pdf", "COBIT 2019 Framework by ISACA", I.file) ]
+  },
+  {
+    num: 2, topic: "IT Governance Audit",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/02%20-%20IT%20Governance%20Audit.pptx", "02 – IT Governance Audit", I.file) ],
+    praktikum: [],
+    lain:      [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Governance.pdf", "COBIT 2019 Governance & Management Objectives", I.file) ]
+  },
+  {
+    num: 3, topic: "IS Acquisition, Development & Implementation I",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/03%20-%20IS%20Acquisition%20%26%20Development.pptx", "03 – IS Acquisition & Development", I.file) ],
+    praktikum: [ L("https://irfanradarma.github.io/Audit-SI/mind-map-audit5.html", "Mind Map App 7 Audit-5"),
+                 L("https://irfanradarma.github.io/Audit-SI/mind-map-sisfo2.html", "Mind Map App 7 Sisfo-2") ],
+    lain:      [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/CISA%20Review%20Manual%2027th%20Edition-2019.pdf", "CISA Review Manual", I.file) ]
+  },
+  {
+    num: 4, topic: "IS Acquisition, Development & Implementation II",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/04%20-%20IS%20Implementation.pptx", "04 – IS Implementation", I.file) ],
+    praktikum: [ T("Quiz via LMS") ],
+    lain:      [ L("https://irfanradarma.github.io/Audit-SI/exercise.html", "Try Out") ]
+  },
+  {
+    num: 5, topic: "IS Operations & Business Resilience",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/05%20-%20IS%20Operations%20and%20Business%20Resilience.pptx", "05 – IS Operations and Business Resilience", I.file) ],
+    praktikum: [],
+    lain:      []
+  },
+  {
+    num: 6, topic: "Protection of Information Assets: Part A",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/06%20-%20Information%20Asset%20Security%20and%20Control.pptx", "06 – Information Asset Security and Control", I.file) ],
+    praktikum: [],
+    lain:      []
+  },
+  {
+    num: 7, topic: "Protection of Information Assets: Part B",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx", "07 – Security Event Management", I.file) ],
+    praktikum: [ T("Quiz via LMS") ],
+    lain:      [ L("https://irfanradarma.github.io/Audit-SI/try-out.html", "Try Out Domain 1–5"),
+                 L("https://forms.gle/JNBbpYAWQXh7wtPH6", "Tugas VII – Lessons Learned") ]
+  },
+  { num: 8, exam: "UTS — Ujian Tengah Semester" },
+  {
+    num: 9, topic: "Basic of Data Analysis",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/09%20-%20Basic%20Data%20Analysis.pptx", "09 – Basic Data Analysis", I.file) ],
+    praktikum: [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Data%20Impor.zip", "Impor Data", I.file),
+                 L("https://github.com/irfanradarma/PTIK-STAN/raw/main/Slides/06/spotify_data_light.xlsx", "Data Spotify", I.file) ],
+    lain:      [ L("https://www.youtube.com/watch?v=Kwn8GJyNv64",  "Tutorial Pivot Table", I.video),
+                 L("https://www.youtube.com/watch?v=bhfRlU_bNmw",  "Tutorial SUM / SUMIF / SUMIFS", I.video),
+                 L("https://www.youtube.com/watch?v=OekP7P-Xw4I",  "Tutorial CONSOLIDATE", I.video),
+                 L("https://www.youtube.com/watch?v=JNZqRYkgZ4c",  "Tutorial Filtering Data", I.video),
+                 L("https://www.youtube.com/watch?v=UV-SPoVkDaU",  "Tutorial Advanced Filters", I.video),
+                 L("https://www.youtube.com/watch?v=LKbRkIIVG60",  "Tutorial Vlookup", I.video) ]
+  },
+  {
+    num: 10, topic: "Risk and Control",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/10%20-%20Risiko%20dan%20Pengendalian.pptx", "10 – Risiko dan Pengendalian", I.file) ],
+    praktikum: [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Week%2010%20Practice.xlsx", "Week 10 Practice", I.file),
+                 T("Tugas VIII – Simulasi ToE"),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Assignment%20of%20Week%2010.xlsx", "Sales Data", I.file),
+                 L("https://forms.gle/UomXmnZEnLGkxyWz9", "Submission Form") ],
+    lain:      [ L("https://drive.google.com/drive/folders/1KWQqTYpNElnZxWfQIZvHP4nMVipOfils", "Praktik Pengujian AppCon MYOB"),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Fun%20Excel%20II.xlsx", "Fun Excel Comp II Data", I.file) ]
+  },
+  {
+    num: 11, topic: "Parallel Simulation",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/11%20-%20Simulasi%20Sejajar.pptx", "11 – Simulasi Sejajar", I.file) ],
+    praktikum: [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan1-5.zip", "Payroll Jan 1–5", I.file),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan6-7.zip", "Payroll Jan 6–7", I.file),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-2025.csv", "Payroll 2025", I.file) ],
+    lain:      []
+  },
+  {
+    num: 12, topic: "Sampling and Statistical Approach",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik.pptx", "12 – Sampling dan Pendekatan Statistik", I.file) ],
+    praktikum: [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/week12%20-%20Latihan%20Anomaly.xlsx", "Data latihan anomali", I.file) ],
+    lain:      [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Tugas%20Week%2012.pptx", "Instruksi Tugas Week 12", I.file),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20data%20absensi.csv", "Data Absensi", I.file),
+                 L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20audit_log_wifi_kampus.csv", "Data Log Jaringan", I.file),
+                 L("https://forms.gle/BfQk7hNuQbunQDDm7", "Submit Tugas") ]
+  },
+  {
+    num: 13, topic: "Substantive Testing: Sales Cycle",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/13.%20Asersi%20Siklus%20Penjualan.pptx", "13 – Audit Siklus Penjualan", I.file) ],
+    praktikum: [ T("Kuis via LMS") ],
+    lain:      []
+  },
+  {
+    num: 14, topic: "Substantive Testing: Expenditure Cycle",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/14.%20Asersi%20Siklus%20Pengeluaran.pptx", "14 – Audit Siklus Pembelian", I.file) ],
+    praktikum: [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/14%20-%20Latihan%20Data%20Pembelian.xls", "Data Pembelian", I.file) ],
+    lain:      []
+  },
+  {
+    num: 15, topic: "Audit Report",
+    slides:    [ L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/15.%20Laporan%20Audit.pptx", "15 – (Bukan) Laporan Audit", I.file) ],
+    praktikum: [],
+    lain:      [ L("https://www.youtube.com/watch?v=zcp2Ku5T8h8", "Hyperlink Excel Tutorial", I.video) ]
+  },
+  { num: 16, exam: "UAS — Ujian Akhir Semester" }
+];
+
+/* Genap 2026 — same structure, blank content. Fill in when ready. */
+const GENAP_2026 = GANJIL_2025.map(w =>
+  w.exam ? { ...w } : { num: w.num, topic: w.topic, slides: [], praktikum: [], lain: [] }
+);
+
+/* ─────────────────────────────────────────
+   RENDERING
+───────────────────────────────────────── */
+function renderItems(items) {
+  if (!items || !items.length) return '';
+  return `<div class="cell-links">${items.map(item => {
+    if (item.type === 'text') return `<span class="cell-text">${item.text}</span>`;
+    return `<a href="${item.href}" target="_blank" class="cell-link">${item.icon}${item.text}</a>`;
+  }).join('')}</div>`;
+}
+
+function renderTable(data, containerId) {
+  const container = document.getElementById(containerId);
+  const sections = [
+    { label: 'Pra-UTS',   rows: data.slice(0, 8)  },
+    { label: 'Pasca-UTS', rows: data.slice(8, 16)  }
+  ];
+
+  let html = '';
+  sections.forEach(sec => {
+    html += `<div class="section-label">${sec.label}</div>`;
+    html += `<table class="course-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th class="col-topik">Topik</th>
+          <th class="col-bahan">Bahan Ajar</th>
+          <th class="col-prak">Praktikum</th>
+          <th class="col-lain">Lain-Lain</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    sec.rows.forEach(w => {
+      if (w.exam) {
+        html += `<tr class="exam-row">
+          <td class="num-cell">${w.num}</td>
+          <td colspan="4">${w.exam}</td>
+        </tr>`;
+      } else {
+        html += `<tr>
+          <td class="num-cell">${w.num}</td>
+          <td class="topic-cell">${w.topic}</td>
+          <td>${renderItems(w.slides)}</td>
+          <td>${renderItems(w.praktikum)}</td>
+          <td>${renderItems(w.lain)}</td>
+        </tr>`;
+      }
+    });
+
+    html += `</tbody></table>`;
+  });
+
+  container.innerHTML = html;
+}
+
+/* ─────────────────────────────────────────
+   SEMESTER SWITCH
+───────────────────────────────────────── */
+function switchSemester(code) {
+  document.getElementById('content-genap2026').style.display  = code === 'genap2026'  ? '' : 'none';
+  document.getElementById('content-ganjil2025').style.display = code === 'ganjil2025' ? '' : 'none';
+  document.getElementById('btn-genap2026').className  = code === 'genap2026'  ? 'active' : '';
+  document.getElementById('btn-ganjil2025').className = code === 'ganjil2025' ? 'active' : '';
+  document.getElementById('header-semester').textContent = code === 'genap2026' ? 'Genap 2026' : 'Ganjil 2025';
+}
+
+/* ── INIT ── */
+renderTable(GENAP_2026,   'content-genap2026');
+renderTable(GANJIL_2025,  'content-ganjil2025');
+</script>
+</body>
+</html>

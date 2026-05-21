@@ -35,6 +35,8 @@ h1{
 .level-pip{width:26px;height:5px;border-radius:3px;background:var(--border);transition:all 0.3s;}
 .level-pip.active{background:var(--accent);box-shadow:0 0 8px rgba(0,229,255,0.6);}
 .level-pip.done{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,0.4);}
+.level-pip.unlocked{cursor:pointer;}
+.level-pip.unlocked:hover{transform:scaleY(1.5);background:var(--accent3);}
 .level-lbl{font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
 .game-wrapper{display:flex;gap:12px;align-items:flex-start;}
 #gameCanvas{display:block;border:1px solid var(--border);border-radius:4px;cursor:crosshair;
@@ -46,10 +48,11 @@ h1{
 .toolbar{display:flex;flex-direction:column;gap:4px;}
 .block-btn{
   width:100%;height:46px;background:rgba(255,255,255,0.03);border:1px solid var(--border);
-  border-radius:4px;cursor:grab;display:flex;align-items:center;gap:7px;padding:0 8px;transition:all 0.12s;
+  border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:7px;padding:0 8px;transition:all 0.12s;
 }
 .block-btn:hover{border-color:var(--accent);background:rgba(0,229,255,0.06);transform:translateX(2px);}
 .block-btn.selected{border-color:var(--accent);background:rgba(0,229,255,0.1);}
+.block-btn.eraser-selected{border-color:var(--accent2);background:rgba(255,61,113,0.1);}
 .block-btn.disabled{opacity:0.25;pointer-events:none;}
 .block-label{font-size:7px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;line-height:1.4;}
 .btn{
@@ -116,13 +119,8 @@ h1{
 
 <header>
   <h1>GRAVITY DROP</h1>
-  <div class="level-badge">
+  <div class="level-badge" id="levelBadge">
     <span class="level-lbl">Level</span>
-    <div class="level-pip" id="pip0"></div>
-    <div class="level-pip" id="pip1"></div>
-    <div class="level-pip" id="pip2"></div>
-    <div class="level-pip" id="pip3"></div>
-    <div class="level-pip" id="pip4"></div>
   </div>
 </header>
 
@@ -137,7 +135,10 @@ h1{
       <div class="panel-title">Controls</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <button class="btn btn-drop" id="dropBtn">▶ Drop</button>
-        <button class="btn btn-reset" id="resetBtn">↺ Retry</button>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-reset" id="resetBtn" style="flex:1; padding:10px 0; font-size:8px;" title="Re-drop ball (Keep blocks)">↺ RETRY</button>
+          <button class="btn btn-reset" id="clearBtn" style="flex:1; padding:10px 0; font-size:8px; color:var(--accent2); border-color:#222234;" title="Clear all placed blocks">⨯ CLEAR</button>
+        </div>
         <button class="btn btn-next" id="nextBtn">Next Level →</button>
       </div>
       <div class="ball-row">
@@ -154,15 +155,6 @@ h1{
 
 <canvas id="dragGhost" width="60" height="60"></canvas>
 
-<!-- Intro overlay -->
-<div class="overlay" id="introOv">
-  <div class="ov-lnum" id="introNum">LEVEL 1</div>
-  <div class="ov-title ov-level" id="introTitle">TUTORIAL</div>
-  <div class="new-pill" id="introPill" style="display:none"></div>
-  <div class="ov-sub" id="introSub"></div>
-  <button class="obtn obtn-cyan" onclick="closeIntro()">Play →</button>
-</div>
-
 <!-- Win overlay -->
 <div class="overlay" id="winOv">
   <div class="ov-lnum" id="winNum">LEVEL 1 COMPLETE</div>
@@ -177,7 +169,7 @@ h1{
 <!-- All done overlay -->
 <div class="overlay" id="doneOv">
   <div class="ov-title ov-win" style="font-size:60px;letter-spacing:6px;">ALL CLEAR!</div>
-  <div class="ov-sub">All 5 levels conquered.\nPhysics mastered.</div>
+  <div class="ov-sub">All levels conquered.<br>Physics mastered.</div>
   <button class="obtn obtn-cyan" onclick="startLevel(0)">↺ Play Again</button>
 </div>
 
@@ -190,41 +182,66 @@ const CS=540, COLS=9, ROWS=9, CELL=CS/COLS;
 const LEVELS = [
   {
     id:0, name:"TUTORIAL", pill:null,
-    sub:"The goal is right below the ball.\nJust press DROP — no blocks needed!\nOr place a block to explore the mechanics.",
-    ballCol:4, holeCol:4, holeMoving:false, bouncyBall:false,
+    sub:"",
+    ballCol:4, holeCol:4, holeRow:8, holeMoving:false, bouncyBall:false,
     hurdles:[], maxBlocks:3,
-    hint:"<strong>Drag</strong> blocks from toolbar to grid.\n<strong>Click</strong> a placed block to rotate 90°.\n<strong>Right-click</strong> a block to remove it.\n<strong>▶ Drop</strong> releases the ball."
+    hint:"<strong>Drag</strong> blocks from toolbar to grid.\n<strong>Click</strong> a placed block to rotate.\nUse the <strong>Eraser</strong> tool to remove.\n<strong>▶ Drop</strong> releases the ball."
   },
   {
     id:1, name:"OFF-CENTER", pill:null,
-    sub:"The goal is no longer below the ball.\nUse ramps or curves to redirect the path.",
-    ballCol:4, holeCol:1, holeMoving:false, bouncyBall:false,
+    sub:"",
+    ballCol:4, holeCol:0, holeRow:5, holeMoving:false, bouncyBall:false,
     hurdles:[], maxBlocks:4,
-    hint:"The hole is to the <strong>far left</strong>.\n\nUse <strong>Ramp ←</strong> or <strong>Curve ←</strong>\nto bend the ball's trajectory.\nRotate blocks by clicking them."
+    hint:"The hole is on the <strong>left side</strong>.\n\nUse <strong>Ramp ←</strong> \nto bend the ball's trajectory.\nRotate blocks by clicking them."
   },
   {
     id:2, name:"HURDLES", pill:"NEW: Permanent Blocks",
-    sub:"Orange blocks are fixed obstacles.\nRoute the ball around them to reach the goal.",
-    ballCol:4, holeCol:7, holeMoving:false, bouncyBall:false,
-    hurdles:[{col:3,row:3,type:0},{col:4,row:3,type:0},{col:5,row:3,type:0},{col:4,row:5,type:0}],
+    sub:"",
+    ballCol:4, holeCol:8, holeRow:4, holeMoving:false, bouncyBall:false,
+    hurdles:[{col:3,row:3,type:0},
+              {col:4,row:3,type:0},
+              {col:5,row:3,type:0},
+              {col:4,row:5,type:0}],
     maxBlocks:5,
     hint:"<strong>🔒 Orange blocks</strong> are fixed.\nYou can't remove or rotate them.\n\nBuild a path around them\nto reach the right-side goal."
   },
   {
     id:3, name:"MOVING TARGET", pill:"NEW: Moving Hole",
-    sub:"The goal slides left and right.\nTime your drop — or funnel the ball to intercept it.",
-    ballCol:4, holeCol:4, holeMoving:true, holeSpeed:1.5, bouncyBall:false,
-    hurdles:[{col:2,row:3,type:0},{col:6,row:5,type:0},{col:3,row:6,type:0}],
+    sub:"",
+    ballCol:4, holeCol:4, holeRow:7, holeMoving:true, holeSpeed:1.5, bouncyBall:false,
+    hurdles:[{col:2,row:3,type:0},
+            {col:6,row:5,type:0},
+            {col:3,row:6,type:0},
+            {col:4,row:6,type:0}],
     maxBlocks:5,
     hint:"The <strong>◀ ▶ red goal</strong> is moving!\n\nTime your drop carefully,\nor use blocks to guide the ball\ntoward the center path."
   },
   {
-    id:4, name:"BOUNCY BALL", pill:"NEW: High Restitution Ball",
-    sub:"This ball bounces with high energy.\nPlan for extra deflections — curves will help absorb it.",
-    ballCol:4, holeCol:2, holeMoving:false, bouncyBall:true,
-    hurdles:[{col:1,row:2,type:0},{col:5,row:3,type:1},{col:6,row:5,type:0},{col:2,row:6,type:0}],
+    id:4, name:"HURDLES II", pill:"NEW: Block Limit",
+    sub:"",
+    ballCol:1, holeCol:8, holeRow:4, holeMoving:false, bouncyBall:true,
+    hurdles:[{col:3,row:5,type:0},
+            {col:4,row:3,type:0},
+            {col:5,row:3,type:0},
+            {col:4,row:5,type:0},
+            {col:6,row:4,type:0}],
+    maxBlocks:4,
+    hint: "<strong>Bouncy ball</strong> — high restitution!\n\nIt will ricochet off surfaces.\nRamps help absorb energy\nand redirect it."
+  },
+  {
+    id:5, name:"BOUNCY BALL", pill:"NEW: High Restitution Ball",
+    sub:"",
+    ballCol:4, holeCol:2, holeRow:7, holeMoving:false, bouncyBall:true,
+    hurdles:[{col:1,row:2,type:0},
+            {col:5,row:3,type:1},
+            {col:6,row:5,type:0},
+            {col:2,row:6,type:0},
+            {col:1,row:6,type:2},
+            {col:3,row:6,type:1},
+            {col:1,row:8,type:2},
+            {col:3,row:8,type:1}],
     maxBlocks:6,
-    hint:"<strong>Bouncy ball</strong> — high restitution!\n\nIt will ricochet off surfaces.\nCurved ramps help absorb energy\nand redirect it smoothly."
+    hint:"let's be creative"
   }
 ];
 
@@ -233,8 +250,10 @@ let engine,world,ball,holeSensor;
 let holeVX=0, holeDir=1;
 let placedBlocks=[],hurdleBodies=[];
 let gameRunning=false,won=false;
-let currentLevel=0,selectedType=0,blockCount=0;
+let currentLevel=0,maxUnlockedLevel=LEVELS.length-1,selectedType=0,blockCount=0;
 let dragging=null,mouseX=0,mouseY=0,ghostVisible=false;
+let idleFrames=0;
+let lastBallPos={x:0, y:0};
 
 const canvas=document.getElementById('gameCanvas');
 const ctx=canvas.getContext('2d');
@@ -244,13 +263,11 @@ const ghostCtx=ghostCanvas.getContext('2d');
 // ── Block types ───────────────────────────────────────────────────────────────
 const BTYPES=[
   {id:0,name:'Solid',   color:'#3730a3'},
-  {id:1,name:'Ramp →', color:'#6d28d9'},
-  {id:2,name:'Ramp ←', color:'#7e22ce'},
-  {id:3,name:'Curve →',color:'#0e7490'},
-  {id:4,name:'Curve ←',color:'#0369a1'},
+  {id:1,name:'Ramp →',  color:'#6d28d9'},
+  {id:2,name:'Ramp ←',  color:'#7e22ce'}
 ];
 
-// Draw block visually (canvas 2d, from top-left corner, size x size)
+// Draw block visually
 function drawBV(c,type,size,color,alpha=1){
   c.save(); c.globalAlpha=alpha;
   const m=2.5, s=size-m*2;
@@ -259,44 +276,12 @@ function drawBV(c,type,size,color,alpha=1){
   if(type===0){
     c.roundRect(m,m,s,s,3);
   } else if(type===1){
-    // Ramp →: flat bottom+right, slope top-left→bottom-right
     c.moveTo(m,m); c.lineTo(size-m,size-m); c.lineTo(m,size-m); c.closePath();
   } else if(type===2){
-    // Ramp ←: flat bottom+left, slope top-right→bottom-left
     c.moveTo(size-m,m); c.lineTo(size-m,size-m); c.lineTo(m,size-m); c.closePath();
-  } else if(type===3){
-    // Concave quarter-pipe →: solid region bottom+right, concave arc from top-right→bottom-left
-    // The ball rolls INTO the curved wall (like a skateboard ramp)
-    // Arc center at bottom-right corner
-    c.moveTo(m,size-m);       // bottom-left
-    c.lineTo(size-m,size-m);  // bottom-right
-    c.lineTo(size-m,m);       // top-right
-    c.arc(m,m,s,0,-Math.PI/2,true); // arc centered at top-left, sweeps to meet top-right... 
-    // Actually: concave means the curved surface faces inward.
-    // Shape: bottom-left, bottom-right, then arc up to top-left
-    // Let me redo: arc centered at bottom-right, from top-right (angle=-π/2) to bottom-left (angle=π)
-    c.restore(); c.save(); c.globalAlpha=alpha; c.fillStyle=color; c.beginPath();
-    // The concave curved ramp: bottom-left and bottom-right and the right wall going up,
-    // then a concave arc from top-right back down to bottom-left
-    // Concave arc: center at bottom-right (size-m, size-m), radius s
-    // from angle -π/2 (= top-right at size-m, m) sweeping backwards (clockwise=false=ccw)
-    // to angle π (= left side, m, size-m = bottom-left)
-    c.moveTo(size-m,size-m);  // bottom-right center of arc
-    c.arc(size-m,size-m,s,-Math.PI/2,Math.PI,false); // this draws the arc ccw
-    c.closePath();
-    c.fill();
-  } else if(type===4){
-    // Concave quarter-pipe ←: mirror of type 3
-    c.restore(); c.save(); c.globalAlpha=alpha; c.fillStyle=color; c.beginPath();
-    // Arc center at bottom-left (m, size-m), radius s
-    // from angle -π/2 (top-left at m,m) to angle 0 (right: size-m, size-m=bottom-right)
-    // going clockwise (true)
-    c.moveTo(m,size-m);
-    c.arc(m,size-m,s,-Math.PI/2,0,true);
-    c.closePath();
-    c.fill();
   }
-  if(type===0||type===1||type===2){ c.fill(); }
+  
+  if(type>=0 && type<=2){ c.fill(); }
   c.strokeStyle='rgba(255,255,255,0.12)'; c.lineWidth=1; c.stroke();
   c.restore();
 }
@@ -314,45 +299,32 @@ function drawBlockAt(c,type,x,y,size,rot=0,alpha=1,hurdle=false){
 // ── Physics bodies ────────────────────────────────────────────────────────────
 function makeBlockBody(type,col,row,rot=0){
   const cx=col*CELL+CELL/2, cy=row*CELL+CELL/2;
-  const h=CELL/2-3;
+  const h=CELL/2; 
   const o={isStatic:true,friction:0.4,restitution:0.25,label:'block',
            collisionFilter:{category:0x0004,mask:0x0001}};
   let body;
+  
   if(type===0){
-    body=Bodies.rectangle(cx,cy,CELL-5,CELL-5,o);
+    body=Bodies.rectangle(cx,cy,CELL,CELL,o);
   } else if(type===1){
-    // flat bottom, slope top-left → bottom-right
     const v=[{x:-h,y:-h},{x:-h,y:h},{x:h,y:h}];
-    body=Bodies.fromVertices(cx,cy,v,o,true);
+    body=Bodies.fromVertices(cx,cy,[v],o,true);
   } else if(type===2){
     const v=[{x:h,y:-h},{x:-h,y:h},{x:h,y:h}];
-    body=Bodies.fromVertices(cx,cy,v,o,true);
-  } else if(type===3){
-    // Concave quarter-pipe → : polygon approximation
-    // The physics surface curves from top-right down to bottom-left (concave inward)
-    const steps=10;
-    const verts=[];
-    // The curved surface: starts at top-right (-h angle), sweeps around center (h,h)=bottom-right
-    // Actually build: bottom-right as pivot, arc from top (angle=-π/2) CCW to left (angle=π)
-    // giving points going along concave arc, then close along edges
-    for(let i=0;i<=steps;i++){
-      const t=-Math.PI/2+i*(3*Math.PI/2)/steps; // from -π/2 to π
-      verts.push({x:h+h*Math.cos(t), y:h+h*Math.sin(t)});
-    }
-    body=Bodies.fromVertices(cx,cy,verts,o,true);
-  } else if(type===4){
-    const steps=10;
-    const verts=[];
-    for(let i=0;i<=steps;i++){
-      const t=-Math.PI/2+i*(3*Math.PI/2)/steps;
-      // mirror x
-      verts.push({x:-(h+h*Math.cos(t)), y:h+h*Math.sin(t)});
-    }
-    body=Bodies.fromVertices(cx,cy,verts,o,true);
+    body=Bodies.fromVertices(cx,cy,[v],o,true);
   }
+  
   if(!body) return null;
-  if(rot!==0) Body.setAngle(body,rot);
-  Body.setPosition(body,{x:cx,y:cy});
+
+  Matter.Body.translate(body, {
+      x: (cx - h) - body.bounds.min.x,
+      y: (cy - h) - body.bounds.min.y
+  });
+  
+  if(rot!==0) {
+      Matter.Body.rotate(body, rot, {x: cx, y: cy});
+  }
+  
   return body;
 }
 
@@ -363,10 +335,10 @@ function createPhysics(){
   const wo={isStatic:true,friction:0.3,restitution:0.2,label:'wall',
             collisionFilter:{category:0x0004,mask:0x0001}};
   World.add(world,[
-    Bodies.rectangle(CS/2,-10,CS+40,20,wo),
-    Bodies.rectangle(-10,CS/2,20,CS+40,wo),
-    Bodies.rectangle(CS+10,CS/2,20,CS+40,wo),
-    Bodies.rectangle(CS/2,CS+10,CS+40,20,wo),
+    Bodies.rectangle(CS/2,-10,CS+40,20,wo),     // Top Wall
+    Bodies.rectangle(-10,CS/2,20,CS+40,wo),     // Left Wall
+    Bodies.rectangle(CS+10,CS/2,20,CS+40,wo),   // Right Wall
+    Bodies.rectangle(CS/2,CS+10,CS+40,20,wo),   // Bottom Wall
   ]);
   Events.on(engine,'collisionStart',e=>{
     e.pairs.forEach(p=>{
@@ -376,11 +348,17 @@ function createPhysics(){
   });
 }
 
-function startLevel(idx){
+function startLevel(idx, keepBlocks = false){
+  const savedBlocks = keepBlocks ? placedBlocks.map(b => ({type: b.type, col: b.col, row: b.row, rotation: b.rotation})) : [];
   currentLevel=idx;
   const lvl=LEVELS[idx];
-  won=false; gameRunning=false; blockCount=0;
-  if(engine){World.clear(world);Engine.clear(engine);}
+  won=false; gameRunning=false; blockCount=0; idleFrames=0; lastBallPos={x:0, y:0};
+  
+  if(engine){
+      Events.off(engine); // clear old events
+      World.clear(world);
+      Engine.clear(engine);
+  }
   placedBlocks=[]; hurdleBodies=[];
 
   createPhysics();
@@ -398,7 +376,8 @@ function startLevel(idx){
   World.add(world,ball);
 
   // Hole
-  const hx=lvl.holeCol*CELL+CELL/2, hy=CS-CELL*0.5;
+  const hrw = lvl.holeRow !== undefined ? lvl.holeRow : ROWS-1;
+  const hx=lvl.holeCol*CELL+CELL/2, hy=hrw*CELL+CELL/2;
   holeVX=hx; holeDir=1;
   holeSensor=Bodies.circle(hx,hy,CELL*0.44,{
     isStatic:true,isSensor:true,label:'hole',
@@ -412,25 +391,26 @@ function startLevel(idx){
     if(b){b.label='hurdle';World.add(world,b);hurdleBodies.push({body:b,...h,rotation:0});}
   });
 
+  // Restore User Blocks (if keepBlocks is true)
+  savedBlocks.forEach(sb => {
+    const body = makeBlockBody(sb.type, sb.col, sb.row, sb.rotation);
+    if (body) {
+      World.add(world, body);
+      placedBlocks.push({body, type: sb.type, col: sb.col, row: sb.row, rotation: sb.rotation});
+      blockCount++;
+    }
+  });
+
   // UI
+  if(selectedType === -1) selectedType = 0; 
   updatePips();buildToolbar();updateHint();updateBallUI();
   document.getElementById('nextBtn').style.display='none';
   document.getElementById('dropBtn').disabled=false;
   document.getElementById('winOv').classList.remove('show');
   document.getElementById('doneOv').classList.remove('show');
-
-  // Intro
-  document.getElementById('introNum').textContent=`LEVEL ${idx+1}`;
-  document.getElementById('introTitle').textContent=lvl.name;
-  document.getElementById('introSub').textContent=lvl.sub;
-  const pill=document.getElementById('introPill');
-  if(lvl.pill){pill.textContent=lvl.pill;pill.style.display='block';}
-  else pill.style.display='none';
-  document.getElementById('introOv').classList.add('show');
 }
 
-function closeIntro(){document.getElementById('introOv').classList.remove('show');}
-function retryLevel(){startLevel(currentLevel);closeIntro();}
+function retryLevel(){startLevel(currentLevel, true);}
 function advanceLevel(){
   const next=currentLevel+1;
   document.getElementById('winOv').classList.remove('show');
@@ -438,19 +418,42 @@ function advanceLevel(){
   else startLevel(next);
 }
 
+function initPips() {
+  const badge = document.getElementById('levelBadge');
+  badge.innerHTML = '<span class="level-lbl">Level</span>';
+  for(let i = 0; i < LEVELS.length; i++) {
+    const pip = document.createElement('div');
+    pip.id = 'pip' + i;
+    pip.className = 'level-pip';
+    badge.appendChild(pip);
+  }
+}
+
 function updatePips(){
-  for(let i=0;i<5;i++){
+  for(let i=0;i<LEVELS.length;i++){
     const p=document.getElementById('pip'+i);
+    if(!p) continue;
     p.className='level-pip';
     if(i<currentLevel) p.classList.add('done');
     else if(i===currentLevel) p.classList.add('active');
+
+    if(i <= maxUnlockedLevel) {
+      p.classList.add('unlocked');
+      p.onclick = () => { if(!gameRunning) { startLevel(i); } };
+      p.title = `Play Level ${i+1}`;
+    } else {
+      p.onclick = null;
+      p.title = `Locked`;
+    }
   }
 }
+
 function updateHint(){
   const lvl=LEVELS[currentLevel];
   document.getElementById('hintTitle').textContent=`Level ${currentLevel+1} — ${lvl.name}`;
   document.getElementById('hintBody').innerHTML=lvl.hint.replace(/\n/g,'<br>');
 }
+
 function updateBallUI(){
   const lvl=LEVELS[currentLevel];
   document.getElementById('ballDot').className='ball-dot'+(lvl.bouncyBall?' bouncy':'');
@@ -461,24 +464,41 @@ function updateBallUI(){
 function buildToolbar(){
   const lvl=LEVELS[currentLevel];
   const tb=document.getElementById('toolbar');tb.innerHTML='';
+  
   BTYPES.forEach((bt,i)=>{
     const avail=lvl.availableBlocks===undefined||lvl.availableBlocks.includes(i);
     const btn=document.createElement('div');
     btn.className='block-btn'+(i===selectedType?' selected':'')+(!avail?' disabled':'');
+    
     const mc=document.createElement('canvas');mc.width=30;mc.height=30;
     drawBV(mc.getContext('2d'),i,30,bt.color);
+    
     const lbl=document.createElement('span');lbl.className='block-label';lbl.textContent=bt.name;
     btn.appendChild(mc);btn.appendChild(lbl);
+    
     if(avail){
       btn.addEventListener('click',()=>{selectedType=i;buildToolbar();});
       btn.addEventListener('mousedown',e=>{if(gameRunning)return;selectedType=i;startDrag(e,i);});
     }
     tb.appendChild(btn);
   });
+  
+  const eBtn=document.createElement('div');
+  eBtn.className='block-btn'+(-1===selectedType?' eraser-selected':'');
+  const ec=document.createElement('canvas');ec.width=30;ec.height=30;
+  const ectx=ec.getContext('2d');
+  ectx.fillStyle='rgba(255,61,113,0.15)'; ectx.fillRect(2,2,26,26);
+  ectx.strokeStyle='#ff3d71'; ectx.lineWidth=2; ectx.lineCap='round';
+  ectx.beginPath(); ectx.moveTo(8,8); ectx.lineTo(22,22); ectx.moveTo(22,8); ectx.lineTo(8,22); ectx.stroke();
+  const elbl=document.createElement('span');elbl.className='block-label';elbl.textContent='Eraser';
+  eBtn.appendChild(ec);eBtn.appendChild(elbl);
+  eBtn.addEventListener('click',()=>{selectedType=-1;buildToolbar();});
+  tb.appendChild(eBtn);
 }
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
 function startDrag(e,type){
+  if(type === -1) return;
   const lvl=LEVELS[currentLevel];
   dragging={type};
   const g=document.getElementById('dragGhost');
@@ -508,14 +528,27 @@ function doPlace(type,x,y){
   if(gameRunning)return;
   const lvl=LEVELS[currentLevel];
   const col=Math.floor(x/CELL),row=Math.floor(y/CELL);
-  if(col<0||col>=COLS||row<=0||row>=ROWS-1)return;
+  const hrw = lvl.holeRow !== undefined ? lvl.holeRow : ROWS-1;
+  
+  if(col<0||col>=COLS||row<0||row>=ROWS)return;
+  if(col===lvl.ballCol && row===0) return;
+  if(!lvl.holeMoving && col===lvl.holeCol && row===hrw) return;
+  if(lvl.holeMoving && row===hrw) return;
   if(hurdleBodies.find(h=>h.col===col&&h.row===row))return;
+  
   const existing=placedBlocks.findIndex(b=>b.col===col&&b.row===row);
   const replacing=existing>=0;
+  
   if(!replacing&&blockCount>=lvl.maxBlocks)return;
-  if(replacing){World.remove(world,placedBlocks[existing].body);placedBlocks.splice(existing,1);blockCount--;}
+  if(replacing){
+      World.remove(world,placedBlocks[existing].body);
+      placedBlocks.splice(existing,1);
+      blockCount--;
+  }
+  
   const body=makeBlockBody(type,col,row,0);
   if(!body)return;
+  
   World.add(world,body);
   placedBlocks.push({body,type,col,row,rotation:0});
   blockCount++;
@@ -526,12 +559,26 @@ canvas.addEventListener('click',e=>{
   const rect=canvas.getBoundingClientRect();
   const col=Math.floor((e.clientX-rect.left)/CELL);
   const row=Math.floor((e.clientY-rect.top)/CELL);
-  const bd=placedBlocks.find(b=>b.col===col&&b.row===row);
-  if(!bd)return;
+  const idx=placedBlocks.findIndex(b=>b.col===col&&b.row===row);
+  
+  if(selectedType === -1) {
+      if(idx >= 0) {
+          World.remove(world, placedBlocks[idx].body);
+          placedBlocks.splice(idx, 1);
+          blockCount--;
+      }
+      return;
+  }
+
+  if(idx === -1) return;
+  const bd=placedBlocks[idx];
   bd.rotation=(bd.rotation+Math.PI/2)%(Math.PI*2);
   World.remove(world,bd.body);
   const nb=makeBlockBody(bd.type,bd.col,bd.row,bd.rotation);
-  bd.body=nb;World.add(world,nb);
+  if(nb){
+      bd.body=nb;
+      World.add(world,nb);
+  }
 });
 
 canvas.addEventListener('contextmenu',e=>{
@@ -548,15 +595,23 @@ document.getElementById('dropBtn').addEventListener('click',()=>{
   if(gameRunning||won)return;
   gameRunning=true;engine.gravity.y=1.2;Body.setStatic(ball,false);
 });
-document.getElementById('resetBtn').addEventListener('click',()=>{startLevel(currentLevel);closeIntro();});
+
+// Explicit reset handling to clear up confusion
+document.getElementById('resetBtn').addEventListener('click',()=>{startLevel(currentLevel, true);});
+document.getElementById('clearBtn').addEventListener('click',()=>{startLevel(currentLevel, false);});
+
 document.getElementById('nextBtn').addEventListener('click',advanceLevel);
 
 function triggerWin(){
   if(won)return;won=true;gameRunning=false;
   Body.setStatic(ball,true);Body.setVelocity(ball,{x:0,y:0});
+  
+  maxUnlockedLevel = Math.max(maxUnlockedLevel, currentLevel + 1);
+  updatePips(); 
+  
   setTimeout(()=>{
     document.getElementById('winNum').textContent=`LEVEL ${currentLevel+1} COMPLETE`;
-    const subs=["Straight down — nice!","Redirected perfectly!","Navigated the hurdles!","Timed the moving target!","Tamed the bouncy beast!"];
+    const subs=["Straight down — nice!","Redirected perfectly!","Navigated the hurdles!","Block limit mastered!","Timed the moving target!","Tamed the bouncy beast!"];
     document.getElementById('winSub').textContent=subs[currentLevel]||'';
     document.getElementById('winNextBtn').textContent=currentLevel>=LEVELS.length-1?'★ Finish':'Next Level →';
     document.getElementById('winOv').classList.add('show');
@@ -579,6 +634,28 @@ function render(){
   Engine.update(engine,1000/60);
   tickHole();
 
+  if(gameRunning && !won) {
+    // Check actual positional movement to avoid fake jittering speed bugs
+    const dx = ball.position.x - lastBallPos.x;
+    const dy = ball.position.y - lastBallPos.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    
+    if(dist < 0.2) {
+      idleFrames++;
+      if(idleFrames > 90) { // roughly 1.5 seconds of physical stillness
+        retryLevel();
+      }
+    } else {
+      idleFrames = 0; 
+    }
+    lastBallPos = {x: ball.position.x, y: ball.position.y};
+    
+    // Out of bounds check: if somehow it flies out to the left, right, or top
+    if(ball.position.y < -50 || ball.position.x < -50 || ball.position.x > CS + 50) {
+      retryLevel();
+    }
+  }
+
   ctx.clearRect(0,0,CS,CS);
   ctx.fillStyle='#0b0b14';ctx.fillRect(0,0,CS,CS);
 
@@ -587,12 +664,19 @@ function render(){
   for(let c=0;c<=COLS;c++){ctx.beginPath();ctx.moveTo(c*CELL,0);ctx.lineTo(c*CELL,CS);ctx.stroke();}
   for(let r=0;r<=ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*CELL);ctx.lineTo(CS,r*CELL);ctx.stroke();}
 
+  const lvl=LEVELS[currentLevel];
+  const hrw = lvl.holeRow !== undefined ? lvl.holeRow : ROWS-1;
+
   // Reserved row tints
   ctx.fillStyle='rgba(0,229,255,0.025)';ctx.fillRect(0,0,CS,CELL);
-  ctx.fillStyle='rgba(255,61,113,0.025)';ctx.fillRect(0,CS-CELL,CS,CELL);
+  ctx.fillStyle='rgba(255,61,113,0.025)';
+  if (lvl.holeMoving) {
+    ctx.fillRect(0,hrw*CELL,CS,CELL);
+  } else {
+    ctx.fillRect(lvl.holeCol*CELL,hrw*CELL,CELL,CELL);
+  }
 
   // Block counter
-  const lvl=LEVELS[currentLevel];
   const rem=lvl.maxBlocks-blockCount;
   ctx.fillStyle=rem>0?'rgba(0,229,255,0.5)':'rgba(255,61,113,0.6)';
   ctx.font='700 8px Space Mono';ctx.textAlign='left';
@@ -611,6 +695,22 @@ function render(){
     ctx.strokeStyle='rgba(0,229,255,0.15)';ctx.lineWidth=1;
     ctx.strokeRect(bd.col*CELL+1,bd.row*CELL+1,CELL-2,CELL-2);
   });
+
+  // Eraser hover state
+  if(!gameRunning && selectedType === -1) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = mouseX - rect.left, my = mouseY - rect.top;
+    if(mx >= 0 && mx < CS && my >= 0 && my < CS) {
+        const pc = Math.floor(mx/CELL), pr = Math.floor(my/CELL);
+        const bd = placedBlocks.find(b => b.col === pc && b.row === pr);
+        if(bd) {
+            ctx.fillStyle = 'rgba(255,61,113,0.35)';
+            ctx.fillRect(pc*CELL, pr*CELL, CELL, CELL);
+            ctx.strokeStyle = '#ff3d71'; ctx.lineWidth = 2;
+            ctx.strokeRect(pc*CELL+2, pr*CELL+2, CELL-4, CELL-4);
+        }
+    }
+  }
 
   // Hole
   const hx=holeSensor.position.x, hy=holeSensor.position.y, hr=CELL*0.41;
@@ -640,12 +740,15 @@ function render(){
   ctx.fillText(bouncy?'BOUNCY':'BALL',bp.x,bp.y-br-5);
 
   // Drag preview
-  if(dragging&&ghostVisible){
+  if(dragging&&ghostVisible&&selectedType!==-1){
     const rect=canvas.getBoundingClientRect();
     const mx=mouseX-rect.left,my=mouseY-rect.top;
     if(mx>=0&&mx<CS&&my>=0&&my<CS){
       const pc=Math.floor(mx/CELL),pr=Math.floor(my/CELL);
-      const ok=pr>0&&pr<ROWS-1&&!hurdleBodies.find(h=>h.col===pc&&h.row===pr);
+      const ok = pr>=0 && pr<ROWS &&
+                 !(pc===lvl.ballCol && pr===0) &&
+                 !(lvl.holeMoving ? pr===hrw : (pc===lvl.holeCol && pr===hrw)) &&
+                 !hurdleBodies.find(h=>h.col===pc&&h.row===pr);
       const canPlace=ok&&(blockCount<lvl.maxBlocks||placedBlocks.find(b=>b.col===pc&&b.row===pr));
       if(ok){
         ctx.strokeStyle=canPlace?'rgba(0,229,255,0.6)':'rgba(255,61,113,0.6)';
@@ -659,6 +762,7 @@ function render(){
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+initPips();
 startLevel(0);
 render();
 </script>
