@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Audit Sistem Informasi — PKN STAN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -17,8 +17,10 @@
   --gray-400: #a0a0a0;
   --gray-600: #6b6b6b;
   --gray-900: #111111;
-  --green: #1a6b3a;
-  --green-light: #f0f7f3;
+  --orange: #ea580c;
+  --orange-h: #c2410c;
+  --orange-light: #fff2eb;
+  --orange-border: #fbd6c5;
   --sidebar-w: 240px;
 }
 
@@ -72,7 +74,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 0; /* Sharp edge */
   transition: background 0.15s, color 0.15s;
 }
 .sidebar-close:hover { background: var(--gray-100); color: var(--gray-900); }
@@ -94,7 +96,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 0; /* Sharp edge */
   border: 1px solid transparent;
   cursor: pointer;
   background: none;
@@ -113,7 +115,7 @@ body {
 }
 .sidebar-option .opt-dot {
   width: 6px; height: 6px;
-  border-radius: 50%;
+  border-radius: 0; /* Sharp edge dot */
   background: currentColor;
   flex-shrink: 0;
   opacity: 0.4;
@@ -151,14 +153,14 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 14px 7px;
-  border-radius: 6px 0 0 6px;
+  border-radius: 0; /* Sharp edge */
   display: flex;
   align-items: center;
   gap: 8px;
   transition: background 0.15s, opacity 0.2s;
   line-height: 1;
 }
-#sidebar-toggle:hover { background: #333; }
+#sidebar-toggle:hover { background: var(--orange); }
 #sidebar-toggle.hidden { opacity: 0; pointer-events: none; }
 #sidebar-toggle .toggle-icon {
   writing-mode: horizontal-tb;
@@ -182,22 +184,24 @@ header {
   font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: var(--orange); /* Accented with orange */
   margin-bottom: 0.75rem;
+  font-weight: 500;
 }
 header h1 {
-  font-family: 'Lora', serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 400;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.2;
   color: var(--gray-900);
   margin-bottom: 0.4rem;
 }
-header h1 em { font-style: italic; color: var(--gray-600); }
+header h1 em { font-style: italic; font-weight: 300; color: var(--gray-600); }
 .header-sub {
   font-size: 13px;
   color: var(--gray-600);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .header-actions {
@@ -212,10 +216,10 @@ header h1 em { font-style: italic; color: var(--gray-600); }
 .active-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
-  border-radius: 20px;
+  border-radius: 0; /* Sharp edge */
   padding: 4px 12px 4px 8px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
@@ -224,8 +228,8 @@ header h1 em { font-style: italic; color: var(--gray-600); }
 }
 .active-badge .badge-dot {
   width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green);
+  border-radius: 0; /* Sharp edge dot */
+  background: var(--orange);
   flex-shrink: 0;
 }
 
@@ -234,18 +238,18 @@ header h1 em { font-style: italic; color: var(--gray-600); }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--green);
+  color: var(--orange);
   text-decoration: none;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid #d4ead9;
-  background: var(--green-light);
+  padding: 6px 14px;
+  border-radius: 0; /* Sharp edge */
+  border: 1px solid var(--orange-border);
+  background: var(--orange-light);
   transition: background 0.15s, border-color 0.15s;
   letter-spacing: 0.04em;
 }
-.main-rps-link:hover { background: #e2f2e8; border-color: #b8dcc2; }
+.main-rps-link:hover { background: #ffe4d6; border-color: #f9bfa5; }
 .main-rps-link svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.8; }
 
 /* ─── MAIN ─── */
@@ -264,7 +268,7 @@ main { padding: 2.5rem 0 6rem; }
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: var(--orange); /* Accent */
   white-space: nowrap;
 }
 .section-divider-line { flex: 1; height: 1px; background: var(--gray-200); }
@@ -274,7 +278,7 @@ main { padding: 2.5rem 0 6rem; }
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--gray-200);
-  border-radius: 8px;
+  border-radius: 0; /* Sharp edge */
   overflow: hidden;
   table-layout: fixed;
 }
@@ -323,28 +327,29 @@ td.num-cell {
   vertical-align: middle;
 }
 td.topic-cell {
-  font-family: 'Lora', serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13.5px;
-  font-weight: 400;
+  font-weight: 600; /* Bold topic titles */
   color: var(--gray-900);
   vertical-align: middle;
 }
 
 /* Exam row */
 tr.exam-row td {
-  background: var(--green-light) !important;
-  color: var(--green);
+  background: var(--orange-light) !important;
+  color: var(--orange);
   text-align: center;
-  font-family: 'Lora', serif;
-  font-style: italic;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
   font-size: 14px;
   padding: 15px 14px;
   vertical-align: middle;
 }
 tr.exam-row td.num-cell {
-  background: var(--green-light) !important;
-  color: #7ab898;
-  border-right-color: #d0e8da;
+  background: var(--orange-light) !important;
+  color: var(--orange-h);
+  border-right-color: var(--orange-border);
   font-family: 'IBM Plex Mono', monospace;
   font-style: normal;
   font-size: 11px;
@@ -356,13 +361,14 @@ tr.exam-row td.num-cell {
   display: inline-flex;
   align-items: flex-start;
   gap: 5px;
-  color: var(--green);
+  color: var(--orange);
   text-decoration: none;
   font-size: 12.5px;
+  font-weight: 500;
   line-height: 1.4;
   transition: color 0.12s;
 }
-.cell-link:hover { color: #0f4a27; text-decoration: underline; }
+.cell-link:hover { color: var(--orange-h); text-decoration: underline; }
 .cell-link svg { width: 10px; height: 10px; flex-shrink: 0; opacity: 0.5; margin-top: 3px; }
 .cell-text { font-size: 12px; color: var(--gray-600); font-style: italic; }
 
@@ -370,7 +376,7 @@ tr.exam-row td.num-cell {
 .mobile-week-list { display: none; }
 .week-card {
   border: 1px solid var(--gray-200);
-  border-radius: 10px;
+  border-radius: 0; /* Sharp edge */
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -393,8 +399,9 @@ tr.exam-row td.num-cell {
   flex-shrink: 0;
 }
 .week-topic {
-  font-family: 'Lora', serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13.5px;
+  font-weight: 600;
   color: var(--gray-900);
   flex: 1;
   line-height: 1.35;
@@ -427,15 +434,16 @@ tr.exam-row td.num-cell {
 .mobile-section-label:first-child { margin-top: 10px; }
 
 .exam-card {
-  border: 1px solid #d0e8da;
-  border-radius: 10px;
-  background: var(--green-light);
+  border: 1px solid var(--orange-border);
+  border-radius: 0; /* Sharp edge */
+  background: var(--orange-light);
   padding: 16px 14px;
   text-align: center;
-  font-family: 'Lora', serif;
-  font-style: italic;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
   font-size: 14px;
-  color: var(--green);
+  color: var(--orange);
   margin-bottom: 10px;
 }
 
@@ -445,10 +453,10 @@ tr.exam-row td.num-cell {
   padding: 4rem 2rem;
   color: var(--gray-400);
   font-size: 13px;
-  font-style: italic;
-  font-family: 'Lora', serif;
+  font-style: normal;
+  font-family: 'IBM Plex Sans', sans-serif;
   border: 1px dashed var(--gray-200);
-  border-radius: 8px;
+  border-radius: 0; /* Sharp edge */
 }
 
 /* ─── FOOTER ─── */
@@ -479,7 +487,7 @@ footer {
     right: 0;
     transform: none;
     writing-mode: horizontal-tb;
-    border-radius: 20px 0 0 20px;
+    border-radius: 0; /* Sharp edge */
     padding: 10px 14px;
     font-size: 10px;
     gap: 6px;
