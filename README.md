@@ -1,165 +1,809 @@
-# Audit Sistem Informasi
-
-Semester Ganjil 2025-2026<br>
-by Teuku Raja Irfan Radarma
-
-### Rencana Pembelajaran Semester
-[Unduh RPS](<https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf>)
-
-### Bahan Perkuliahan
-
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Sistem Informasi — PKN STAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  .course-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .course-table th,
-  .course-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  .course-table th {
-    background-color: #f2f2f2;
-  }
-  .course-table .exam-row {
-    text-align: center;
-    font-weight: bold;
-  }
-</style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<table class="course-table">
-  <tr>
-    <th>No</th>
-    <th>Topik</th>
-    <th>Bahan Ajar</th>
-    <th>Praktikum</th>
-    <th>Lain-Lain</th>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>IT Governance</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx" target="_blank">01 - IT Governance: Concept</a>
-    </td>
-    <td></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Introduction.pdf" target="_blank">COBIT 2019 Framework by ISACA</a>
-    </td>
-  </tr>
-  <tr>
-    <td>2</td>
-    <td>IT Governance Audit</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/02%20-%20IT%20Governance%20Audit.pptx" target="_blank">02 - IT Governance Audit</a></td>
-    <td></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Governance.pdf" target="_blank">COBIT 2019 Governance & Management Objectives</a></td>
-  </tr>
-  <tr>
-    <td>3</td>
-    <td>IS Acquisition, Development & Implementation I</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/03%20-%20IS%20Acquisition%20%26%20Development.pptx" target="_blank">03 - IS Acquisition & Development</a></td>
-    <td><a href="https://irfanradarma.github.io/Audit-SI/mind-map-audit5.html" target="_blank">Mind Map App 7 Audit-5</a><br>
-    <a href="https://irfanradarma.github.io/Audit-SI/mind-map-sisfo2.html" target="_blank">Mind Map App 7 Sisfo-2</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/CISA%20Review%20Manual%2027th%20Edition-2019.pdf" target="_blank">CISA Review Manual</a></td>
-  </tr>
-  <tr>
-    <td>4</td>
-    <td>IS Acquisition, Development & Implementation II</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/04%20-%20IS%20Implementation.pptx" target="_blank">04 - IS Implementation</a></td>
-    <td>quiz through LMS</td>
-    <td><a href="https://irfanradarma.github.io/Audit-SI/exercise.html" target="_blank">Try Out</a></td>
-  </tr>
-  <tr>
-    <td>5</td>
-    <td>IS Operations & Business Resilience</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/05%20-%20IS%20Operations%20and%20Business%20Resilience.pptx" target="_blank">05 - IS Operations and Business Resilience</a></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>6</td>
-    <td>Protection of Information Assets: Part A</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/06%20-%20Information%20Asset%20Security%20and%20Control.pptx" target="_blank">06 - Information Asset Security and Control</a></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>7</td>
-    <td>Protection of Information Assets: Part B</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx" target="_blank">07 - Security Event Management</a></td>
-    <td>Quiz Through LMS</td>
-    <td><a href="https://irfanradarma.github.io/Audit-SI/try-out.html" target="_blank">Try Out Domain 1 - 5</a><br><br>
-    <a href="https://forms.gle/JNBbpYAWQXh7wtPH6" target="_blank">Tugas VII - Lessons Learned</a></td>
-  </tr>
-  <tr>
-    <td>8</td>
-    <td colspan="4" class="exam-row">UTS (Ujian Tengah Semester)</td>
-  </tr>
-  <tr>
-    <td>9</td>
-    <td>Basic of Data Analysis</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/09%20-%20Basic%20Data%20Analysis.pptx" target="_blank">09 - Basic Data Analysis</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Data%20Impor.zip" target="_blank">- Impor Data</a><br>
-    <a href="https://github.com/irfanradarma/PTIK-STAN/raw/main/Slides/06/spotify_data_light.xlsx" target="_blank">- Data Spotify</a>
-    </td>
-    <td><a href="https://www.youtube.com/watch?v=Kwn8GJyNv64" target="_blank">1. Tutorial Pivot Table</a><br>
-    <a href="https://www.youtube.com/watch?v=bhfRlU_bNmw" target="_blank">2. Tutorial SUM, SUMIF, SUMIFS</a><br>
-    <a href="https://www.youtube.com/watch?v=OekP7P-Xw4I" target="_blank">3. Tutorial CONSOLIDATE</a><br>
-    <a href="https://www.youtube.com/watch?v=JNZqRYkgZ4c" target="_blank">4. Tutorial Filtering Data</a><br>
-    <a href="https://www.youtube.com/watch?v=UV-SPoVkDaU" target="_blank">5. Tutorial Advanced Filters</a><br>
-    <a href="https://www.youtube.com/watch?v=LKbRkIIVG60&pp=ygUQdHV0b3JpYWwgdmxvb2t1cA%3D%3D" target="_blank">6. Tutorial Vlookup</a></td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Risk and Control</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/10%20-%20Risiko%20dan%20Pengendalian.pptx" target="_blank">10 - Risiko dan Pengendalian</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Week%2010%20Practice.xlsx" target="_blank">Week 10 Practice</a><br><br>
-    Tugas VIII - Simulasi ToE:<br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Assignment%20of%20Week%2010.xlsx" target="_blank">- Sales Data</a><br>
-    <a href="https://forms.gle/UomXmnZEnLGkxyWz9" target="_blank">- Submission Form</a><br>(Deadline: Sunday Midnight)</td>
-    <td><a href="https://drive.google.com/drive/folders/1KWQqTYpNElnZxWfQIZvHP4nMVipOfils" target="_blank">Praktik Pengujian AppCon MYOB</a> (dari dosko)<br><br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Fun%20Excel%20II.xlsx" target="_blank">Fun Excel Comp II Data</a></td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Parallel Simulation</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/11%20-%20Simulasi%20Sejajar.pptx" target="_blank">11 - Simulasi Sejajar</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan1-5.zip" target="_blank">- Payroll Jan 1 - 5</a><br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan6-7.zip" target="_blank">- Payroll Jan 6 - 7</a><br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-2025.csv" target="_blank">- Payroll 2025</a></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>Sampling and Statistical Aproach</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik.pptx" target="_blank">12 - Sampling dan Pendekatan Statistik</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/week12%20-%20Latihan%20Anomaly.xlsx" target="_blank">data latihan anomali</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Tugas%20Week%2012.pptx" target="_blank">- Instruksi Tugas Week 12</a><br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20data%20absensi.csv" target="_blank">- Data Absensi</a><br>
-    <a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20audit_log_wifi_kampus.csv" target="_blank">- Data log jaringan</a><br><br>
-    <a href="https://forms.gle/BfQk7hNuQbunQDDm7" target="_blank">Submit your work here</a><br></td>
-  </tr>
-  <tr>
-    <td>13</td>
-    <td>Substantive Testing: Sales Cycle</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/13.%20Asersi%20Siklus%20Penjualan.pptx" target="_blank">13 - Audit Siklus Penjualan</a></td>
-    <td>Kuis via LMS</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>14</td>
-    <td>Substantive Testing: Expenditure Cycle</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/14.%20Asersi%20Siklus%20Pengeluaran.pptx" target="_blank">14 - Audit Siklus Pembelian</a></td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Externals/14%20-%20Latihan%20Data%20Pembelian.xls" target="_blank">Data Pembelian</a></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>15</td>
-    <td>Audit Report</td>
-    <td><a href="https://github.com/irfanradarma/Audit-SI/raw/main/Slides/15.%20Laporan%20Audit.pptx" target="_blank">15 - (Bukan) Laporan Audit</a></td>
-    <td></td>
-    <td><a href="https://www.youtube.com/watch?v=zcp2Ku5T8h8" target="_blank">Hyperlink Excel Tutorial</a></td>
-  </tr>
-  <tr>
-    <td>16</td>
-    <td colspan="4" class="exam-row">UAS (Ujian Akhir Semester)</td>
-  </tr>
-</table>
+:root {
+  --white: #ffffff;
+  --gray-50: #fafafa;
+  --gray-100: #f4f4f4;
+  --gray-200: #e8e8e8;
+  --gray-400: #a0a0a0;
+  --gray-600: #6b6b6b;
+  --gray-900: #111111;
+  --orange: #ea580c;
+  --orange-h: #c2410c;
+  --orange-light: #fff2eb;
+  --orange-border: #fbd6c5;
+  --sidebar-w: 240px;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--white);
+  color: var(--gray-900);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── SIDEBAR ─── */
+#sidebar {
+  position: fixed;
+  top: 0; right: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--white);
+  border-left: 1px solid var(--gray-200);
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+#sidebar.open { transform: translateX(0); }
+
+.sidebar-header {
+  padding: 1.4rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.sidebar-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+.sidebar-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0; /* Sharp edge */
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-close:hover { background: var(--gray-100); color: var(--gray-900); }
+.sidebar-close svg { width: 14px; height: 14px; }
+
+.sidebar-body { padding: 1.25rem; flex: 1; }
+
+.sidebar-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 0.5rem;
+}
+.sidebar-options { display: flex; flex-direction: column; gap: 4px; margin-bottom: 1.5rem; }
+.sidebar-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 0; /* Sharp edge */
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: none;
+  text-align: left;
+  width: 100%;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  color: var(--gray-600);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.sidebar-option:hover { background: var(--gray-50); color: var(--gray-900); }
+.sidebar-option.active {
+  background: var(--gray-900);
+  color: var(--white);
+  border-color: var(--gray-900);
+}
+.sidebar-option .opt-dot {
+  width: 6px; height: 6px;
+  border-radius: 0; /* Sharp edge dot */
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+.sidebar-option.active .opt-dot { opacity: 1; }
+.sidebar-option span { font-size: 13px; }
+
+/* Backdrop */
+#sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 199;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+#sidebar-backdrop.visible { display: block; }
+
+/* ─── TOGGLE BUTTON (fixed right edge) ─── */
+#sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 198;
+  background: var(--gray-900);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 7px;
+  border-radius: 0; /* Sharp edge */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, opacity 0.2s;
+  line-height: 1;
+}
+#sidebar-toggle:hover { background: var(--orange); }
+#sidebar-toggle.hidden { opacity: 0; pointer-events: none; }
+#sidebar-toggle .toggle-icon {
+  writing-mode: horizontal-tb;
+  display: flex;
+  align-items: center;
+}
+#sidebar-toggle .toggle-icon svg { width: 11px; height: 11px; }
+
+/* ─── HEADER ─── */
+header {
+  border-bottom: 1px solid var(--gray-200);
+  padding: 3rem 0 2.5rem;
+}
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.header-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--orange); /* Accented with orange */
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+header h1 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--gray-900);
+  margin-bottom: 0.4rem;
+}
+header h1 em { font-style: italic; font-weight: 300; color: var(--gray-600); }
+.header-sub {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 400;
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 1.1rem;
+}
+
+/* ─── ACTIVE SEMESTER BADGE ─── */
+.active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 0; /* Sharp edge */
+  padding: 4px 12px 4px 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--gray-600);
+  letter-spacing: 0.04em;
+}
+.active-badge .badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 0; /* Sharp edge dot */
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+/* ─── RPS LINK BUTTON ─── */
+.main-rps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--orange);
+  text-decoration: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  padding: 6px 14px;
+  border-radius: 0; /* Sharp edge */
+  border: 1px solid var(--orange-border);
+  background: var(--orange-light);
+  transition: background 0.15s, border-color 0.15s;
+  letter-spacing: 0.04em;
+}
+.main-rps-link:hover { background: #ffe4d6; border-color: #f9bfa5; }
+.main-rps-link svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.8; }
+
+/* ─── MAIN ─── */
+main { padding: 2.5rem 0 6rem; }
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-divider:first-child { margin-top: 0; }
+.section-divider-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange); /* Accent */
+  white-space: nowrap;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--gray-200); }
+
+/* ─── TABLE (desktop) ─── */
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--gray-200);
+  border-radius: 0; /* Sharp edge */
+  overflow: hidden;
+  table-layout: fixed;
+}
+.course-table thead th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  background: var(--gray-50);
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+  white-space: nowrap;
+}
+.course-table thead th:first-child {
+  width: 44px;
+  text-align: center;
+  border-right: 1px solid var(--gray-200);
+}
+.col-topik { width: 22%; }
+.col-bahan { width: 26%; }
+.col-prak  { width: 26%; }
+.col-lain  { width: 26%; }
+
+.course-table tbody tr {
+  border-bottom: 1px solid var(--gray-200);
+  transition: background 0.1s;
+}
+.course-table tbody tr:last-child { border-bottom: none; }
+.course-table tbody tr:hover td:not(.num-cell) { background: var(--gray-50); }
+
+.course-table td {
+  padding: 12px 14px;
+  vertical-align: top;
+  font-size: 13px;
+}
+td.num-cell {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-400);
+  background: var(--gray-50);
+  border-right: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+td.topic-cell {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600; /* Bold topic titles */
+  color: var(--gray-900);
+  vertical-align: middle;
+}
+
+/* Exam row */
+tr.exam-row td {
+  background: var(--orange-light) !important;
+  color: var(--orange);
+  text-align: center;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 15px 14px;
+  vertical-align: middle;
+}
+tr.exam-row td.num-cell {
+  background: var(--orange-light) !important;
+  color: var(--orange-h);
+  border-right-color: var(--orange-border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-style: normal;
+  font-size: 11px;
+}
+
+/* ─── LINKS ─── */
+.cell-links { display: flex; flex-direction: column; gap: 5px; }
+.cell-link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 5px;
+  color: var(--orange);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: color 0.12s;
+}
+.cell-link:hover { color: var(--orange-h); text-decoration: underline; }
+.cell-link svg { width: 10px; height: 10px; flex-shrink: 0; opacity: 0.5; margin-top: 3px; }
+.cell-text { font-size: 12px; color: var(--gray-600); font-style: italic; }
+
+/* ─── MOBILE CARDS ─── */
+.mobile-week-list { display: none; }
+.week-card {
+  border: 1px solid var(--gray-200);
+  border-radius: 0; /* Sharp edge */
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.week-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: var(--gray-50);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.week-card-header:active { background: var(--gray-100); }
+.week-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--gray-400);
+  width: 20px;
+  flex-shrink: 0;
+}
+.week-topic {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+  flex: 1;
+  line-height: 1.35;
+}
+.week-chevron {
+  color: var(--gray-400);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  display: flex;
+}
+.week-chevron svg { width: 14px; height: 14px; }
+.week-card.expanded .week-chevron { transform: rotate(180deg); }
+
+.week-card-body {
+  display: none;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--gray-200);
+  background: var(--white);
+}
+.week-card.expanded .week-card-body { display: block; }
+
+.mobile-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin: 12px 0 6px;
+}
+.mobile-section-label:first-child { margin-top: 10px; }
+
+.exam-card {
+  border: 1px solid var(--orange-border);
+  border-radius: 0; /* Sharp edge */
+  background: var(--orange-light);
+  padding: 16px 14px;
+  text-align: center;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--orange);
+  margin-bottom: 10px;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-notice {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--gray-400);
+  font-size: 13px;
+  font-style: normal;
+  font-family: 'IBM Plex Sans', sans-serif;
+  border: 1px dashed var(--gray-200);
+  border-radius: 0; /* Sharp edge */
+}
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--gray-200);
+  padding: 1.5rem 0;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 680px) {
+  .container { padding: 0 1rem; }
+  header { padding: 2rem 0 1.75rem; }
+  header h1 { font-size: 1.65rem; }
+
+  /* hide desktop table, show cards */
+  .desktop-table-wrap { display: none; }
+  .mobile-week-list { display: block; }
+
+  /* sidebar toggle floats at bottom-right on mobile */
+  #sidebar-toggle {
+    top: auto;
+    bottom: 1.5rem;
+    right: 0;
+    transform: none;
+    writing-mode: horizontal-tb;
+    border-radius: 0; /* Sharp edge */
+    padding: 10px 14px;
+    font-size: 10px;
+    gap: 6px;
+  }
+  #sidebar-toggle .toggle-icon { writing-mode: horizontal-tb; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── SIDEBAR BACKDROP ─── -->
+<div id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+<!-- ─── SIDEBAR ─── -->
+<aside id="sidebar" role="complementary" aria-label="Navigasi semester">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Semester</span>
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sidebar-body">
+    <div class="sidebar-section-label">Pilih Semester</div>
+    <div class="sidebar-options">
+      <button class="sidebar-option active" id="sopt-genap2026" onclick="switchSemester('genap2026')">
+        <span class="opt-dot"></span>
+        <span>Genap 2026</span>
+      </button>
+      <button class="sidebar-option" id="sopt-ganjil2025" onclick="switchSemester('ganjil2025')">
+        <span class="opt-dot"></span>
+        <span>Ganjil 2025</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ─── SIDEBAR TOGGLE TAB ─── -->
+<button id="sidebar-toggle" onclick="openSidebar()" aria-label="Buka navigasi semester">
+  <span class="toggle-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  </span>
+  Semester
+</button>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <div class="container">
+    <div class="header-eyebrow">Politeknik Keuangan Negara STAN</div>
+    <h1>Audit <em>Sistem</em> Informasi</h1>
+    <div class="header-sub">Teuku Raja Irfan Radarma</div>
+    
+    <div class="header-actions">
+      <div class="active-badge">
+        <span class="badge-dot"></span>
+        <span id="header-semester">Genap 2026</span>
+      </div>
+      
+      <!-- ID rps-link ditambahkan di sini, default ke href Genap 2026 -->
+      <a id="rps-link" href="https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf"
+         target="_blank" class="main-rps-link" aria-label="Unduh RPS">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>
+        Unduh RPS
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<main>
+  <div class="container">
+    <div id="content-genap2026"></div>
+    <div id="content-ganjil2025" style="display:none"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">Audit Sistem Informasi &mdash; PKN STAN</div>
+</footer>
+
+<script>
+/* ── ICONS ── */
+const I = {
+  link:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  file:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  video: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`
+};
+function L(href, text, icon) { return { type:'link', href, text, icon: icon||I.link }; }
+function T(text) { return { type:'text', text }; }
+
+/* ── DATA ── */
+const GANJIL_2025 = [
+  { num:1, topic:"IT Governance",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx","01 – IT Governance: Concept",I.file)],
+    praktikum: [],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Introduction.pdf","COBIT 2019 Framework by ISACA",I.file)] },
+  { num:2, topic:"IT Governance Audit",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/02%20-%20IT%20Governance%20Audit.pptx","02 – IT Governance Audit",I.file)],
+    praktikum: [],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Governance.pdf","COBIT 2019 Governance & Management Objectives",I.file)] },
+  { num:3, topic:"IS Acquisition, Development & Implementation I",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/03%20-%20IS%20Acquisition%20%26%20Development.pptx","03 – IS Acquisition & Development",I.file)],
+    praktikum: [L("https://irfanradarma.github.io/Audit-SI/mind-map-audit5.html","Mind Map App 7 Audit-5"),
+                L("https://irfanradarma.github.io/Audit-SI/mind-map-sisfo2.html","Mind Map App 7 Sisfo-2")],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/CISA%20Review%20Manual%2027th%20Edition-2019.pdf","CISA Review Manual",I.file)] },
+  { num:4, topic:"IS Acquisition, Development & Implementation II",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/04%20-%20IS%20Implementation.pptx","04 – IS Implementation",I.file)],
+    praktikum: [T("Quiz via LMS")],
+    lain:      [L("https://irfanradarma.github.io/Audit-SI/exercise.html","Try Out")] },
+  { num:5, topic:"IS Operations & Business Resilience",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/05%20-%20IS%20Operations%20and%20Business%20Resilience.pptx","05 – IS Operations and Business Resilience",I.file)],
+    praktikum: [], lain: [] },
+  { num:6, topic:"Protection of Information Assets: Part A",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/06%20-%20Information%20Asset%20Security%20and%20Control.pptx","06 – Information Asset Security and Control",I.file)],
+    praktikum: [], lain: [] },
+  { num:7, topic:"Protection of Information Assets: Part B",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx","07 – Security Event Management",I.file)],
+    praktikum: [T("Quiz via LMS")],
+    lain:      [L("https://irfanradarma.github.io/Audit-SI/try-out.html","Try Out Domain 1–5"),
+                L("https://forms.gle/JNBbpYAWQXh7wtPH6","Tugas VII – Lessons Learned")] },
+  { num:8, exam:"UTS — Ujian Tengah Semester" },
+  { num:9, topic:"Basic of Data Analysis",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/09%20-%20Basic%20Data%20Analysis.pptx","09 – Basic Data Analysis",I.file)],
+    praktikum: [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Data%20Impor.zip","Impor Data",I.file),
+                L("https://github.com/irfanradarma/PTIK-STAN/raw/main/Slides/06/spotify_data_light.xlsx","Data Spotify",I.file)],
+    lain:      [L("https://www.youtube.com/watch?v=Kwn8GJyNv64","Tutorial Pivot Table",I.video),
+                L("https://www.youtube.com/watch?v=bhfRlU_bNmw","Tutorial SUM / SUMIF / SUMIFS",I.video),
+                L("https://www.youtube.com/watch?v=OekP7P-Xw4I","Tutorial CONSOLIDATE",I.video),
+                L("https://www.youtube.com/watch?v=JNZqRYkgZ4c","Tutorial Filtering Data",I.video),
+                L("https://www.youtube.com/watch?v=UV-SPoVkDaU","Tutorial Advanced Filters",I.video),
+                L("https://www.youtube.com/watch?v=LKbRkIIVG60","Tutorial Vlookup",I.video)] },
+  { num:10, topic:"Risk and Control",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/10%20-%20Risiko%20dan%20Pengendalian.pptx","10 – Risiko dan Pengendalian",I.file)],
+    praktikum: [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Week%2010%20Practice.xlsx","Week 10 Practice",I.file),
+                T("Tugas VIII – Simulasi ToE"),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Assignment%20of%20Week%2010.xlsx","Sales Data",I.file),
+                L("https://forms.gle/UomXmnZEnLGkxyWz9","Submission Form")],
+    lain:      [L("https://drive.google.com/drive/folders/1KWQqTYpNElnZxWfQIZvHP4nMVipOfils","Praktik Pengujian AppCon MYOB"),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Fun%20Excel%20II.xlsx","Fun Excel Comp II Data",I.file)] },
+  { num:11, topic:"Parallel Simulation",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/11%20-%20Simulasi%20Sejajar.pptx","11 – Simulasi Sejajar",I.file)],
+    praktikum: [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan1-5.zip","Payroll Jan 1–5",I.file),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-jan6-7.zip","Payroll Jan 6–7",I.file),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/payroll-2025.csv","Payroll 2025",I.file)],
+    lain: [] },
+  { num:12, topic:"Sampling and Statistical Approach",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/12.%20Sampling%20dan%20Pendekatan%20Statistik.pptx","12 – Sampling dan Pendekatan Statistik",I.file)],
+    praktikum: [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/week12%20-%20Latihan%20Anomaly.xlsx","Data latihan anomali",I.file)],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/Tugas%20Week%2012.pptx","Instruksi Tugas Week 12",I.file),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20data%20absensi.csv","Data Absensi",I.file),
+                L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/12%20-%20audit_log_wifi_kampus.csv","Data Log Jaringan",I.file),
+                L("https://forms.gle/BfQk7hNuQbunQDDm7","Submit Tugas")] },
+  { num:13, topic:"Substantive Testing: Sales Cycle",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/13.%20Asersi%20Siklus%20Penjualan.pptx","13 – Audit Siklus Penjualan",I.file)],
+    praktikum: [T("Kuis via LMS")], lain: [] },
+  { num:14, topic:"Substantive Testing: Expenditure Cycle",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/14.%20Asersi%20Siklus%20Pengeluaran.pptx","14 – Audit Siklus Pembelian",I.file)],
+    praktikum: [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/14%20-%20Latihan%20Data%20Pembelian.xls","Data Pembelian",I.file)],
+    lain: [] },
+  { num:15, topic:"Audit Report",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/15.%20Laporan%20Audit.pptx","15 – (Bukan) Laporan Audit",I.file)],
+    praktikum: [],
+    lain:      [L("https://www.youtube.com/watch?v=zcp2Ku5T8h8","Hyperlink Excel Tutorial",I.video)] },
+  { num:16, exam:"UAS — Ujian Akhir Semester" }
+];
+
+const GENAP_2026 = [
+  { num:1, topic:"IT Governance",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/01%20-%20IT%20Governance%20Concept.pptx","01 – IT Governance: Concept",I.file)],
+    praktikum: [],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Introduction.pdf","COBIT 2019 Framework by ISACA",I.file)] },
+  { num:2, topic:"IT Governance Audit",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/02%20-%20IT%20Governance%20Audit.pptx","02 – IT Governance Audit",I.file)],
+    praktikum: [],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/COBIT_2019_Framework_Governance.pdf","COBIT 2019 Governance & Management Objectives",I.file)] },
+  { num:3, topic:"IS Acquisition, Development & Implementation I",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/03%20-%20IS%20Acquisition%20%26%20Development.pptx","03 – IS Acquisition & Development",I.file)],
+    lain:      [L("https://github.com/irfanradarma/Audit-SI/raw/main/Externals/CISA%20Review%20Manual%2027th%20Edition-2019.pdf","CISA Review Manual",I.file)] },
+  { num:4, topic:"IS Acquisition, Development & Implementation II",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/04%20-%20IS%20Implementation.pptx","04 – IS Implementation",I.file)],
+    lain:      [L("https://irfanradarma.github.io/Audit-SI/exercise.html","Try Out")] },
+  { num:5, topic:"IS Operations & Business Resilience",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/05%20-%20IS%20Operations%20and%20Business%20Resilience.pptx","05 – IS Operations and Business Resilience",I.file)]},
+  { num:6, topic:"Protection of Information Assets: Part A",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/06%20-%20Information%20Asset%20Security%20and%20Control.pptx","06 – Information Asset Security and Control",I.file)],
+    praktikum: [], lain: [] },
+  { num:7, topic:"Protection of Information Assets: Part B",
+    slides:    [L("https://github.com/irfanradarma/Audit-SI/raw/main/Slides/07%20-%20Security%20Event%20Management.pptx","07 – Security Event Management",I.file)],
+    lain:      [L("https://irfanradarma.github.io/Audit-SI/try-out.html","Try Out Domain 1–5")] },
+  { num:8, exam:"UTS — Ujian Tengah Semester" },
+];
+
+/* ── RENDER HELPERS ── */
+function renderItems(items) {
+  if (!items || !items.length) return '';
+  return `<div class="cell-links">${items.map(item =>
+    item.type === 'text'
+      ? `<span class="cell-text">${item.text}</span>`
+      : `<a href="${item.href}" target="_blank" class="cell-link">${item.icon}${item.text}</a>`
+  ).join('')}</div>`;
+}
+
+/* ── DESKTOP TABLE ── */
+function renderDesktopTable(data) {
+  if (!data || !data.length) return `<div class="empty-notice">Materi akan segera tersedia.</div>`;
+  const sections = [
+    { label:'Pra-UTS',   rows: data.slice(0,8)  },
+    { label:'Pasca-UTS', rows: data.slice(8,16) }
+  ];
+  return sections.map(sec => `
+    <div class="section-divider">
+      <span class="section-divider-label">${sec.label}</span>
+      <div class="section-divider-line"></div>
+    </div>
+    <table class="course-table">
+      <thead><tr>
+        <th>No</th>
+        <th class="col-topik">Topik</th>
+        <th class="col-bahan">Bahan Ajar</th>
+        <th class="col-prak">Praktikum</th>
+        <th class="col-lain">Lain-Lain</th>
+      </tr></thead>
+      <tbody>${sec.rows.map(w => w.exam
+        ? `<tr class="exam-row"><td class="num-cell">${w.num}</td><td colspan="4">${w.exam}</td></tr>`
+        : `<tr><td class="num-cell">${w.num}</td><td class="topic-cell">${w.topic}</td>
+           <td>${renderItems(w.slides)}</td><td>${renderItems(w.praktikum)}</td><td>${renderItems(w.lain)}</td></tr>`
+      ).join('')}</tbody>
+    </table>`).join('');
+}
+
+/* ── MOBILE CARDS ── */
+const CHEVRON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function renderMobileCards(data) {
+  if (!data || !data.length) return `<div class="empty-notice">Materi akan segera tersedia.</div>`;
+  const sections = [
+    { label:'Pra-UTS',   rows: data.slice(0,8)  },
+    { label:'Pasca-UTS', rows: data.slice(8,16) }
+  ];
+  return sections.map(sec => `
+    <div class="section-divider">
+      <span class="section-divider-label">${sec.label}</span>
+      <div class="section-divider-line"></div>
+    </div>
+    ${sec.rows.map(w => w.exam
+      ? `<div class="exam-card">${w.exam}</div>`
+      : `<div class="week-card">
+          <div class="week-card-header" onclick="toggleCard(this)">
+            <span class="week-num">${w.num}</span>
+            <span class="week-topic">${w.topic}</span>
+            <span class="week-chevron">${CHEVRON}</span>
+          </div>
+          <div class="week-card-body">
+            ${w.slides && w.slides.length ? `<div class="mobile-section-label">Bahan Ajar</div>${renderItems(w.slides)}` : ''}
+            ${w.praktikum && w.praktikum.length ? `<div class="mobile-section-label">Praktikum</div>${renderItems(w.praktikum)}` : ''}
+            ${w.lain && w.lain.length ? `<div class="mobile-section-label">Lain-Lain</div>${renderItems(w.lain)}` : ''}
+          </div>
+        </div>`
+    ).join('')}`
+  ).join('');
+}
+
+function toggleCard(header) {
+  header.closest('.week-card').classList.toggle('expanded');
+}
+
+/* ── FULL RENDER ── */
+function renderContent(data, containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = `
+    <div class="desktop-table-wrap">${renderDesktopTable(data)}</div>
+    <div class="mobile-week-list">${renderMobileCards(data)}</div>`;
+}
+
+/* ── SEMESTER SWITCH ── */
+let activeSemester = 'genap2026';
+function switchSemester(code) {
+  activeSemester = code;
+  
+  // Update display konten tabel
+  document.getElementById('content-genap2026').style.display  = code === 'genap2026'  ? '' : 'none';
+  document.getElementById('content-ganjil2025').style.display = code === 'ganjil2025' ? '' : 'none';
+  
+  // Update state sidebar
+  document.getElementById('sopt-genap2026').className  = 'sidebar-option' + (code === 'genap2026'  ? ' active' : '');
+  document.getElementById('sopt-ganjil2025').className = 'sidebar-option' + (code === 'ganjil2025' ? ' active' : '');
+  
+  // Update teks indikator semester
+  document.getElementById('header-semester').textContent = code === 'genap2026' ? 'Genap 2026' : 'Ganjil 2025';
+  
+  // Update Link RPS berdasarkan semester yang dipilih
+  const rpsLink = document.getElementById('rps-link');
+  if (code === 'genap2026') {
+    rpsLink.href = 'https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf';
+  } else if (code === 'ganjil2025') {
+    rpsLink.href = 'https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf';
+  }
+
+  closeSidebar();
+}
+
+/* ── SIDEBAR ── */
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-backdrop').classList.add('visible');
+  document.getElementById('sidebar-toggle').classList.add('hidden');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('visible');
+  document.getElementById('sidebar-toggle').classList.remove('hidden');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+/* ── INIT ── */
+renderContent(GENAP_2026,  'content-genap2026');
+renderContent(GANJIL_2025, 'content-ganjil2025');
+</script>
+</body>
+</html>
