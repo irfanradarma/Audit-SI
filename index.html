@@ -1,559 +1,712 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Audit Sistem Informasi — PKN STAN</title>
+<meta name="description" content="Repositori materi mata kuliah Audit Sistem Informasi, Politeknik Keuangan Negara STAN.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ════════════════════════════════════════════
+   DESIGN TOKENS
+   ════════════════════════════════════════════ */
 :root {
-  --white: #ffffff;
-  --gray-50: #fafafa;
-  --gray-100: #f4f4f4;
-  --gray-200: #e8e8e8;
-  --gray-400: #a0a0a0;
-  --gray-600: #6b6b6b;
-  --gray-900: #111111;
-  --orange: #ea580c;
-  --orange-h: #c2410c;
-  --orange-light: #fff2eb;
-  --orange-border: #fbd6c5;
-  --sidebar-w: 240px;
+  --paper:      #fbfaf7;
+  --surface:    #ffffff;
+  --surface-2:  #f6f4ef;
+  --ink:        #1a1712;
+  --ink-soft:   #4a463f;
+  --muted:      #6f6a60;
+  --faint:      #a39d92;
+  --line:       #e8e3da;
+  --line-2:     #d9d3c8;
+  --accent:     #d9521c;
+  --accent-h:   #b8410f;
+  --accent-ink: #c2410c;
+  --accent-bg:  #fcefe7;
+  --accent-bd:  #f2cdb9;
+  --grid:       rgba(26,23,18,0.035);
+  --shadow-sm:  0 1px 2px rgba(26,23,18,.05), 0 1px 1px rgba(26,23,18,.03);
+  --shadow-md:  0 4px 16px -4px rgba(26,23,18,.10), 0 2px 6px -2px rgba(26,23,18,.06);
+  --shadow-lg:  0 24px 60px -18px rgba(26,23,18,.30), 0 8px 20px -8px rgba(26,23,18,.14);
+  --sidebar-w:  320px;
+  --maxw:       960px;
+  --r:          10px;
+  --ease:       cubic-bezier(.22,.61,.36,1);
+  --ease-out:   cubic-bezier(.16,1,.3,1);
 }
+[data-theme="dark"] {
+  --paper:      #0e0d0b;
+  --surface:    #17150f;
+  --surface-2:  #1f1c15;
+  --ink:        #f2efe7;
+  --ink-soft:   #cbc6bb;
+  --muted:      #9a948a;
+  --faint:      #6a655b;
+  --line:       #2a2620;
+  --line-2:     #383229;
+  --accent:     #f4733c;
+  --accent-h:   #ff8a55;
+  --accent-ink: #f4733c;
+  --accent-bg:  #2a1a10;
+  --accent-bd:  #57341f;
+  --grid:       rgba(242,239,231,0.04);
+  --shadow-sm:  0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:  0 6px 22px -6px rgba(0,0,0,.6);
+  --shadow-lg:  0 30px 70px -20px rgba(0,0,0,.8);
+}
+
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'IBM Plex Sans', sans-serif;
-  background: var(--white);
-  color: var(--gray-900);
+  background: var(--paper);
+  color: var(--ink);
   font-size: 14px;
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background .5s var(--ease), color .5s var(--ease);
 }
 
-/* ─── SIDEBAR ─── */
-#sidebar {
-  position: fixed;
-  top: 0; right: 0;
-  width: var(--sidebar-w);
-  height: 100vh;
-  background: var(--white);
-  border-left: 1px solid var(--gray-200);
-  z-index: 200;
-  transform: translateX(100%);
-  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
+/* blueprint grid + grain atmosphere */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 0%, #000 35%, transparent 100%);
+          mask-image: radial-gradient(ellipse 90% 75% at 50% 0%, #000 35%, transparent 100%);
 }
-#sidebar.open { transform: translateX(0); }
 
-.sidebar-header {
-  padding: 1.4rem 1.25rem 1rem;
-  border-bottom: 1px solid var(--gray-200);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 99px; border: 3px solid var(--paper); }
+::-webkit-scrollbar-thumb:hover { background: var(--faint); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+/* ════════════════════════════════════════════
+   TOP RAIL
+   ════════════════════════════════════════════ */
+.topbar {
+  position: sticky; top: 0; z-index: 150;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+          backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+  transition: border-color .4s var(--ease), background .5s var(--ease);
 }
-.sidebar-title {
+.topbar-inner {
+  max-width: var(--maxw); margin: 0 auto; padding: 0 2rem;
+  height: 56px; display: flex; align-items: center; gap: 14px;
+}
+.brand-mark {
+  display: flex; align-items: center; gap: 10px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gray-400);
+  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink); font-weight: 500; white-space: nowrap;
 }
-.sidebar-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--gray-400);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0; /* Sharp edge */
-  transition: background 0.15s, color 0.15s;
+.brand-glyph {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 1.5px solid var(--ink); border-radius: 6px;
+  display: grid; place-items: center;
+  font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500;
+  position: relative; overflow: hidden;
 }
-.sidebar-close:hover { background: var(--gray-100); color: var(--gray-900); }
-.sidebar-close svg { width: 14px; height: 14px; }
+.brand-glyph::after {
+  content: ""; position: absolute; inset: 0;
+  background: var(--accent); transform: translateY(101%);
+  transition: transform .35s var(--ease-out); z-index: -1;
+}
+.brand-mark:hover .brand-glyph { color: #fff; border-color: var(--accent); }
+.brand-mark:hover .brand-glyph::after { transform: translateY(0); }
+.brand-sep { color: var(--faint); font-weight: 400; }
+.brand-tag { color: var(--muted); }
 
-.sidebar-body { padding: 1.25rem; flex: 1; }
+.topbar-spacer { flex: 1; }
 
-.sidebar-section-label {
+.icon-btn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: transparent; border: 1px solid var(--line);
+  border-radius: 8px; color: var(--muted); cursor: pointer;
+  transition: all .18s var(--ease);
+}
+.icon-btn:hover { color: var(--ink); border-color: var(--line-2); background: var(--surface-2); }
+.icon-btn svg { width: 16px; height: 16px; }
+.icon-btn .sun { display: none; }
+[data-theme="dark"] .icon-btn .sun { display: block; }
+[data-theme="dark"] .icon-btn .moon { display: none; }
+
+.sem-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 12px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; cursor: pointer; color: var(--ink);
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: .04em; transition: all .18s var(--ease); white-space: nowrap;
+}
+.sem-pill:hover { border-color: var(--line-2); background: var(--surface-2); }
+.sem-pill .dot { width: 6px; height: 6px; border-radius: 99px; background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg); }
+.sem-pill svg { width: 13px; height: 13px; color: var(--faint); }
+.sem-pill b { font-weight: 600; }
+
+/* ════════════════════════════════════════════
+   HERO / SPEC HEADER
+   ════════════════════════════════════════════ */
+header { padding: 4.5rem 0 2.75rem; }
+.eyebrow {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gray-400);
-  margin-bottom: 0.5rem;
+  font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--accent); font-weight: 500; margin-bottom: 1.25rem;
+  display: inline-flex; align-items: center; gap: .7rem;
 }
-.sidebar-options { display: flex; flex-direction: column; gap: 4px; margin-bottom: 1.5rem; }
-.sidebar-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 0; /* Sharp edge */
-  border: 1px solid transparent;
-  cursor: pointer;
-  background: none;
-  text-align: left;
-  width: 100%;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  color: var(--gray-600);
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-.sidebar-option:hover { background: var(--gray-50); color: var(--gray-900); }
-.sidebar-option.active {
-  background: var(--gray-900);
-  color: var(--white);
-  border-color: var(--gray-900);
-}
-.sidebar-option .opt-dot {
-  width: 6px; height: 6px;
-  border-radius: 0; /* Sharp edge dot */
-  background: currentColor;
-  flex-shrink: 0;
-  opacity: 0.4;
-}
-.sidebar-option.active .opt-dot { opacity: 1; }
-.sidebar-option span { font-size: 13px; }
+.eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--accent); }
 
-/* Backdrop */
-#sidebar-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.18);
-  z-index: 199;
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
+h1.title {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-weight: 420;
+  font-size: clamp(2.6rem, 7vw, 4.6rem);
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  color: var(--ink);
+  margin-bottom: 1.4rem;
+  font-variation-settings: "SOFT" 0, "WONK" 0;
 }
-#sidebar-backdrop.visible { display: block; }
-
-/* ─── TOGGLE BUTTON (fixed right edge) ─── */
-#sidebar-toggle {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 198;
-  background: var(--gray-900);
-  color: var(--white);
-  border: none;
-  cursor: pointer;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 14px 7px;
-  border-radius: 0; /* Sharp edge */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.15s, opacity 0.2s;
-  line-height: 1;
-}
-#sidebar-toggle:hover { background: var(--orange); }
-#sidebar-toggle.hidden { opacity: 0; pointer-events: none; }
-#sidebar-toggle .toggle-icon {
-  writing-mode: horizontal-tb;
-  display: flex;
-  align-items: center;
-}
-#sidebar-toggle .toggle-icon svg { width: 11px; height: 11px; }
-
-/* ─── HEADER ─── */
-header {
-  border-bottom: 1px solid var(--gray-200);
-  padding: 3rem 0 2.5rem;
-}
-.container {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-.header-eyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--orange); /* Accented with orange */
-  margin-bottom: 0.75rem;
-  font-weight: 500;
-}
-header h1 {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--gray-900);
-  margin-bottom: 0.4rem;
-}
-header h1 em { font-style: italic; font-weight: 300; color: var(--gray-600); }
-.header-sub {
-  font-size: 13px;
-  color: var(--gray-600);
-  font-weight: 400;
+h1.title em {
+  font-style: italic; font-weight: 340; color: var(--accent);
+  font-variation-settings: "SOFT" 60, "WONK" 1;
 }
 
-.header-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  margin-top: 1.1rem;
+.hero-sub {
+  font-size: 15px; color: var(--ink-soft); max-width: 46ch;
+  margin-bottom: 2.25rem; line-height: 1.65;
+}
+.hero-sub a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line-2);
+  transition: border-color .2s; }
+.hero-sub a:hover { border-color: var(--accent); }
+
+/* metadata spec grid */
+.spec {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.spec-cell { padding: 1rem 1.15rem; border-right: 1px solid var(--line); position: relative; }
+.spec-cell:last-child { border-right: none; }
+.spec-k {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--faint);
+  margin-bottom: .5rem; display: block;
+}
+.spec-v { font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.spec-v.mono { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+
+/* coverage meter */
+.coverage { grid-column: span 2; }
+.cov-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: .55rem; }
+.cov-pct { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 480; color: var(--ink);
+  font-variation-settings: "SOFT" 30; line-height: 1; }
+.cov-pct span { font-size: 12px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; }
+.cov-track { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden;
+  border: 1px solid var(--line); }
+.cov-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-h));
+  border-radius: 99px; transition: width 1.1s var(--ease-out); }
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .04em;
+  padding: 10px 16px; border-radius: 8px; cursor: pointer;
+  text-decoration: none; transition: all .2s var(--ease); border: 1px solid transparent;
+}
+.btn svg { width: 13px; height: 13px; }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--line-2); background: var(--surface-2); }
+kbd {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  background: var(--surface-2); border: 1px solid var(--line-2); border-bottom-width: 2px;
+  border-radius: 5px; padding: 1px 5px; color: var(--muted); line-height: 1.4;
 }
 
-/* ─── ACTIVE SEMESTER BADGE ─── */
-.active-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  border-radius: 0; /* Sharp edge */
-  padding: 4px 12px 4px 8px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  color: var(--gray-600);
-  letter-spacing: 0.04em;
+/* ════════════════════════════════════════════
+   CONTROL BAR (search + filter)
+   ════════════════════════════════════════════ */
+.controls {
+  position: sticky; top: 56px; z-index: 120;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  padding: 1rem 0; margin: 1.5rem 0 0; border-bottom: 1px solid var(--line);
+  transition: background .5s var(--ease), border-color .4s var(--ease);
 }
-.active-badge .badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 0; /* Sharp edge dot */
-  background: var(--orange);
-  flex-shrink: 0;
+.controls-inner { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.search-wrap { flex: 1; min-width: 220px; position: relative; display: flex; align-items: center; }
+.search-wrap > svg.s-ico { position: absolute; left: 13px; width: 15px; height: 15px; color: var(--faint);
+  pointer-events: none; }
+#search {
+  width: 100%; height: 42px; padding: 0 76px 0 38px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: var(--ink);
+  transition: border-color .18s, box-shadow .18s;
 }
+#search::placeholder { color: var(--faint); }
+#search:focus { outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg); }
+.search-kbd { position: absolute; right: 12px; display: flex; gap: 3px; }
+.search-clear { position: absolute; right: 12px; display: none; background: none; border: none;
+  cursor: pointer; color: var(--faint); padding: 4px; }
+.search-clear:hover { color: var(--ink); }
+.search-clear svg { width: 15px; height: 15px; }
+.has-q .search-kbd { display: none; }
+.has-q .search-clear { display: flex; }
 
-/* ─── RPS LINK BUTTON ─── */
-.main-rps-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--orange);
-  text-decoration: none;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  padding: 6px 14px;
-  border-radius: 0; /* Sharp edge */
-  border: 1px solid var(--orange-border);
-  background: var(--orange-light);
-  transition: background 0.15s, border-color 0.15s;
-  letter-spacing: 0.04em;
+.filters { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 4px; }
+.chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: .04em;
+  padding: 7px 12px; border-radius: 7px; cursor: pointer; border: none;
+  background: transparent; color: var(--muted); transition: all .16s var(--ease);
+  white-space: nowrap; text-transform: uppercase;
 }
-.main-rps-link:hover { background: #ffe4d6; border-color: #f9bfa5; }
-.main-rps-link svg { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.8; }
+.chip:hover { color: var(--ink); }
+.chip.active { background: var(--ink); color: var(--paper); }
+.chip .ct { opacity: .55; margin-left: 4px; }
 
-/* ─── MAIN ─── */
-main { padding: 2.5rem 0 6rem; }
+/* ════════════════════════════════════════════
+   MAIN / TABLE
+   ════════════════════════════════════════════ */
+main { padding: 0 0 7rem; min-height: 50vh; }
 
-/* ─── SECTION DIVIDER ─── */
-.section-divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 2.5rem 0 1.25rem;
-}
-.section-divider:first-child { margin-top: 0; }
+.section-divider { display: flex; align-items: center; gap: 1rem; margin: 2.75rem 0 1.1rem; }
+.section-divider:first-child { margin-top: 1.75rem; }
 .section-divider-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--orange); /* Accent */
-  white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: .6rem;
 }
-.section-divider-line { flex: 1; height: 1px; background: var(--gray-200); }
+.section-divider-label::before { content: ""; width: 5px; height: 5px; background: var(--accent);
+  transform: rotate(45deg); }
+.section-divider-line { flex: 1; height: 1px;
+  background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px); }
 
-/* ─── TABLE (desktop) ─── */
 .course-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid var(--gray-200);
-  border-radius: 0; /* Sharp edge */
-  overflow: hidden;
-  table-layout: fixed;
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+  border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+  background: var(--surface); box-shadow: var(--shadow-sm);
 }
 .course-table thead th {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gray-400);
-  background: var(--gray-50);
-  padding: 9px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--gray-200);
-  white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--faint);
+  background: var(--surface-2); padding: 11px 16px; text-align: left;
+  border-bottom: 1px solid var(--line); white-space: nowrap;
 }
-.course-table thead th:first-child {
-  width: 44px;
-  text-align: center;
-  border-right: 1px solid var(--gray-200);
-}
-.col-topik { width: 22%; }
-.col-bahan { width: 26%; }
-.col-prak  { width: 26%; }
-.col-lain  { width: 26%; }
+.course-table thead th:first-child { width: 46px; text-align: center; border-right: 1px solid var(--line); }
+.col-topik { width: 22%; } .col-bahan { width: 26%; } .col-prak { width: 26%; } .col-lain { width: 26%; }
 
-.course-table tbody tr {
-  border-bottom: 1px solid var(--gray-200);
-  transition: background 0.1s;
-}
+.course-table tbody tr { border-bottom: 1px solid var(--line); transition: background .14s; }
 .course-table tbody tr:last-child { border-bottom: none; }
-.course-table tbody tr:hover td:not(.num-cell) { background: var(--gray-50); }
+.course-table tbody tr:hover td:not(.num-cell) { background: var(--surface-2); }
 
-.course-table td {
-  padding: 12px 14px;
-  vertical-align: top;
-  font-size: 13px;
-}
+.course-table td { padding: 13px 16px; vertical-align: top; font-size: 13px; }
 td.num-cell {
-  text-align: center;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--gray-400);
-  background: var(--gray-50);
-  border-right: 1px solid var(--gray-200);
-  vertical-align: middle;
+  text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--faint); background: var(--surface-2); border-right: 1px solid var(--line);
+  vertical-align: middle; font-weight: 500;
 }
 td.topic-cell {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13.5px;
-  font-weight: 600; /* Bold topic titles */
-  color: var(--gray-900);
-  vertical-align: middle;
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 440;
+  letter-spacing: -.01em; color: var(--ink); vertical-align: middle; line-height: 1.2;
+  font-variation-settings: "SOFT" 20;
 }
 
-/* Exam row */
 tr.exam-row td {
-  background: var(--orange-light) !important;
-  color: var(--orange);
-  text-align: center;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 15px 14px;
-  vertical-align: middle;
+  background: var(--accent-bg) !important; color: var(--accent-ink);
+  text-align: center; font-family: 'Fraunces', serif; font-style: italic;
+  font-weight: 420; font-size: 16px; padding: 16px; vertical-align: middle;
+  letter-spacing: -.01em;
 }
 tr.exam-row td.num-cell {
-  background: var(--orange-light) !important;
-  color: var(--orange-h);
-  border-right-color: var(--orange-border);
-  font-family: 'IBM Plex Mono', monospace;
-  font-style: normal;
-  font-size: 11px;
+  background: var(--accent-bg) !important; color: var(--accent-ink);
+  border-right-color: var(--accent-bd); font-family: 'IBM Plex Mono', monospace;
+  font-style: normal; font-size: 11px;
 }
 
-/* ─── LINKS ─── */
-.cell-links { display: flex; flex-direction: column; gap: 5px; }
+/* links */
+.cell-links { display: flex; flex-direction: column; gap: 3px; }
 .cell-link {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 5px;
-  color: var(--orange);
-  text-decoration: none;
-  font-size: 12.5px;
-  font-weight: 500;
-  line-height: 1.4;
-  transition: color 0.12s;
+  display: inline-flex; align-items: flex-start; gap: 7px; color: var(--ink-soft);
+  text-decoration: none; font-size: 12.5px; font-weight: 400; line-height: 1.4;
+  padding: 3px 7px; margin: -3px -7px; border-radius: 6px;
+  transition: color .14s, background .14s; position: relative;
 }
-.cell-link:hover { color: var(--orange-h); text-decoration: underline; }
-.cell-link svg { width: 10px; height: 10px; flex-shrink: 0; opacity: 0.5; margin-top: 3px; }
-.cell-text { font-size: 12px; color: var(--gray-600); font-style: italic; }
+.cell-link:hover { color: var(--accent); background: var(--accent-bg); }
+.cell-link svg { width: 11px; height: 11px; flex-shrink: 0; opacity: .5; margin-top: 3px;
+  transition: opacity .14s, transform .2s var(--ease-out); }
+.cell-link:hover svg { opacity: 1; transform: translate(1px,-1px); }
+.cell-link .lt { border-bottom: 1px solid transparent; transition: border-color .14s; }
+.cell-link:hover .lt { border-color: var(--accent-bd); }
+.cell-text { font-size: 12px; color: var(--muted); font-style: italic; padding: 2px 0; }
+mark.hl { background: var(--accent); color: #fff; border-radius: 3px; padding: 0 2px; }
 
-/* ─── MOBILE CARDS ─── */
+/* ════════════════════════════════════════════
+   MOBILE CARDS
+   ════════════════════════════════════════════ */
 .mobile-week-list { display: none; }
 .week-card {
-  border: 1px solid var(--gray-200);
-  border-radius: 0; /* Sharp edge */
-  overflow: hidden;
-  margin-bottom: 10px;
+  border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+  margin-bottom: 10px; background: var(--surface); box-shadow: var(--shadow-sm);
 }
 .week-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 14px;
-  background: var(--gray-50);
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
+  display: flex; align-items: center; gap: 12px; padding: 14px 15px;
+  cursor: pointer; user-select: none; -webkit-user-select: none;
 }
-.week-card-header:active { background: var(--gray-100); }
-.week-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: var(--gray-400);
-  width: 20px;
-  flex-shrink: 0;
-}
-.week-topic {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  flex: 1;
-  line-height: 1.35;
-}
-.week-chevron {
-  color: var(--gray-400);
-  flex-shrink: 0;
-  transition: transform 0.2s;
-  display: flex;
-}
-.week-chevron svg { width: 14px; height: 14px; }
+.week-card-header:active { background: var(--surface-2); }
+.week-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--faint);
+  width: 22px; flex-shrink: 0; font-weight: 500; }
+.week-topic { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 440;
+  color: var(--ink); flex: 1; line-height: 1.25; letter-spacing: -.01em; }
+.week-chevron { color: var(--faint); flex-shrink: 0; transition: transform .25s var(--ease); display: flex; }
+.week-chevron svg { width: 15px; height: 15px; }
 .week-card.expanded .week-chevron { transform: rotate(180deg); }
-
-.week-card-body {
-  display: none;
-  padding: 0 14px 14px;
-  border-top: 1px solid var(--gray-200);
-  background: var(--white);
-}
-.week-card.expanded .week-card-body { display: block; }
-
+.week-card-body { display: none; padding: 4px 15px 15px; border-top: 1px solid var(--line); }
+.week-card.expanded .week-card-body { display: block; animation: cardOpen .3s var(--ease-out); }
+@keyframes cardOpen { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .mobile-section-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--gray-400);
-  margin: 12px 0 6px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--faint); margin: 14px 0 7px;
 }
-.mobile-section-label:first-child { margin-top: 10px; }
-
+.mobile-section-label:first-child { margin-top: 12px; }
 .exam-card {
-  border: 1px solid var(--orange-border);
-  border-radius: 0; /* Sharp edge */
-  background: var(--orange-light);
-  padding: 16px 14px;
-  text-align: center;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--orange);
-  margin-bottom: 10px;
+  border: 1px solid var(--accent-bd); border-radius: var(--r); background: var(--accent-bg);
+  padding: 18px 15px; text-align: center; font-family: 'Fraunces', serif; font-style: italic;
+  font-weight: 420; font-size: 16px; color: var(--accent-ink); margin-bottom: 10px;
 }
 
-/* ─── EMPTY STATE ─── */
+/* empty / no-results */
 .empty-notice {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--gray-400);
-  font-size: 13px;
-  font-style: normal;
-  font-family: 'IBM Plex Sans', sans-serif;
-  border: 1px dashed var(--gray-200);
-  border-radius: 0; /* Sharp edge */
+  text-align: center; padding: 4.5rem 2rem; color: var(--faint); font-size: 13.5px;
+  border: 1px dashed var(--line-2); border-radius: var(--r);
+  font-family: 'IBM Plex Mono', monospace; letter-spacing: .02em;
 }
+.empty-notice svg { width: 28px; height: 28px; margin: 0 auto 1rem; display: block; opacity: .5; }
 
-/* ─── FOOTER ─── */
+/* ════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════ */
 footer {
-  border-top: 1px solid var(--gray-200);
-  padding: 1.5rem 0;
-  text-align: center;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--gray-400);
+  border-top: 1px solid var(--line); padding: 2rem 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  flex-wrap: wrap;
+}
+.foot-l { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em;
+  color: var(--faint); text-transform: uppercase; }
+.foot-r { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint);
+  display: inline-flex; align-items: center; gap: 7px; }
+.foot-r .pulse { width: 6px; height: 6px; border-radius: 99px; background: var(--accent);
+  animation: pulse 2.4s ease-in-out infinite; }
+.foot-link { color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent;
+  transition: color .18s, border-color .18s; }
+.foot-link:hover { color: var(--ink); border-color: var(--line-2); }
+.foot-dot { color: var(--line-2); }
+@keyframes pulse { 0%,100% { opacity: .35; transform: scale(.85); } 50% { opacity: 1; transform: scale(1); } }
+
+/* ════════════════════════════════════════════
+   SEMESTER COMMAND PANEL
+   ════════════════════════════════════════════ */
+#scrim { position: fixed; inset: 0; background: rgba(10,9,8,.42); z-index: 199; opacity: 0;
+  pointer-events: none; transition: opacity .3s var(--ease);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+#scrim.on { opacity: 1; pointer-events: auto; }
+
+#panel {
+  position: fixed; top: 0; right: 0; width: var(--sidebar-w); max-width: 88vw; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--line); z-index: 200;
+  transform: translateX(100%); transition: transform .38s var(--ease-out);
+  display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+}
+#panel.on { transform: translateX(0); }
+.panel-head { padding: 1.5rem 1.5rem 1.25rem; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--faint); }
+.panel-body { padding: 1.5rem; flex: 1; overflow-y: auto; }
+.panel-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--faint); margin-bottom: .9rem; }
+.sem-opt {
+  display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left;
+  padding: 14px; margin-bottom: 8px; cursor: pointer; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r); transition: all .18s var(--ease);
+  font-family: inherit;
+}
+.sem-opt:hover { border-color: var(--line-2); background: var(--surface-2); transform: translateY(-1px); }
+.sem-opt.active { border-color: var(--ink); background: var(--surface-2); }
+.sem-opt .so-dot { width: 9px; height: 9px; border-radius: 99px; border: 2px solid var(--line-2);
+  margin-top: 4px; flex-shrink: 0; transition: all .18s; }
+.sem-opt.active .so-dot { border-color: var(--accent); background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg); }
+.so-text { flex: 1; }
+.so-name { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 440; color: var(--ink);
+  letter-spacing: -.01em; line-height: 1.1; margin-bottom: 2px; }
+.so-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);
+  letter-spacing: .03em; }
+.sem-opt.active .so-name { color: var(--accent-ink); }
+.panel-foot { padding: 1.25rem 1.5rem; border-top: 1px solid var(--line); }
+
+/* ════════════════════════════════════════════
+   ENTRANCE MOTION
+   ════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(14px); animation: rise .7s var(--ease-out) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .course-table tbody tr, .week-card { opacity: 0; animation: rowIn .5s var(--ease-out) forwards; }
+  @keyframes rowIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 }
 
-/* ─── RESPONSIVE ─── */
+/* ════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  .spec { grid-template-columns: 1fr 1fr; }
+  .spec-cell:nth-child(2) { border-right: none; }
+  .coverage { grid-column: span 2; border-top: 1px solid var(--line); }
+  .spec-cell:nth-child(3) { border-bottom: 1px solid var(--line); }
+}
 @media (max-width: 680px) {
-  .container { padding: 0 1rem; }
-  header { padding: 2rem 0 1.75rem; }
-  header h1 { font-size: 1.65rem; }
-
-  /* hide desktop table, show cards */
+  .container, .topbar-inner { padding: 0 1.1rem; }
+  header { padding: 2.75rem 0 2rem; }
   .desktop-table-wrap { display: none; }
   .mobile-week-list { display: block; }
+  .brand-tag, .sem-pill b { display: none; }
+  .controls { top: 56px; }
+}
+@media (max-width: 460px) {
+  .spec { grid-template-columns: 1fr; }
+  .spec-cell { border-right: none !important; border-bottom: 1px solid var(--line); }
+  .spec-cell:last-child { border-bottom: none; }
+  .coverage { grid-column: span 1; }
+  .filters { width: 100%; justify-content: space-between; }
+}
+/* ════════════════════════════════════════════
+   COMMAND PALETTE
+   ════════════════════════════════════════════ */
+#cmdk { position: fixed; inset: 0; z-index: 300; display: none; }
+#cmdk.on { display: block; }
+#cmdk .cmdk-scrim { position: absolute; inset: 0; background: rgba(10,9,8,.46);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: fade .2s var(--ease); }
+@keyframes fade { from { opacity: 0; } }
+.cmdk-box {
+  position: absolute; top: 12vh; left: 50%; transform: translateX(-50%);
+  width: min(620px, 92vw); max-height: 70vh; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: 16px;
+  box-shadow: var(--shadow-lg); overflow: hidden; animation: cmdkIn .26s var(--ease-out); }
+@keyframes cmdkIn { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.985); } }
+.cmdk-input-row { display: flex; align-items: center; gap: 11px; padding: 16px 18px;
+  border-bottom: 1px solid var(--line); }
+.cmdk-input-row svg { width: 17px; height: 17px; color: var(--faint); flex-shrink: 0; }
+#cmdk-input { flex: 1; border: none; background: none; outline: none; color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; }
+#cmdk-input::placeholder { color: var(--faint); }
+.cmdk-esc { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint);
+  border: 1px solid var(--line-2); border-radius: 5px; padding: 2px 6px; }
+.cmdk-list { overflow-y: auto; padding: 8px; flex: 1; scroll-behavior: smooth; }
+.cmdk-group { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--faint); padding: 12px 12px 6px; }
+.cmdk-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px;
+  cursor: pointer; scroll-margin: 12px; }
+.cmdk-item .ci-ico { width: 30px; height: 30px; flex-shrink: 0; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--surface-2); }
+.cmdk-item .ci-ico svg { width: 14px; height: 14px; }
+.cmdk-item .ci-txt { flex: 1; min-width: 0; }
+.cmdk-item .ci-label { font-size: 14px; color: var(--ink); line-height: 1.3; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.cmdk-item .ci-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint);
+  letter-spacing: .03em; margin-top: 1px; }
+.cmdk-item .ci-go { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint); opacity: 0; }
+.cmdk-item.sel { background: var(--accent-bg); }
+.cmdk-item.sel .ci-ico { color: var(--accent); border-color: var(--accent-bd); }
+.cmdk-item.sel .ci-go { opacity: 1; color: var(--accent-ink); }
+.cmdk-empty { padding: 36px; text-align: center; color: var(--faint);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+.cmdk-foot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint); flex-wrap: wrap; }
+.cmdk-foot b { color: var(--muted); font-weight: 500; }
+.cmdk-list mark.hl { background: none; color: var(--accent); font-weight: 600; padding: 0; }
 
-  /* sidebar toggle floats at bottom-right on mobile */
-  #sidebar-toggle {
-    top: auto;
-    bottom: 1.5rem;
-    right: 0;
-    transform: none;
-    writing-mode: horizontal-tb;
-    border-radius: 0; /* Sharp edge */
-    padding: 10px 14px;
-    font-size: 10px;
-    gap: 6px;
-  }
-  #sidebar-toggle .toggle-icon { writing-mode: horizontal-tb; }
+/* CHEAT SHEET */
+#cheats { position: fixed; inset: 0; z-index: 280; display: none; place-items: center; }
+#cheats.on { display: grid; }
+#cheats .cheats-scrim { position: absolute; inset: 0; background: rgba(10,9,8,.46);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.cheats-box { position: relative; width: min(440px, 92vw); background: var(--surface);
+  border: 1px solid var(--line-2); border-radius: 16px; box-shadow: var(--shadow-lg);
+  padding: 1.75rem; animation: cmdkIn .26s var(--ease-out); }
+.cheats-box h3 { font-family: 'Fraunces', serif; font-weight: 440; font-size: 20px; margin-bottom: 1.1rem;
+  letter-spacing: -.01em; }
+.cheats-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0;
+  border-bottom: 1px solid var(--line); }
+.cheats-row:last-child { border-bottom: none; }
+.cheats-row span { font-size: 13px; color: var(--ink-soft); }
+.cheats-keys { display: flex; gap: 4px; }
+
+/* TOAST */
+#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 320; background: var(--ink); color: var(--paper); padding: 11px 18px; border-radius: 99px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .03em; box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none; transition: opacity .25s var(--ease), transform .35s var(--ease-out);
+  display: inline-flex; align-items: center; gap: 8px; }
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast svg { width: 13px; height: 13px; color: var(--accent); }
+
+/* COVERAGE SPARKLINE */
+.cov-spark { display: flex; align-items: flex-end; gap: 3px; height: 26px; margin-top: 11px; }
+.cov-spark .bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 3px; cursor: pointer;
+  background: var(--line-2); transition: background .18s, transform .18s var(--ease-out), filter .18s;
+  transform-origin: bottom; }
+.cov-spark .bar.has { background: linear-gradient(180deg, var(--accent), var(--accent-h)); }
+.cov-spark .bar.exam { background: repeating-linear-gradient(45deg, var(--accent-bd) 0 2px, transparent 2px 4px); }
+.cov-spark .bar:hover { transform: scaleY(1.12); }
+.cov-spark .bar.has:hover { filter: brightness(1.1); }
+
+/* ROW FLASH */
+@keyframes flashRow { 0% { background: var(--accent-bg); } 100% { background: transparent; } }
+.flash > td:not(.num-cell) { animation: flashRow 1.4s var(--ease-out); }
+.week-card.flash { animation: flashRow 1.4s var(--ease-out); }
+
+/* VIEW TRANSITION (theme reveal) */
+::view-transition-old(root) { animation: none; z-index: 1; }
+::view-transition-new(root) { animation: vtReveal .55s var(--ease-out); z-index: 9999; }
+@keyframes vtReveal {
+  from { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 0%)); }
+  to   { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 0%)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ─── SIDEBAR BACKDROP ─── -->
-<div id="sidebar-backdrop" onclick="closeSidebar()"></div>
-
-<!-- ─── SIDEBAR ─── -->
-<aside id="sidebar" role="complementary" aria-label="Navigasi semester">
-  <div class="sidebar-header">
-    <span class="sidebar-title">Semester</span>
-    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Tutup">
+<!-- ─── COMMAND PANEL ─── -->
+<div id="scrim" onclick="closePanel()"></div>
+<aside id="panel" role="dialog" aria-label="Pilih semester" aria-modal="true">
+  <div class="panel-head">
+    <span class="panel-title">Periode Akademik</span>
+    <button class="icon-btn" onclick="closePanel()" aria-label="Tutup">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <div class="sidebar-body">
-    <div class="sidebar-section-label">Pilih Semester</div>
-    <div class="sidebar-options">
-      <button class="sidebar-option active" id="sopt-genap2026" onclick="switchSemester('genap2026')">
-        <span class="opt-dot"></span>
-        <span>Genap 2026</span>
-      </button>
-      <button class="sidebar-option" id="sopt-ganjil2025" onclick="switchSemester('ganjil2025')">
-        <span class="opt-dot"></span>
-        <span>Ganjil 2025</span>
-      </button>
-    </div>
+  <div class="panel-body">
+    <div class="panel-lbl">Pilih Semester</div>
+    <button class="sem-opt active" id="sopt-genap2026" onclick="switchSemester('genap2026')">
+      <span class="so-dot"></span>
+      <span class="so-text"><span class="so-name">Genap 2026</span><span class="so-meta">Aktif · Berjalan</span></span>
+    </button>
+    <button class="sem-opt" id="sopt-ganjil2025" onclick="switchSemester('ganjil2025')">
+      <span class="so-dot"></span>
+      <span class="so-text"><span class="so-name">Ganjil 2025</span><span class="so-meta">Arsip · Selesai</span></span>
+    </button>
+  </div>
+  <div class="panel-foot">
+    <a id="rps-link" class="btn btn-ghost" style="width:100%; justify-content:center;"
+       href="https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>
+      Unduh RPS
+    </a>
   </div>
 </aside>
 
-<!-- ─── SIDEBAR TOGGLE TAB ─── -->
-<button id="sidebar-toggle" onclick="openSidebar()" aria-label="Buka navigasi semester">
-  <span class="toggle-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-  </span>
-  Semester
-</button>
+<!-- ─── TOPBAR ─── -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand-mark" href="#top">
+      <span class="brand-glyph">A</span>
+      Audit SI <span class="brand-sep">/</span> <span class="brand-tag">PKN STAN</span>
+    </a>
+    <div class="topbar-spacer"></div>
+    <button class="sem-pill" onclick="openPanel()" aria-label="Ganti semester">
+      <span class="dot"></span><span id="pill-sem">Genap 2026</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Ganti tema">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+</div>
 
-<!-- ─── HEADER ─── -->
-<header>
+<!-- ─── HERO ─── -->
+<header id="top">
   <div class="container">
-    <div class="header-eyebrow">Politeknik Keuangan Negara STAN</div>
-    <h1>Audit <em>Sistem</em> Informasi</h1>
-    <div class="header-sub">Teuku Raja Irfan Radarma</div>
-    
-    <div class="header-actions">
-      <div class="active-badge">
-        <span class="badge-dot"></span>
-        <span id="header-semester">Genap 2026</span>
+    <div class="eyebrow reveal" style="animation-delay:.05s">Politeknik Keuangan Negara STAN</div>
+    <h1 class="title reveal" style="animation-delay:.12s">Audit <em>Sistem</em><br>Informasi</h1>
+    <p class="hero-sub reveal" style="animation-delay:.2s">
+      Repositori materi, slide, dan bahan praktikum terstruktur per pertemuan.
+      Disusun &amp; diampu oleh <a href="https://github.com/irfanradarma" target="_blank">Teuku Raja Irfan Radarma</a>.
+    </p>
+
+    <div class="spec reveal" style="animation-delay:.28s">
+      <div class="spec-cell"><span class="spec-k">Mata Kuliah</span><span class="spec-v">Audit SI</span></div>
+      <div class="spec-cell"><span class="spec-k">Pertemuan</span><span class="spec-v mono">16 sesi</span></div>
+      <div class="spec-cell coverage">
+        <span class="spec-k">Class Progress</span>
+        <div class="cov-row">
+          <span class="cov-pct" id="cov-pct">0%</span>
+          <span class="cov-pct" style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--faint)" id="cov-count">0 / 0</span>
+        </div>
+        <div class="cov-track"><div class="cov-fill" id="cov-fill"></div></div>
       </div>
-      
-      <!-- ID rps-link ditambahkan di sini, default ke href Genap 2026 -->
-      <a id="rps-link" href="https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf"
-         target="_blank" class="main-rps-link" aria-label="Unduh RPS">
+    </div>
+
+    <div class="hero-actions reveal" style="animation-delay:.36s">
+      <a id="rps-link-main" class="btn btn-primary"
+         href="https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>
         Unduh RPS
       </a>
+      <button class="btn btn-ghost" onclick="openPalette()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Cari materi <kbd>⌘K</kbd>
+      </button>
     </div>
   </div>
 </header>
+
+<!-- ─── CONTROLS ─── -->
+<div class="controls reveal" style="animation-delay:.44s">
+  <div class="container">
+    <div class="controls-inner">
+      <div class="search-wrap" id="search-wrap">
+        <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" type="text" placeholder="Cari topik atau bahan…" autocomplete="off" spellcheck="false">
+        <span class="search-kbd"><kbd>⌘</kbd><kbd>K</kbd></span>
+        <button class="search-clear" onclick="clearSearch()" aria-label="Hapus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="filters" id="filters">
+        <button class="chip active" data-type="all" onclick="setType('all')">Semua</button>
+        <button class="chip" data-type="slides" onclick="setType('slides')">Bahan</button>
+        <button class="chip" data-type="praktikum" onclick="setType('praktikum')">Praktikum</button>
+        <button class="chip" data-type="lain" onclick="setType('lain')">Lain</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ─── MAIN ─── -->
 <main>
@@ -564,7 +717,14 @@ footer {
 </main>
 
 <footer>
-  <div class="container">Audit Sistem Informasi &mdash; PKN STAN</div>
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-left:2rem;padding-right:2rem;">
+    <span class="foot-l">Audit Sistem Informasi · PKN STAN</span>
+    <span class="foot-r">
+      <a id="last-updated" class="foot-link">Memuat pembaruan…</a>
+      <span class="foot-dot">·</span>
+      <span class="pulse"></span><span id="foot-sem">Genap 2026</span>
+    </span>
+  </div>
 </footer>
 
 <script>
@@ -695,131 +855,538 @@ const GENAP_2026 = [
   { num:16, exam:"UAS — Ujian Akhir Semester" }
 ];
 
-/* ── RENDER HELPERS ── */
-function renderItems(items) {
-  if (!items || !items.length) return '';
+const DATASETS = { genap2026: GENAP_2026, ganjil2025: GANJIL_2025 };
+
+/* ── STATE ── */
+const state = { semester: 'genap2026', query: '', type: 'all' };
+
+/* ── SEARCH/FILTER UTILS ── */
+function norm(s){ return (s||'').toLowerCase(); }
+function highlight(text, q){
+  if(!q) return text;
+  const i = norm(text).indexOf(norm(q));
+  if(i < 0) return text;
+  return text.slice(0,i) + '<mark class="hl">' + text.slice(i, i+q.length) + '</mark>' + text.slice(i+q.length);
+}
+function itemMatches(item, q){ return !q || norm(item.text).includes(norm(q)); }
+
+/* Return {visibleWeeks, matchCount} after applying query + type filter */
+function filterData(data){
+  const q = state.query.trim();
+  const t = state.type;
+  const cols = t === 'all' ? ['slides','praktikum','lain'] : [t];
+  const out = [];
+  let matches = 0;
+  for(const w of data){
+    if(w.exam){
+      // exams only shown when no type filter; respect text query
+      if(t === 'all' && (!q || norm(w.exam).includes(norm(q)))) out.push({ exam:w.exam, num:w.num });
+      continue;
+    }
+    const topicHit = q && norm(w.topic).includes(norm(q));
+    const fw = { num:w.num, topic:w.topic, slides:[], praktikum:[], lain:[] };
+    let hasItem = false;
+    for(const c of ['slides','praktikum','lain']){
+      if(!cols.includes(c)){ fw[c] = []; continue; }
+      const arr = (w[c]||[]).filter(it => topicHit || itemMatches(it, q));
+      fw[c] = arr;
+      if(arr.length) hasItem = true;
+    }
+    // include week if it has matching items, OR (topic matches query and no type filter restricting away)
+    if(hasItem || (topicHit && t==='all')){ out.push(fw); matches += fw.slides.length+fw.praktikum.length+fw.lain.length; }
+    else if(!q && t==='all'){ out.push(fw); } // default view: show all weeks even if empty
+  }
+  return out;
+}
+
+/* ── RENDER ── */
+function renderItems(items){
+  if(!items || !items.length) return '';
+  const q = state.query.trim();
   return `<div class="cell-links">${items.map(item =>
     item.type === 'text'
-      ? `<span class="cell-text">${item.text}</span>`
-      : `<a href="${item.href}" target="_blank" class="cell-link">${item.icon}${item.text}</a>`
+      ? `<span class="cell-text">${highlight(item.text,q)}</span>`
+      : `<a href="${item.href}" target="_blank" class="cell-link">${item.icon}<span class="lt">${highlight(item.text,q)}</span></a>`
   ).join('')}</div>`;
 }
 
-/* ── DESKTOP TABLE ── */
-function renderDesktopTable(data) {
-  if (!data || !data.length) return `<div class="empty-notice">Materi akan segera tersedia.</div>`;
-  const sections = [
-    { label:'Pra-UTS',   rows: data.slice(0,8)  },
-    { label:'Pasca-UTS', rows: data.slice(8,16) }
-  ];
-  return sections.map(sec => `
-    <div class="section-divider">
-      <span class="section-divider-label">${sec.label}</span>
-      <div class="section-divider-line"></div>
-    </div>
+const CHEVRON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function splitSections(rows){
+  return [
+    { label:'Pra-UTS · Sesi 1–8',   rows: rows.filter(r => r.num <= 8)  },
+    { label:'Pasca-UTS · Sesi 9–16', rows: rows.filter(r => r.num >= 9) }
+  ].filter(s => s.rows.length);
+}
+
+function renderDesktopTable(rows){
+  return splitSections(rows).map(sec => `
+    <div class="section-divider"><span class="section-divider-label">${sec.label}</span><div class="section-divider-line"></div></div>
     <table class="course-table">
-      <thead><tr>
-        <th>No</th>
-        <th class="col-topik">Topik</th>
-        <th class="col-bahan">Bahan Ajar</th>
-        <th class="col-prak">Praktikum</th>
-        <th class="col-lain">Lain-Lain</th>
-      </tr></thead>
-      <tbody>${sec.rows.map(w => w.exam
-        ? `<tr class="exam-row"><td class="num-cell">${w.num}</td><td colspan="4">${w.exam}</td></tr>`
-        : `<tr><td class="num-cell">${w.num}</td><td class="topic-cell">${w.topic}</td>
+      <thead><tr><th>No</th><th class="col-topik">Topik</th><th class="col-bahan">Bahan Ajar</th><th class="col-prak">Praktikum</th><th class="col-lain">Lain-Lain</th></tr></thead>
+      <tbody>${sec.rows.map((w,i) => w.exam
+        ? `<tr class="exam-row" style="animation-delay:${i*40}ms"><td class="num-cell">${w.num}</td><td colspan="4">${w.exam}</td></tr>`
+        : `<tr id="wk-${state.semester}-${w.num}" data-week="${w.num}" style="animation-delay:${i*40}ms"><td class="num-cell">${w.num}</td><td class="topic-cell">${highlight(w.topic, state.query.trim())}</td>
            <td>${renderItems(w.slides)}</td><td>${renderItems(w.praktikum)}</td><td>${renderItems(w.lain)}</td></tr>`
       ).join('')}</tbody>
     </table>`).join('');
 }
 
-/* ── MOBILE CARDS ── */
-const CHEVRON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
-
-function renderMobileCards(data) {
-  if (!data || !data.length) return `<div class="empty-notice">Materi akan segera tersedia.</div>`;
-  const sections = [
-    { label:'Pra-UTS',   rows: data.slice(0,8)  },
-    { label:'Pasca-UTS', rows: data.slice(8,16) }
-  ];
-  return sections.map(sec => `
-    <div class="section-divider">
-      <span class="section-divider-label">${sec.label}</span>
-      <div class="section-divider-line"></div>
-    </div>
-    ${sec.rows.map(w => w.exam
-      ? `<div class="exam-card">${w.exam}</div>`
-      : `<div class="week-card">
+function renderMobileCards(rows){
+  return splitSections(rows).map(sec => `
+    <div class="section-divider"><span class="section-divider-label">${sec.label}</span><div class="section-divider-line"></div></div>
+    ${sec.rows.map((w,i) => w.exam
+      ? `<div class="exam-card" style="animation-delay:${i*40}ms">${w.exam}</div>`
+      : `<div id="mwk-${state.semester}-${w.num}" data-week="${w.num}" class="week-card${state.query.trim()?' expanded':''}" style="animation-delay:${i*40}ms">
           <div class="week-card-header" onclick="toggleCard(this)">
             <span class="week-num">${w.num}</span>
-            <span class="week-topic">${w.topic}</span>
+            <span class="week-topic">${highlight(w.topic, state.query.trim())}</span>
             <span class="week-chevron">${CHEVRON}</span>
           </div>
           <div class="week-card-body">
-            ${w.slides && w.slides.length ? `<div class="mobile-section-label">Bahan Ajar</div>${renderItems(w.slides)}` : ''}
-            ${w.praktikum && w.praktikum.length ? `<div class="mobile-section-label">Praktikum</div>${renderItems(w.praktikum)}` : ''}
-            ${w.lain && w.lain.length ? `<div class="mobile-section-label">Lain-Lain</div>${renderItems(w.lain)}` : ''}
+            ${w.slides&&w.slides.length?`<div class="mobile-section-label">Bahan Ajar</div>${renderItems(w.slides)}`:''}
+            ${w.praktikum&&w.praktikum.length?`<div class="mobile-section-label">Praktikum</div>${renderItems(w.praktikum)}`:''}
+            ${w.lain&&w.lain.length?`<div class="mobile-section-label">Lain-Lain</div>${renderItems(w.lain)}`:''}
+            ${!(w.slides&&w.slides.length)&&!(w.praktikum&&w.praktikum.length)&&!(w.lain&&w.lain.length)?`<div class="mobile-section-label" style="margin-top:12px">Belum ada materi</div>`:''}
           </div>
         </div>`
-    ).join('')}`
-  ).join('');
+    ).join('')}`).join('');
 }
 
-function toggleCard(header) {
-  header.closest('.week-card').classList.toggle('expanded');
+function toggleCard(h){ h.closest('.week-card').classList.toggle('expanded'); }
+
+function emptyState(){
+  return `<div class="empty-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Tidak ada hasil untuk pencarian ini.</div>`;
 }
 
-/* ── FULL RENDER ── */
-function renderContent(data, containerId) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = `
-    <div class="desktop-table-wrap">${renderDesktopTable(data)}</div>
-    <div class="mobile-week-list">${renderMobileCards(data)}</div>`;
+function renderActive(){
+  const data = DATASETS[state.semester];
+  const rows = filterData(data);
+  const el = document.getElementById('content-' + state.semester);
+  const meaningful = rows.some(r => r.exam || (r.slides&&r.slides.length)||(r.praktikum&&r.praktikum.length)||(r.lain&&r.lain.length) || (!state.query && state.type==='all'));
+  if(!meaningful){ el.innerHTML = emptyState(); }
+  else {
+    el.innerHTML = `<div class="desktop-table-wrap">${renderDesktopTable(rows)}</div><div class="mobile-week-list">${renderMobileCards(rows)}</div>`;
+  }
+  updateChipCounts(data);
 }
 
-/* ── SEMESTER SWITCH ── */
-let activeSemester = 'genap2026';
-function switchSemester(code) {
-  activeSemester = code;
-  
-  // Update display konten tabel
-  document.getElementById('content-genap2026').style.display  = code === 'genap2026'  ? '' : 'none';
-  document.getElementById('content-ganjil2025').style.display = code === 'ganjil2025' ? '' : 'none';
-  
-  // Update state sidebar
-  document.getElementById('sopt-genap2026').className  = 'sidebar-option' + (code === 'genap2026'  ? ' active' : '');
-  document.getElementById('sopt-ganjil2025').className = 'sidebar-option' + (code === 'ganjil2025' ? ' active' : '');
-  
-  // Update teks indikator semester
-  document.getElementById('header-semester').textContent = code === 'genap2026' ? 'Genap 2026' : 'Ganjil 2025';
-  
-  // Update Link RPS berdasarkan semester yang dipilih
-  const rpsLink = document.getElementById('rps-link');
-  if (code === 'genap2026') {
-    rpsLink.href = 'https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf';
-  } else if (code === 'ganjil2025') {
-    rpsLink.href = 'https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf';
+/* ── CHIP COUNTS ── */
+function updateChipCounts(data){
+  const count = c => data.reduce((n,w)=> n + (w.exam?0:(w[c]||[]).length), 0);
+  const counts = { all: count('slides')+count('praktikum')+count('lain'), slides: count('slides'), praktikum: count('praktikum'), lain: count('lain') };
+  document.querySelectorAll('.chip').forEach(ch => {
+    const t = ch.dataset.type;
+    let base = ch.textContent.replace(/\s*\d+$/,'').trim();
+    ch.innerHTML = `${base}<span class="ct">${counts[t]}</span>`;
+  });
+}
+
+/* ── COVERAGE METER ── */
+function updateCoverage(){
+  const data = DATASETS[state.semester];
+  const sessions = data.filter(w => !w.exam);
+  const withMat = sessions.filter(w => w.slides && w.slides.length); // Bahan Ajar only
+  const pct = sessions.length ? Math.round(withMat.length/sessions.length*100) : 0;
+  document.getElementById('cov-pct').innerHTML = pct + '<span>%</span>';
+  document.getElementById('cov-count').textContent = withMat.length + ' / ' + sessions.length + ' sesi';
+  requestAnimationFrame(()=>{ document.getElementById('cov-fill').style.width = pct + '%'; });
+}
+
+/* ── SEARCH HANDLERS ── */
+const searchEl = document.getElementById('search');
+let searchTimer;
+searchEl.addEventListener('input', e => {
+  state.query = e.target.value;
+  document.getElementById('search-wrap').classList.toggle('has-q', !!state.query);
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(renderActive, 90);
+});
+function clearSearch(){ searchEl.value=''; state.query=''; document.getElementById('search-wrap').classList.remove('has-q'); renderActive(); searchEl.focus(); }
+function focusSearch(){ searchEl.focus(); searchEl.scrollIntoView({block:'center',behavior:'smooth'}); }
+function setType(t){
+  state.type = t;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.type===t));
+  renderActive();
+}
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+  else if(e.key==='/' && document.activeElement!==searchEl){ e.preventDefault(); focusSearch(); }
+  else if(e.key==='Escape'){ if(document.activeElement===searchEl && state.query){ clearSearch(); } else { closePanel(); searchEl.blur(); } }
+});
+
+/* ── SEMESTER ── */
+function switchSemester(code){
+  state.semester = code; state.query=''; searchEl.value=''; document.getElementById('search-wrap').classList.remove('has-q'); state.type='all';
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.type==='all'));
+  document.getElementById('content-genap2026').style.display  = code==='genap2026'  ? '' : 'none';
+  document.getElementById('content-ganjil2025').style.display = code==='ganjil2025' ? '' : 'none';
+  document.getElementById('sopt-genap2026').classList.toggle('active', code==='genap2026');
+  document.getElementById('sopt-ganjil2025').classList.toggle('active', code==='ganjil2025');
+  const label = code==='genap2026' ? 'Genap 2026' : 'Ganjil 2025';
+  document.getElementById('pill-sem').textContent = label;
+  document.getElementById('foot-sem').textContent = label;
+  const rps = code==='genap2026'
+    ? 'https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf'
+    : 'https://github.com/irfanradarma/Audit-SI/raw/main/ASP%20STR_2514926D_Audit%20Sistem%20Informasi.pdf';
+  document.getElementById('rps-link').href = rps;
+  document.getElementById('rps-link-main').href = rps;
+  renderActive(); updateCoverage(); closePanel();
+}
+
+/* ── PANEL ── */
+function openPanel(){ document.getElementById('panel').classList.add('on'); document.getElementById('scrim').classList.add('on'); }
+function closePanel(){ document.getElementById('panel').classList.remove('on'); document.getElementById('scrim').classList.remove('on'); }
+
+/* ── THEME ── */
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); try{ localStorage.setItem('audit-si-theme', t); }catch(e){} }
+function toggleTheme(){ applyTheme(document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark'); }
+(function initTheme(){
+  let saved; try{ saved = localStorage.getItem('audit-si-theme'); }catch(e){}
+  if(saved){ applyTheme(saved); }
+  else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ applyTheme('dark'); }
+})();
+
+/* ── LAST UPDATED (from GitHub push history) ── */
+(function loadLastUpdated(){
+  const el = document.getElementById('last-updated');
+  if(!el) return;
+  // Latest commit on the repo's default branch = most recent push.
+  // To track only this file instead, append "&path=index.html".
+  fetch('https://api.github.com/repos/irfanradarma/Audit-SI/commits?per_page=1', {
+    headers: { 'Accept': 'application/vnd.github+json' }
+  })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(list => {
+      const c = list && list[0];
+      if(!c || !c.commit) throw new Error('no commit');
+      const d = new Date(c.commit.committer.date);
+      const opts = { timeZone:'Asia/Jakarta' };
+      const date = new Intl.DateTimeFormat('id-ID', { ...opts, day:'numeric', month:'short', year:'numeric' }).format(d);
+      const time = new Intl.DateTimeFormat('id-ID', { ...opts, hour:'2-digit', minute:'2-digit', hour12:false }).format(d).replace('.', ':');
+      el.textContent = 'Last Updated ' + date + ', ' + time + ' WIB';
+      el.title = (c.commit.message || '').split('\n')[0];
+      //if(c.html_url) el.href = c.html_url;
+    })
+    .catch(() => {
+      el.textContent = 'Repositori GitHub';
+      //el.href = 'https://github.com/irfanradarma/Audit-SI';
+    });
+})();
+
+/* ════════════════════════════════════════════════════════════════
+   ADVANCED FEATURE MODULE
+   command palette · fuzzy search · deep-links · sparkline ·
+   vim navigation · view-transition theme · toasts
+   ════════════════════════════════════════════════════════════════ */
+(function(){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const SEM_LABEL = { genap2026:'Genap 2026', ganjil2025:'Ganjil 2025' };
+  const COL_LABEL = { slides:'Bahan Ajar', praktikum:'Praktikum', lain:'Lain-Lain' };
+
+  /* ---- fzf-style fuzzy scorer with match positions ---- */
+  function fuzzy(query, text){
+    if(!query) return { score: 0, pos: [] };
+    const q = query.toLowerCase(), t = text.toLowerCase(), pos = [];
+    let qi = 0, score = 0, run = 0, last = -2;
+    for(let i = 0; i < t.length && qi < q.length; i++){
+      if(t[i] === q[qi]){
+        let bonus = 1;
+        if(i === last + 1){ run++; bonus += run * 3; } else run = 0;
+        if(i === 0 || /[\s\-_\/.()&]/.test(t[i-1])) bonus += 9;   // word boundary
+        score += bonus; pos.push(i); last = i; qi++;
+      }
+    }
+    if(qi < q.length) return null;                                // not a subsequence
+    score -= text.length * 0.04;                                  // prefer concise
+    score -= pos[0] * 0.4;                                        // prefer early match
+    return { score, pos };
+  }
+  function mark(text, pos){
+    if(!pos || !pos.length) return esc(text);
+    const set = new Set(pos); let out = '';
+    for(let i = 0; i < text.length; i++)
+      out += set.has(i) ? '<mark class="hl">'+esc(text[i])+'</mark>' : esc(text[i]);
+    return out;
   }
 
-  closeSidebar();
-}
+  /* ---- toast ---- */
+  let toastT;
+  function toast(msg){
+    const el = $('#toast'); if(!el) return;
+    el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${esc(msg)}`;
+    el.classList.add('on'); clearTimeout(toastT);
+    toastT = setTimeout(() => el.classList.remove('on'), 2200);
+  }
+  async function copyText(t){
+    try { await navigator.clipboard.writeText(t); }
+    catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} ta.remove(); }
+  }
 
-/* ── SIDEBAR ── */
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('sidebar-backdrop').classList.add('visible');
-  document.getElementById('sidebar-toggle').classList.add('hidden');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-backdrop').classList.remove('visible');
-  document.getElementById('sidebar-toggle').classList.remove('hidden');
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+  /* ---- inject palette / cheats / toast chrome ---- */
+  const I2 = {
+    search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    theme:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
+    swap:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`,
+    doc:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>`
+  };
+  document.body.insertAdjacentHTML('beforeend', `
+    <div id="cmdk" aria-hidden="true">
+      <div class="cmdk-scrim" data-close></div>
+      <div class="cmdk-box" role="dialog" aria-label="Command palette">
+        <div class="cmdk-input-row">${I2.search}
+          <input id="cmdk-input" type="text" placeholder="Cari materi, ganti semester, ubah tema…" autocomplete="off" spellcheck="false">
+          <span class="cmdk-esc">esc</span>
+        </div>
+        <div class="cmdk-list" id="cmdk-list"></div>
+        <div class="cmdk-foot"><span><b>↑↓</b> pilih</span><span><b>↵</b> buka</span><span><b>⌥↵</b> salin tautan</span><span><b>esc</b> tutup</span></div>
+      </div>
+    </div>
+    <div id="cheats">
+      <div class="cheats-scrim" data-close></div>
+      <div class="cheats-box">
+        <h3>Pintasan Keyboard</h3>
+        <div class="cheats-row"><span>Command palette</span><span class="cheats-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
+        <div class="cheats-row"><span>Fokus pencarian</span><span class="cheats-keys"><kbd>/</kbd></span></div>
+        <div class="cheats-row"><span>Pindah antar sesi</span><span class="cheats-keys"><kbd>j</kbd><kbd>k</kbd></span></div>
+        <div class="cheats-row"><span>Ke atas / bawah</span><span class="cheats-keys"><kbd>g</kbd><kbd>G</kbd></span></div>
+        <div class="cheats-row"><span>Ganti tema</span><span class="cheats-keys"><kbd>t</kbd></span></div>
+        <div class="cheats-row"><span>Bantuan ini</span><span class="cheats-keys"><kbd>?</kbd></span></div>
+      </div>
+    </div>
+    <div id="toast"></div>`);
+
+  /* ---- build searchable index from BOTH semesters ---- */
+  function buildIndex(){
+    const out = [];
+    for(const sem of Object.keys(DATASETS)){
+      for(const w of DATASETS[sem]){
+        if(w.exam) continue;
+        for(const col of ['slides','praktikum','lain']){
+          for(const it of (w[col] || [])){
+            if(it.type !== 'link') continue;
+            out.push({ kind:'material', label:it.text, icon:it.icon, href:it.href,
+                       sub:`${SEM_LABEL[sem]} · ${COL_LABEL[col]} · Sesi ${w.num}`, sem, week:w.num });
+          }
+        }
+      }
+    }
+    return out;
+  }
+  const INDEX = buildIndex();
+  function actions(){
+    const a = [];
+    for(const sem of Object.keys(DATASETS)){
+      if(sem === state.semester) continue;
+      a.push({ kind:'action', label:'Beralih ke '+SEM_LABEL[sem], sub:'Ganti periode akademik', icon:I2.swap,
+               run:()=>switchSemester(sem) });
+    }
+    a.push({ kind:'action', label:'Ganti tema gelap / terang', sub:'Light ⇄ Dark', icon:I2.theme, run:()=>toggleTheme() });
+    const rps = $('#rps-link-main');
+    if(rps) a.push({ kind:'action', label:'Unduh RPS — '+SEM_LABEL[state.semester], sub:'Rencana Pembelajaran Semester', icon:I2.doc, href:rps.href });
+    return a;
+  }
+
+  /* ---- recent (localStorage) ---- */
+  function recents(){ try { return JSON.parse(localStorage.getItem('audit-si-recent')||'[]'); } catch(e){ return []; } }
+  function pushRecent(en){
+    if(!en.href) return;
+    try {
+      let r = recents().filter(x => x.href !== en.href);
+      r.unshift({ kind:'material', label:en.label, sub:en.sub, icon:en.icon, href:en.href });
+      localStorage.setItem('audit-si-recent', JSON.stringify(r.slice(0,6)));
+    } catch(e){}
+  }
+
+  /* ---- palette state ---- */
+  let items = [], sel = 0;
+  const box = $('#cmdk'), listEl = $('#cmdk-list'), inputEl = $('#cmdk-input');
+
+  function results(q){
+    if(!q.trim()){
+      const r = recents();
+      return [
+        r.length ? { title:'Terakhir dibuka', items:r } : null,
+        { title:'Aksi', items:actions() },
+        { title:'Materi', items:INDEX.slice(0, 8) }
+      ].filter(Boolean);
+    }
+    const scored = [];
+    for(const e of INDEX.concat(actions())){
+      const ml = fuzzy(q, e.label), ms = fuzzy(q, e.sub || '');
+      const best = (ml && (!ms || ml.score >= ms.score)) ? ml : ms;
+      if(best) scored.push({ e, pos:(ml ? ml.pos : null), s: best.score });
+    }
+    scored.sort((a,b) => b.s - a.s);
+    return [{ title:`${scored.length} hasil`, items: scored.slice(0, 40).map(x => ({ ...x.e, _pos:x.pos })) }];
+  }
+
+  function render(){
+    const q = inputEl.value;
+    const groups = results(q);
+    items = [];
+    let html = '', idx = 0;
+    for(const g of groups){
+      if(!g.items.length) continue;
+      html += `<div class="cmdk-group">${esc(g.title)}</div>`;
+      for(const e of g.items){
+        const pos = q.trim() ? (e._pos || (fuzzy(q, e.label)||{}).pos) : null;
+        html += `<div class="cmdk-item" data-idx="${idx}">
+            <span class="ci-ico">${e.icon || I2.search}</span>
+            <span class="ci-txt"><span class="ci-label">${mark(e.label, pos)}</span>${e.sub?`<span class="ci-sub">${esc(e.sub)}</span>`:''}</span>
+            <span class="ci-go">${e.kind==='action'?'jalankan':'buka'} ↵</span>
+          </div>`;
+        items.push(e); idx++;
+      }
+    }
+    listEl.innerHTML = html || `<div class="cmdk-empty">Tidak ada yang cocok.</div>`;
+    sel = 0; paint();
+  }
+  function paint(){
+    const els = listEl.querySelectorAll('.cmdk-item');
+    els.forEach((el,i) => el.classList.toggle('sel', i === sel));
+    const cur = els[sel]; if(cur) cur.scrollIntoView({ block:'nearest' });
+  }
+  function move(d){ if(!items.length) return; sel = (sel + d + items.length) % items.length; paint(); }
+  function activate(e, copy){
+    if(!e) return;
+    if(copy && e.href){ copyText(e.href); toast('Tautan disalin'); return; }
+    if(e.href){ pushRecent(e); window.open(e.href, '_blank', 'noopener'); closePalette(); }
+    else if(e.run){ closePalette(); e.run(); }
+  }
+  window.openPalette = function(){
+    box.classList.add('on'); box.setAttribute('aria-hidden','false');
+    inputEl.value = ''; render(); setTimeout(()=>inputEl.focus(), 20);
+  };
+  function closePalette(){ box.classList.remove('on'); box.setAttribute('aria-hidden','true'); }
+
+  inputEl.addEventListener('input', render);
+  inputEl.addEventListener('keydown', e => {
+    if(e.key === 'ArrowDown'){ e.preventDefault(); move(1); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); move(-1); }
+    else if(e.key === 'Tab'){ e.preventDefault(); move(e.shiftKey ? -1 : 1); }
+    else if(e.key === 'Enter'){ e.preventDefault(); activate(items[sel], e.altKey); }
+    else if(e.key === 'Escape'){ e.stopPropagation(); closePalette(); }
+  });
+  listEl.addEventListener('mousemove', e => {
+    const it = e.target.closest('.cmdk-item'); if(!it) return;
+    const i = +it.dataset.idx; if(i !== sel){ sel = i; paint(); }
+  });
+  listEl.addEventListener('click', e => {
+    const it = e.target.closest('.cmdk-item'); if(!it) return;
+    activate(items[+it.dataset.idx], e.altKey);
+  });
+  box.querySelector('[data-close]').addEventListener('click', closePalette);
+
+  /* ---- cheat sheet ---- */
+  const cheats = $('#cheats');
+  function openCheats(){ cheats.classList.add('on'); }
+  function closeCheats(){ cheats.classList.remove('on'); }
+  cheats.querySelector('[data-close]').addEventListener('click', closeCheats);
+
+  /* ---- jump-to-week + flash (used by sparkline & j/k) ---- */
+  function flash(el){
+    document.querySelectorAll('.flash').forEach(x => x.classList.remove('flash'));
+    void el.offsetWidth; el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 1500);
+  }
+  function jumpToWeek(num){
+    const row = document.getElementById('wk-'+state.semester+'-'+num);
+    const card = document.getElementById('mwk-'+state.semester+'-'+num);
+    if(row && row.offsetParent !== null){ row.scrollIntoView({ block:'center', behavior:'smooth' }); flash(row); }
+    else if(card){ card.classList.add('expanded'); card.scrollIntoView({ block:'center', behavior:'smooth' }); flash(card); }
+  }
+
+  /* ---- coverage sparkline (Bahan Ajar presence per session) ---- */
+  function renderSparkline(){
+    const cell = document.querySelector('.spec-cell.coverage'); if(!cell) return;
+    let host = cell.querySelector('#cov-spark');
+    if(!host){ host = document.createElement('div'); host.id = 'cov-spark'; host.className = 'cov-spark'; cell.appendChild(host); }
+    const data = DATASETS[state.semester];
+    const maxN = Math.max(1, ...data.filter(w=>!w.exam).map(w => (w.slides||[]).length));
+    host.innerHTML = data.map(w => {
+      if(w.exam) return `<div class="bar exam" style="height:55%" title="Sesi ${w.num}: ${esc(w.exam)}"></div>`;
+      const n = (w.slides||[]).length;
+      const h = n ? Math.round(42 + (n/maxN)*56) : 16;
+      const cls = n ? 'bar has' : 'bar';
+      return `<div class="${cls}" data-week="${w.num}" style="height:${h}%" title="Sesi ${w.num}: ${esc(w.topic)} — ${n} bahan ajar"></div>`;
+    }).join('');
+    host.querySelectorAll('.bar[data-week]').forEach(b =>
+      b.addEventListener('click', () => jumpToWeek(+b.dataset.week)));
+  }
+
+  /* ---- deep-link URL state ---- */
+  function syncURL(){
+    const p = new URLSearchParams();
+    if(state.semester !== 'genap2026') p.set('sem', state.semester);
+    if(state.type !== 'all') p.set('type', state.type);
+    if(state.query.trim()) p.set('q', state.query.trim());
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? ('?'+qs) : location.pathname);
+  }
+  function parseURL(){
+    const p = new URLSearchParams(location.search);
+    const sem = p.get('sem');
+    if(sem && DATASETS[sem] && sem !== state.semester) switchSemester(sem);
+    const type = p.get('type');
+    if(type && ['all','slides','praktikum','lain'].includes(type)) setType(type);
+    const q = p.get('q');
+    if(q){ const se = $('#search'); se.value = q; state.query = q; $('#search-wrap').classList.add('has-q'); renderActive(); }
+    syncURL();
+  }
+  window.addEventListener('popstate', parseURL);
+
+  /* ---- wrap existing functions (decorator pattern) ---- */
+  let navIdx = -1;
+  switchSemester = (orig => function(c){ orig(c); navIdx = -1; syncURL(); })(switchSemester);
+  setType       = (orig => function(t){ orig(t); syncURL(); })(setType);
+  clearSearch   = (orig => function(){ orig(); syncURL(); })(clearSearch);
+  updateCoverage = (orig => function(){ orig(); renderSparkline(); })(updateCoverage);
+  $('#search').addEventListener('input', () => { clearTimeout(window.__u); window.__u = setTimeout(syncURL, 200); });
+
+  /* ---- view-transition theme reveal ---- */
+  let lastPt = { x: innerWidth - 40, y: 40 };
+  addEventListener('pointerdown', e => { lastPt = { x: e.clientX, y: e.clientY }; }, true);
+  toggleTheme = (orig => function(){
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!document.startViewTransition || reduce){ applyTheme(next); return; }
+    document.documentElement.style.setProperty('--vt-x', lastPt.x + 'px');
+    document.documentElement.style.setProperty('--vt-y', lastPt.y + 'px');
+    document.startViewTransition(() => applyTheme(next));
+  })(toggleTheme);
+
+  /* ---- global keyboard (vim-style) ---- */
+  const typing = () => { const a = document.activeElement; return a && (a.tagName==='INPUT' || a.tagName==='TEXTAREA' || a.isContentEditable); };
+  const paletteOpen = () => box.classList.contains('on');
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){ if(cheats.classList.contains('on')) closeCheats(); return; }
+    if(paletteOpen() || typing() || e.metaKey || e.ctrlKey || e.altKey) return;
+    const weeks = DATASETS[state.semester].filter(w => !w.exam).map(w => w.num);
+    if(e.key === 'j'){ e.preventDefault(); navIdx = Math.min(weeks.length-1, navIdx+1); jumpToWeek(weeks[navIdx]); }
+    else if(e.key === 'k'){ e.preventDefault(); navIdx = Math.max(0, navIdx-1); jumpToWeek(weeks[navIdx]); }
+    else if(e.key === 'g'){ e.preventDefault(); navIdx = -1; scrollTo({ top:0, behavior:'smooth' }); }
+    else if(e.key === 'G'){ e.preventDefault(); scrollTo({ top:document.body.scrollHeight, behavior:'smooth' }); }
+    else if(e.key === 't'){ e.preventDefault(); toggleTheme(); }
+    else if(e.key === '?'){ e.preventDefault(); openCheats(); }
+  });
+
+  /* ---- console signature ---- */
+  console.log('%cAudit SI%c · built with too much care · ⌘K / ? ',
+    'font:600 13px monospace;color:#d9521c', 'font:11px monospace;color:#a39d92');
+
+  /* ---- boot ---- */
+  parseURL();
+  renderSparkline();
+})();
 
 /* ── INIT ── */
-renderContent(GENAP_2026,  'content-genap2026');
-renderContent(GANJIL_2025, 'content-ganjil2025');
+renderActive();
+updateCoverage();
 </script>
 </body>
 </html>
