@@ -504,101 +504,79 @@ footer {
   .filters { width: 100%; justify-content: space-between; }
 }
 /* ════════════════════════════════════════════
-   COMMAND PALETTE
+   SLIDE / MATERIAL VIEWER (accordion)
    ════════════════════════════════════════════ */
-#cmdk { position: fixed; inset: 0; z-index: 300; display: none; }
-#cmdk.on { display: block; }
-#cmdk .cmdk-scrim { position: absolute; inset: 0; background: rgba(10,9,8,.46);
-  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: fade .2s var(--ease); }
-@keyframes fade { from { opacity: 0; } }
-.cmdk-box {
-  position: absolute; top: 12vh; left: 50%; transform: translateX(-50%);
-  width: min(620px, 92vw); max-height: 70vh; display: flex; flex-direction: column;
-  background: var(--surface); border: 1px solid var(--line-2); border-radius: 16px;
-  box-shadow: var(--shadow-lg); overflow: hidden; animation: cmdkIn .26s var(--ease-out); }
-@keyframes cmdkIn { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.985); } }
-.cmdk-input-row { display: flex; align-items: center; gap: 11px; padding: 16px 18px;
-  border-bottom: 1px solid var(--line); }
-.cmdk-input-row svg { width: 17px; height: 17px; color: var(--faint); flex-shrink: 0; }
-#cmdk-input { flex: 1; border: none; background: none; outline: none; color: var(--ink);
-  font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; }
-#cmdk-input::placeholder { color: var(--faint); }
-.cmdk-esc { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint);
-  border: 1px solid var(--line-2); border-radius: 5px; padding: 2px 6px; }
-.cmdk-list { overflow-y: auto; padding: 8px; flex: 1; scroll-behavior: smooth; }
-.cmdk-group { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--faint); padding: 12px 12px 6px; }
-.cmdk-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px;
-  cursor: pointer; scroll-margin: 12px; }
-.cmdk-item .ci-ico { width: 30px; height: 30px; flex-shrink: 0; display: grid; place-items: center;
-  border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--surface-2); }
-.cmdk-item .ci-ico svg { width: 14px; height: 14px; }
-.cmdk-item .ci-txt { flex: 1; min-width: 0; }
-.cmdk-item .ci-label { font-size: 14px; color: var(--ink); line-height: 1.3; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; }
-.cmdk-item .ci-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint);
-  letter-spacing: .03em; margin-top: 1px; }
-.cmdk-item .ci-go { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint); opacity: 0; }
-.cmdk-item.sel { background: var(--accent-bg); }
-.cmdk-item.sel .ci-ico { color: var(--accent); border-color: var(--accent-bd); }
-.cmdk-item.sel .ci-go { opacity: 1; color: var(--accent-ink); }
-.cmdk-empty { padding: 36px; text-align: center; color: var(--faint);
-  font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
-.cmdk-foot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint); flex-wrap: wrap; }
-.cmdk-foot b { color: var(--muted); font-weight: 500; }
-.cmdk-list mark.hl { background: none; color: var(--accent); font-weight: 600; padding: 0; }
+@keyframes vfade { from { opacity: 0; } }
+.desktop-table-wrap tbody tr:has(.topic-cell.expandable) { cursor: pointer; }
+.topic-cell.expandable { cursor: pointer; }
+.exp-chevron { display: inline-flex; vertical-align: middle; margin-left: 9px; color: var(--faint);
+  transition: transform .28s var(--ease), color .2s; }
+.exp-chevron svg { width: 14px; height: 14px; }
+tr.is-open .exp-chevron { transform: rotate(180deg); color: var(--accent); }
+tr.is-open > td:not(.num-cell) { background: var(--surface-2); }
 
-/* CHEAT SHEET */
-#cheats { position: fixed; inset: 0; z-index: 280; display: none; place-items: center; }
-#cheats.on { display: grid; }
-#cheats .cheats-scrim { position: absolute; inset: 0; background: rgba(10,9,8,.46);
-  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
-.cheats-box { position: relative; width: min(440px, 92vw); background: var(--surface);
-  border: 1px solid var(--line-2); border-radius: 16px; box-shadow: var(--shadow-lg);
-  padding: 1.75rem; animation: cmdkIn .26s var(--ease-out); }
-.cheats-box h3 { font-family: 'Fraunces', serif; font-weight: 440; font-size: 20px; margin-bottom: 1.1rem;
-  letter-spacing: -.01em; }
-.cheats-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0;
-  border-bottom: 1px solid var(--line); }
-.cheats-row:last-child { border-bottom: none; }
-.cheats-row span { font-size: 13px; color: var(--ink-soft); }
-.cheats-keys { display: flex; gap: 4px; }
+tr.detail-row > td { padding: 0 !important; background: var(--surface) !important; }
+tr.detail-row { border-bottom: 1px solid var(--line); }
 
-/* TOAST */
-#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-  z-index: 320; background: var(--ink); color: var(--paper); padding: 11px 18px; border-radius: 99px;
-  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .03em; box-shadow: var(--shadow-lg);
-  opacity: 0; pointer-events: none; transition: opacity .25s var(--ease), transform .35s var(--ease-out);
-  display: inline-flex; align-items: center; gap: 8px; }
-#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
-#toast svg { width: 13px; height: 13px; color: var(--accent); }
+.viewer { opacity: 0; transform: translateY(-6px); padding: 16px;
+  transition: opacity .3s var(--ease), transform .35s var(--ease-out); }
+.viewer.show { opacity: 1; transform: none; }
+.viewer-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+.v-btn { width: 34px; height: 34px; flex-shrink: 0; display: grid; place-items: center; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--surface); color: var(--ink-soft); cursor: pointer; text-decoration: none;
+  transition: all .16s var(--ease); }
+.v-btn:hover:not(:disabled) { border-color: var(--line-2); background: var(--surface-2); color: var(--ink); }
+.v-btn:disabled { opacity: .32; cursor: default; }
+.v-btn svg { width: 15px; height: 15px; }
+.viewer-meta { flex: 1; min-width: 0; padding: 0 4px; }
+.v-title { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 440; color: var(--ink); letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.v-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint); letter-spacing: .05em; margin-top: 2px; }
+.viewer-stage { position: relative; border: 1px solid var(--line); border-radius: 11px; overflow: hidden;
+  background: var(--surface-2); aspect-ratio: 16 / 9; }
+.viewer-stage:fullscreen { aspect-ratio: auto; border-radius: 0; }
+.viewer-stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.viewer-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: .04em; padding: 20px; text-align: center; }
+.viewer-loading a { color: var(--accent); }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--line-2); border-top-color: var(--accent);
+  border-radius: 50%; animation: vspin .8s linear infinite; }
+@keyframes vspin { to { transform: rotate(360deg); } }
+.viewer-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 14px; text-align: center; padding: 28px; }
+.viewer-card .vc-ico { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--line);
+  border-radius: 12px; color: var(--accent); background: var(--surface); }
+.viewer-card .vc-ico svg { width: 22px; height: 22px; }
+.viewer-card .vc-title { font-family: 'Fraunces', serif; font-size: 17px; color: var(--ink); max-width: 36ch; }
+.viewer-card .vc-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--faint); }
+.viewer-strip { display: flex; gap: 7px; margin-top: 13px; overflow-x: auto; padding-bottom: 3px; }
+.chip-thumb { flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--surface); cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px;
+  color: var(--muted); max-width: 230px; transition: all .15s var(--ease); }
+.chip-thumb:hover { border-color: var(--line-2); color: var(--ink); }
+.chip-thumb.active { border-color: var(--accent-bd); color: var(--accent-ink); background: var(--accent-bg); }
+.chip-thumb svg { width: 12px; height: 12px; flex-shrink: 0; opacity: .7; }
+.chip-thumb .lt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewer-hint { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .04em; color: var(--faint);
+  margin-top: 11px; display: flex; align-items: center; gap: 6px; }
+.viewer-hint svg { width: 12px; height: 12px; color: var(--accent); }
 
-/* COVERAGE SPARKLINE */
-.cov-spark { display: flex; align-items: flex-end; gap: 3px; height: 26px; margin-top: 11px; }
-.cov-spark .bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 3px; cursor: pointer;
-  background: var(--line-2); transition: background .18s, transform .18s var(--ease-out), filter .18s;
-  transform-origin: bottom; }
-.cov-spark .bar.has { background: linear-gradient(180deg, var(--accent), var(--accent-h)); }
-.cov-spark .bar.exam { background: repeating-linear-gradient(45deg, var(--accent-bd) 0 2px, transparent 2px 4px); }
-.cov-spark .bar:hover { transform: scaleY(1.12); }
-.cov-spark .bar.has:hover { filter: brightness(1.1); }
+.preview-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; margin-top: 16px;
+  padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink);
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .04em; cursor: pointer; transition: all .16s; }
+.preview-btn:active { background: var(--surface-2); transform: scale(.99); }
+.preview-btn svg { width: 14px; height: 14px; color: var(--accent); }
 
-/* ROW FLASH */
-@keyframes flashRow { 0% { background: var(--accent-bg); } 100% { background: transparent; } }
-.flash > td:not(.num-cell) { animation: flashRow 1.4s var(--ease-out); }
-.week-card.flash { animation: flashRow 1.4s var(--ease-out); }
-
-/* VIEW TRANSITION (theme reveal) */
-::view-transition-old(root) { animation: none; z-index: 1; }
-::view-transition-new(root) { animation: vtReveal .55s var(--ease-out); z-index: 9999; }
-@keyframes vtReveal {
-  from { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 0%)); }
-  to   { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 0%)); }
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-}
+#voverlay { position: fixed; inset: 0; z-index: 260; display: none; }
+#voverlay.on { display: block; }
+#voverlay .vo-scrim { position: absolute; inset: 0; background: rgba(10,9,8,.62);
+  -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); animation: vfade .2s var(--ease); }
+.vo-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(920px, 94vw);
+  max-height: 92vh; overflow: auto; background: var(--surface); border: 1px solid var(--line-2); border-radius: 16px;
+  box-shadow: var(--shadow-lg); animation: vfade .25s var(--ease); }
+.vo-box .viewer { opacity: 1; transform: none; }
+@media (max-width: 680px) { .vo-box { width: 96vw; } }
 </style>
 </head>
 <body>
@@ -658,7 +636,7 @@ footer {
     <h1 class="title reveal" style="animation-delay:.12s">Audit <em>Sistem</em><br>Informasi</h1>
     <p class="hero-sub reveal" style="animation-delay:.2s">
       Repositori materi, slide, dan bahan praktikum terstruktur per pertemuan.
-      Disusun &amp; diampu oleh <a href="https://www.linkedin.com/in/irfan-radarma/" target="_blank">Teuku Raja Irfan Radarma</a>.
+      Disusun &amp; diampu oleh <a href="https://github.com/irfanradarma" target="_blank">Teuku Raja Irfan Radarma</a>.
     </p>
 
     <div class="spec reveal" style="animation-delay:.28s">
@@ -680,7 +658,7 @@ footer {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>
         Unduh RPS
       </a>
-      <button class="btn btn-ghost" onclick="openPalette()">
+      <button class="btn btn-ghost" onclick="focusSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Cari materi <kbd>⌘K</kbd>
       </button>
@@ -926,7 +904,7 @@ function renderDesktopTable(rows){
       <thead><tr><th>No</th><th class="col-topik">Topik</th><th class="col-bahan">Bahan Ajar</th><th class="col-prak">Praktikum</th><th class="col-lain">Lain-Lain</th></tr></thead>
       <tbody>${sec.rows.map((w,i) => w.exam
         ? `<tr class="exam-row" style="animation-delay:${i*40}ms"><td class="num-cell">${w.num}</td><td colspan="4">${w.exam}</td></tr>`
-        : `<tr id="wk-${state.semester}-${w.num}" data-week="${w.num}" style="animation-delay:${i*40}ms"><td class="num-cell">${w.num}</td><td class="topic-cell">${highlight(w.topic, state.query.trim())}</td>
+        : `<tr data-week="${w.num}" style="animation-delay:${i*40}ms"><td class="num-cell">${w.num}</td><td class="topic-cell${[...(w.slides||[]),...(w.praktikum||[]),...(w.lain||[])].some(x=>x.type==='link')?' expandable':''}">${highlight(w.topic, state.query.trim())}${[...(w.slides||[]),...(w.praktikum||[]),...(w.lain||[])].some(x=>x.type==='link')?`<span class="exp-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>`:''}</td>
            <td>${renderItems(w.slides)}</td><td>${renderItems(w.praktikum)}</td><td>${renderItems(w.lain)}</td></tr>`
       ).join('')}</tbody>
     </table>`).join('');
@@ -937,7 +915,7 @@ function renderMobileCards(rows){
     <div class="section-divider"><span class="section-divider-label">${sec.label}</span><div class="section-divider-line"></div></div>
     ${sec.rows.map((w,i) => w.exam
       ? `<div class="exam-card" style="animation-delay:${i*40}ms">${w.exam}</div>`
-      : `<div id="mwk-${state.semester}-${w.num}" data-week="${w.num}" class="week-card${state.query.trim()?' expanded':''}" style="animation-delay:${i*40}ms">
+      : `<div data-week="${w.num}" class="week-card${state.query.trim()?' expanded':''}" style="animation-delay:${i*40}ms">
           <div class="week-card-header" onclick="toggleCard(this)">
             <span class="week-num">${w.num}</span>
             <span class="week-topic">${highlight(w.topic, state.query.trim())}</span>
@@ -948,6 +926,7 @@ function renderMobileCards(rows){
             ${w.praktikum&&w.praktikum.length?`<div class="mobile-section-label">Praktikum</div>${renderItems(w.praktikum)}`:''}
             ${w.lain&&w.lain.length?`<div class="mobile-section-label">Lain-Lain</div>${renderItems(w.lain)}`:''}
             ${!(w.slides&&w.slides.length)&&!(w.praktikum&&w.praktikum.length)&&!(w.lain&&w.lain.length)?`<div class="mobile-section-label" style="margin-top:12px">Belum ada materi</div>`:''}
+            ${[...(w.slides||[]),...(w.praktikum||[]),...(w.lain||[])].some(x=>x.type==='link')?`<button class="preview-btn" data-week="${w.num}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Pratinjau Materi</button>`:''}
           </div>
         </div>`
     ).join('')}`).join('');
@@ -1012,7 +991,7 @@ function setType(t){
 
 /* ── KEYBOARD ── */
 document.addEventListener('keydown', e => {
-  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); focusSearch(); }
   else if(e.key==='/' && document.activeElement!==searchEl){ e.preventDefault(); focusSearch(); }
   else if(e.key==='Escape'){ if(document.activeElement===searchEl && state.query){ clearSearch(); } else { closePanel(); searchEl.blur(); } }
 });
@@ -1076,317 +1055,190 @@ function toggleTheme(){ applyTheme(document.documentElement.getAttribute('data-t
     });
 })();
 
-/* ════════════════════════════════════════════════════════════════
-   ADVANCED FEATURE MODULE
-   command palette · fuzzy search · deep-links · sparkline ·
-   vim navigation · view-transition theme · toasts
-   ════════════════════════════════════════════════════════════════ */
-(function(){
-  const $ = s => document.querySelector(s);
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const SEM_LABEL = { genap2026:'Genap 2026', ganjil2025:'Ganjil 2025' };
-  const COL_LABEL = { slides:'Bahan Ajar', praktikum:'Praktikum', lain:'Lain-Lain' };
-
-  /* ---- fzf-style fuzzy scorer with match positions ---- */
-  function fuzzy(query, text){
-    if(!query) return { score: 0, pos: [] };
-    const q = query.toLowerCase(), t = text.toLowerCase(), pos = [];
-    let qi = 0, score = 0, run = 0, last = -2;
-    for(let i = 0; i < t.length && qi < q.length; i++){
-      if(t[i] === q[qi]){
-        let bonus = 1;
-        if(i === last + 1){ run++; bonus += run * 3; } else run = 0;
-        if(i === 0 || /[\s\-_\/.()&]/.test(t[i-1])) bonus += 9;   // word boundary
-        score += bonus; pos.push(i); last = i; qi++;
-      }
-    }
-    if(qi < q.length) return null;                                // not a subsequence
-    score -= text.length * 0.04;                                  // prefer concise
-    score -= pos[0] * 0.4;                                        // prefer early match
-    return { score, pos };
-  }
-  function mark(text, pos){
-    if(!pos || !pos.length) return esc(text);
-    const set = new Set(pos); let out = '';
-    for(let i = 0; i < text.length; i++)
-      out += set.has(i) ? '<mark class="hl">'+esc(text[i])+'</mark>' : esc(text[i]);
-    return out;
-  }
-
-  /* ---- toast ---- */
-  let toastT;
-  function toast(msg){
-    const el = $('#toast'); if(!el) return;
-    el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${esc(msg)}`;
-    el.classList.add('on'); clearTimeout(toastT);
-    toastT = setTimeout(() => el.classList.remove('on'), 2200);
-  }
-  async function copyText(t){
-    try { await navigator.clipboard.writeText(t); }
-    catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} ta.remove(); }
-  }
-
-  /* ---- inject palette / cheats / toast chrome ---- */
-  const I2 = {
-    search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
-    theme:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
-    swap:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`,
-    doc:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>`
-  };
-  document.body.insertAdjacentHTML('beforeend', `
-    <div id="cmdk" aria-hidden="true">
-      <div class="cmdk-scrim" data-close></div>
-      <div class="cmdk-box" role="dialog" aria-label="Command palette">
-        <div class="cmdk-input-row">${I2.search}
-          <input id="cmdk-input" type="text" placeholder="Cari materi, ganti semester, ubah tema…" autocomplete="off" spellcheck="false">
-          <span class="cmdk-esc">esc</span>
-        </div>
-        <div class="cmdk-list" id="cmdk-list"></div>
-        <div class="cmdk-foot"><span><b>↑↓</b> pilih</span><span><b>↵</b> buka</span><span><b>⌥↵</b> salin tautan</span><span><b>esc</b> tutup</span></div>
-      </div>
-    </div>
-    <div id="cheats">
-      <div class="cheats-scrim" data-close></div>
-      <div class="cheats-box">
-        <h3>Pintasan Keyboard</h3>
-        <div class="cheats-row"><span>Command palette</span><span class="cheats-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
-        <div class="cheats-row"><span>Fokus pencarian</span><span class="cheats-keys"><kbd>/</kbd></span></div>
-        <div class="cheats-row"><span>Pindah antar sesi</span><span class="cheats-keys"><kbd>j</kbd><kbd>k</kbd></span></div>
-        <div class="cheats-row"><span>Ke atas / bawah</span><span class="cheats-keys"><kbd>g</kbd><kbd>G</kbd></span></div>
-        <div class="cheats-row"><span>Ganti tema</span><span class="cheats-keys"><kbd>t</kbd></span></div>
-        <div class="cheats-row"><span>Bantuan ini</span><span class="cheats-keys"><kbd>?</kbd></span></div>
-      </div>
-    </div>
-    <div id="toast"></div>`);
-
-  /* ---- build searchable index from BOTH semesters ---- */
-  function buildIndex(){
-    const out = [];
-    for(const sem of Object.keys(DATASETS)){
-      for(const w of DATASETS[sem]){
-        if(w.exam) continue;
-        for(const col of ['slides','praktikum','lain']){
-          for(const it of (w[col] || [])){
-            if(it.type !== 'link') continue;
-            out.push({ kind:'material', label:it.text, icon:it.icon, href:it.href,
-                       sub:`${SEM_LABEL[sem]} · ${COL_LABEL[col]} · Sesi ${w.num}`, sem, week:w.num });
-          }
-        }
-      }
-    }
-    return out;
-  }
-  const INDEX = buildIndex();
-  function actions(){
-    const a = [];
-    for(const sem of Object.keys(DATASETS)){
-      if(sem === state.semester) continue;
-      a.push({ kind:'action', label:'Beralih ke '+SEM_LABEL[sem], sub:'Ganti periode akademik', icon:I2.swap,
-               run:()=>switchSemester(sem) });
-    }
-    a.push({ kind:'action', label:'Ganti tema gelap / terang', sub:'Light ⇄ Dark', icon:I2.theme, run:()=>toggleTheme() });
-    const rps = $('#rps-link-main');
-    if(rps) a.push({ kind:'action', label:'Unduh RPS — '+SEM_LABEL[state.semester], sub:'Rencana Pembelajaran Semester', icon:I2.doc, href:rps.href });
-    return a;
-  }
-
-  /* ---- recent (localStorage) ---- */
-  function recents(){ try { return JSON.parse(localStorage.getItem('audit-si-recent')||'[]'); } catch(e){ return []; } }
-  function pushRecent(en){
-    if(!en.href) return;
-    try {
-      let r = recents().filter(x => x.href !== en.href);
-      r.unshift({ kind:'material', label:en.label, sub:en.sub, icon:en.icon, href:en.href });
-      localStorage.setItem('audit-si-recent', JSON.stringify(r.slice(0,6)));
-    } catch(e){}
-  }
-
-  /* ---- palette state ---- */
-  let items = [], sel = 0;
-  const box = $('#cmdk'), listEl = $('#cmdk-list'), inputEl = $('#cmdk-input');
-
-  function results(q){
-    if(!q.trim()){
-      const r = recents();
-      return [
-        r.length ? { title:'Terakhir dibuka', items:r } : null,
-        { title:'Aksi', items:actions() },
-        { title:'Materi', items:INDEX.slice(0, 8) }
-      ].filter(Boolean);
-    }
-    const scored = [];
-    for(const e of INDEX.concat(actions())){
-      const ml = fuzzy(q, e.label), ms = fuzzy(q, e.sub || '');
-      const best = (ml && (!ms || ml.score >= ms.score)) ? ml : ms;
-      if(best) scored.push({ e, pos:(ml ? ml.pos : null), s: best.score });
-    }
-    scored.sort((a,b) => b.s - a.s);
-    return [{ title:`${scored.length} hasil`, items: scored.slice(0, 40).map(x => ({ ...x.e, _pos:x.pos })) }];
-  }
-
-  function render(){
-    const q = inputEl.value;
-    const groups = results(q);
-    items = [];
-    let html = '', idx = 0;
-    for(const g of groups){
-      if(!g.items.length) continue;
-      html += `<div class="cmdk-group">${esc(g.title)}</div>`;
-      for(const e of g.items){
-        const pos = q.trim() ? (e._pos || (fuzzy(q, e.label)||{}).pos) : null;
-        html += `<div class="cmdk-item" data-idx="${idx}">
-            <span class="ci-ico">${e.icon || I2.search}</span>
-            <span class="ci-txt"><span class="ci-label">${mark(e.label, pos)}</span>${e.sub?`<span class="ci-sub">${esc(e.sub)}</span>`:''}</span>
-            <span class="ci-go">${e.kind==='action'?'jalankan':'buka'} ↵</span>
-          </div>`;
-        items.push(e); idx++;
-      }
-    }
-    listEl.innerHTML = html || `<div class="cmdk-empty">Tidak ada yang cocok.</div>`;
-    sel = 0; paint();
-  }
-  function paint(){
-    const els = listEl.querySelectorAll('.cmdk-item');
-    els.forEach((el,i) => el.classList.toggle('sel', i === sel));
-    const cur = els[sel]; if(cur) cur.scrollIntoView({ block:'nearest' });
-  }
-  function move(d){ if(!items.length) return; sel = (sel + d + items.length) % items.length; paint(); }
-  function activate(e, copy){
-    if(!e) return;
-    if(copy && e.href){ copyText(e.href); toast('Tautan disalin'); return; }
-    if(e.href){ pushRecent(e); window.open(e.href, '_blank', 'noopener'); closePalette(); }
-    else if(e.run){ closePalette(); e.run(); }
-  }
-  window.openPalette = function(){
-    box.classList.add('on'); box.setAttribute('aria-hidden','false');
-    inputEl.value = ''; render(); setTimeout(()=>inputEl.focus(), 20);
-  };
-  function closePalette(){ box.classList.remove('on'); box.setAttribute('aria-hidden','true'); }
-
-  inputEl.addEventListener('input', render);
-  inputEl.addEventListener('keydown', e => {
-    if(e.key === 'ArrowDown'){ e.preventDefault(); move(1); }
-    else if(e.key === 'ArrowUp'){ e.preventDefault(); move(-1); }
-    else if(e.key === 'Tab'){ e.preventDefault(); move(e.shiftKey ? -1 : 1); }
-    else if(e.key === 'Enter'){ e.preventDefault(); activate(items[sel], e.altKey); }
-    else if(e.key === 'Escape'){ e.stopPropagation(); closePalette(); }
-  });
-  listEl.addEventListener('mousemove', e => {
-    const it = e.target.closest('.cmdk-item'); if(!it) return;
-    const i = +it.dataset.idx; if(i !== sel){ sel = i; paint(); }
-  });
-  listEl.addEventListener('click', e => {
-    const it = e.target.closest('.cmdk-item'); if(!it) return;
-    activate(items[+it.dataset.idx], e.altKey);
-  });
-  box.querySelector('[data-close]').addEventListener('click', closePalette);
-
-  /* ---- cheat sheet ---- */
-  const cheats = $('#cheats');
-  function openCheats(){ cheats.classList.add('on'); }
-  function closeCheats(){ cheats.classList.remove('on'); }
-  cheats.querySelector('[data-close]').addEventListener('click', closeCheats);
-
-  /* ---- jump-to-week + flash (used by sparkline & j/k) ---- */
-  function flash(el){
-    document.querySelectorAll('.flash').forEach(x => x.classList.remove('flash'));
-    void el.offsetWidth; el.classList.add('flash');
-    setTimeout(() => el.classList.remove('flash'), 1500);
-  }
-  function jumpToWeek(num){
-    const row = document.getElementById('wk-'+state.semester+'-'+num);
-    const card = document.getElementById('mwk-'+state.semester+'-'+num);
-    if(row && row.offsetParent !== null){ row.scrollIntoView({ block:'center', behavior:'smooth' }); flash(row); }
-    else if(card){ card.classList.add('expanded'); card.scrollIntoView({ block:'center', behavior:'smooth' }); flash(card); }
-  }
-
-  /* ---- coverage sparkline (Bahan Ajar presence per session) ---- */
-  function renderSparkline(){
-    const cell = document.querySelector('.spec-cell.coverage'); if(!cell) return;
-    let host = cell.querySelector('#cov-spark');
-    if(!host){ host = document.createElement('div'); host.id = 'cov-spark'; host.className = 'cov-spark'; cell.appendChild(host); }
-    const data = DATASETS[state.semester];
-    const maxN = Math.max(1, ...data.filter(w=>!w.exam).map(w => (w.slides||[]).length));
-    host.innerHTML = data.map(w => {
-      if(w.exam) return `<div class="bar exam" style="height:55%" title="Sesi ${w.num}: ${esc(w.exam)}"></div>`;
-      const n = (w.slides||[]).length;
-      const h = n ? Math.round(42 + (n/maxN)*56) : 16;
-      const cls = n ? 'bar has' : 'bar';
-      return `<div class="${cls}" data-week="${w.num}" style="height:${h}%" title="Sesi ${w.num}: ${esc(w.topic)} — ${n} bahan ajar"></div>`;
-    }).join('');
-    host.querySelectorAll('.bar[data-week]').forEach(b =>
-      b.addEventListener('click', () => jumpToWeek(+b.dataset.week)));
-  }
-
-  /* ---- deep-link URL state ---- */
-  function syncURL(){
-    const p = new URLSearchParams();
-    if(state.semester !== 'genap2026') p.set('sem', state.semester);
-    if(state.type !== 'all') p.set('type', state.type);
-    if(state.query.trim()) p.set('q', state.query.trim());
-    const qs = p.toString();
-    history.replaceState(null, '', qs ? ('?'+qs) : location.pathname);
-  }
-  function parseURL(){
-    const p = new URLSearchParams(location.search);
-    const sem = p.get('sem');
-    if(sem && DATASETS[sem] && sem !== state.semester) switchSemester(sem);
-    const type = p.get('type');
-    if(type && ['all','slides','praktikum','lain'].includes(type)) setType(type);
-    const q = p.get('q');
-    if(q){ const se = $('#search'); se.value = q; state.query = q; $('#search-wrap').classList.add('has-q'); renderActive(); }
-    syncURL();
-  }
-  window.addEventListener('popstate', parseURL);
-
-  /* ---- wrap existing functions (decorator pattern) ---- */
-  let navIdx = -1;
-  switchSemester = (orig => function(c){ orig(c); navIdx = -1; syncURL(); })(switchSemester);
-  setType       = (orig => function(t){ orig(t); syncURL(); })(setType);
-  clearSearch   = (orig => function(){ orig(); syncURL(); })(clearSearch);
-  updateCoverage = (orig => function(){ orig(); renderSparkline(); })(updateCoverage);
-  $('#search').addEventListener('input', () => { clearTimeout(window.__u); window.__u = setTimeout(syncURL, 200); });
-
-  /* ---- view-transition theme reveal ---- */
-  let lastPt = { x: innerWidth - 40, y: 40 };
-  addEventListener('pointerdown', e => { lastPt = { x: e.clientX, y: e.clientY }; }, true);
-  toggleTheme = (orig => function(){
-    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!document.startViewTransition || reduce){ applyTheme(next); return; }
-    document.documentElement.style.setProperty('--vt-x', lastPt.x + 'px');
-    document.documentElement.style.setProperty('--vt-y', lastPt.y + 'px');
-    document.startViewTransition(() => applyTheme(next));
-  })(toggleTheme);
-
-  /* ---- global keyboard (vim-style) ---- */
-  const typing = () => { const a = document.activeElement; return a && (a.tagName==='INPUT' || a.tagName==='TEXTAREA' || a.isContentEditable); };
-  const paletteOpen = () => box.classList.contains('on');
-  document.addEventListener('keydown', e => {
-    if(e.key === 'Escape'){ if(cheats.classList.contains('on')) closeCheats(); return; }
-    if(paletteOpen() || typing() || e.metaKey || e.ctrlKey || e.altKey) return;
-    const weeks = DATASETS[state.semester].filter(w => !w.exam).map(w => w.num);
-    if(e.key === 'j'){ e.preventDefault(); navIdx = Math.min(weeks.length-1, navIdx+1); jumpToWeek(weeks[navIdx]); }
-    else if(e.key === 'k'){ e.preventDefault(); navIdx = Math.max(0, navIdx-1); jumpToWeek(weeks[navIdx]); }
-    else if(e.key === 'g'){ e.preventDefault(); navIdx = -1; scrollTo({ top:0, behavior:'smooth' }); }
-    else if(e.key === 'G'){ e.preventDefault(); scrollTo({ top:document.body.scrollHeight, behavior:'smooth' }); }
-    else if(e.key === 't'){ e.preventDefault(); toggleTheme(); }
-    else if(e.key === '?'){ e.preventDefault(); openCheats(); }
-  });
-
-  /* ---- console signature ---- */
-  console.log('%cAudit SI%c · built with too much care · ⌘K / ? ',
-    'font:600 13px monospace;color:#d9521c', 'font:11px monospace;color:#a39d92');
-
-  /* ---- boot ---- */
-  parseURL();
-  renderSparkline();
-})();
-
 /* ── INIT ── */
 renderActive();
 updateCoverage();
+
+/* ════════════════════════════════════════════════════════════════
+   SLIDE / MATERIAL VIEWER
+   accordion preview · per-type embed · prev/next across materials
+   ════════════════════════════════════════════════════════════════ */
+(function(){
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const ICO = {
+    prev:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>`,
+    next:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`,
+    ext:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+    full:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m13-5v3a2 2 0 01-2 2h-3"/></svg>`,
+    x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    file:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    info:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12" y2="8"/></svg>`
+  };
+
+  /* ---- classify + build embed URLs ---- */
+  const toRaw = h => h.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/raw/','/');
+  function fileKind(href){
+    const u = href.toLowerCase().split(/[?#]/)[0];
+    if(/\.(pptx?|docx?|xlsx?|xls)$/.test(u)) return 'office';
+    if(/\.pdf$/.test(u)) return 'pdf';
+    if(/youtube\.com\/watch|youtu\.be\//.test(href)) return 'youtube';
+    return 'external';
+  }
+  const extOf = h => { const m = h.toLowerCase().split(/[?#]/)[0].match(/\.([a-z0-9]+)$/); return m ? m[1].toUpperCase() : ''; };
+  const ytId = h => { const m = h.match(/(?:v=|youtu\.be\/)([\w-]{11})/); return m ? m[1] : null; };
+  function embed(item){
+    if(item.kind === 'office') return { iframe: 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(toRaw(item.href)) };
+    if(item.kind === 'pdf')    return { iframe: 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(toRaw(item.href)) };
+    if(item.kind === 'youtube'){ const id = ytId(item.href); return id ? { iframe: 'https://www.youtube.com/embed/' + id } : { card: true }; }
+    return { card: true };
+  }
+  const kindLabel = k => ({ office:'Office', pdf:'PDF', youtube:'Video', external:'Tautan' }[k] || 'Berkas');
+
+  function playlist(num){
+    const w = DATASETS[state.semester].find(x => x.num === num);
+    if(!w || w.exam) return [];
+    return [...(w.slides||[]), ...(w.praktikum||[]), ...(w.lain||[])]
+      .filter(it => it.type === 'link')
+      .map(it => ({ ...it, kind: fileKind(it.href) }));
+  }
+
+  /* ---- viewer construction ---- */
+  function setIdx(root, i){
+    const list = root._list, n = list.length;
+    if(!n) return;
+    i = Math.max(0, Math.min(n-1, i)); root._idx = i;
+    const it = list[i], inf = embed(it);
+    root.querySelector('.v-prev').disabled = (i === 0);
+    root.querySelector('.v-next').disabled = (i === n-1);
+    root.querySelector('.v-title').textContent = it.text;
+    root.querySelector('.v-sub').textContent = `${extOf(it.href) || kindLabel(it.kind)} · ${i+1} / ${n}`;
+    root.querySelector('.v-open').href = it.href;
+    root.querySelectorAll('.chip-thumb').forEach((c,j) => c.classList.toggle('active', j === i));
+    const hint = root.querySelector('.viewer-hint');
+    hint.style.display = it.kind === 'office' ? 'flex' : 'none';
+
+    const stage = root.querySelector('.viewer-stage');
+    if(inf.iframe){
+      stage.innerHTML = `<div class="viewer-loading"><div class="spinner"></div>Memuat pratinjau…</div>`;
+      const f = document.createElement('iframe');
+      f.setAttribute('allowfullscreen','');
+      f.setAttribute('allow','fullscreen');
+      f.addEventListener('load', () => { const l = stage.querySelector('.viewer-loading'); if(l) l.remove(); });
+      f.src = inf.iframe;
+      stage.appendChild(f);
+      clearTimeout(root._slowT);
+      root._slowT = setTimeout(() => { const l = stage.querySelector('.viewer-loading');
+        if(l) l.innerHTML = `Masih memuat berkas besar…<br><a href="${esc(it.href)}" target="_blank" rel="noopener">buka langsung ↗</a>`; }, 9000);
+    } else {
+      stage.innerHTML = `<div class="viewer-card">
+        <div class="vc-ico">${it.icon || ICO.file}</div>
+        <div class="vc-title">${esc(it.text)}</div>
+        <div class="vc-sub">Pratinjau inline tidak tersedia untuk jenis ini.</div>
+        <a class="btn btn-primary" href="${esc(it.href)}" target="_blank" rel="noopener">Buka / Unduh ↗</a>
+      </div>`;
+    }
+  }
+
+  function makeViewer(list, opts){
+    opts = opts || {};
+    const root = document.createElement('div');
+    root.className = 'viewer'; root.tabIndex = 0; root._list = list; root._idx = 0;
+    root.innerHTML = `
+      <div class="viewer-bar">
+        <button class="v-btn v-prev" title="Materi sebelumnya">${ICO.prev}</button>
+        <button class="v-btn v-next" title="Materi berikutnya">${ICO.next}</button>
+        <div class="viewer-meta"><div class="v-title"></div><div class="v-sub"></div></div>
+        <a class="v-btn v-open" target="_blank" rel="noopener" title="Buka berkas asli">${ICO.ext}</a>
+        <button class="v-btn v-full" title="Layar penuh">${ICO.full}</button>
+        ${opts.closable ? `<button class="v-btn v-close" title="Tutup">${ICO.x}</button>` : ''}
+      </div>
+      <div class="viewer-stage"></div>
+      <div class="viewer-strip"></div>
+      <div class="viewer-hint">${ICO.info}<span>Gunakan panah pada penampil untuk berpindah antar slide.</span></div>`;
+    const strip = root.querySelector('.viewer-strip');
+    list.forEach((it,i) => {
+      const c = document.createElement('button');
+      c.className = 'chip-thumb';
+      c.innerHTML = `${it.icon || ICO.file}<span class="lt">${esc(it.text)}</span>`;
+      c.addEventListener('click', e => { e.stopPropagation(); setIdx(root, i); });
+      strip.appendChild(c);
+    });
+    root.querySelector('.v-prev').addEventListener('click', e => { e.stopPropagation(); setIdx(root, root._idx - 1); });
+    root.querySelector('.v-next').addEventListener('click', e => { e.stopPropagation(); setIdx(root, root._idx + 1); });
+    root.querySelector('.v-full').addEventListener('click', e => {
+      e.stopPropagation();
+      const s = root.querySelector('.viewer-stage');
+      const rf = s.requestFullscreen || s.webkitRequestFullscreen;
+      if(rf) rf.call(s);
+    });
+    if(opts.closable) root.querySelector('.v-close').addEventListener('click', e => { e.stopPropagation(); opts.onClose && opts.onClose(); });
+    root.addEventListener('keydown', e => {
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); setIdx(root, root._idx - 1); }
+      else if(e.key === 'ArrowRight'){ e.preventDefault(); setIdx(root, root._idx + 1); }
+    });
+    setIdx(root, 0);
+    return root;
+  }
+
+  /* ---- desktop accordion ---- */
+  function closeDetail(tr){
+    const tb = tr.parentElement;
+    tb.querySelectorAll('tr.detail-row').forEach(r => r.remove());
+    tr.classList.remove('is-open');
+  }
+  function openDetail(tr){
+    const tb = tr.parentElement;
+    tb.querySelectorAll('tr.detail-row').forEach(r => r.remove());
+    tb.querySelectorAll('tr.is-open').forEach(r => r.classList.remove('is-open'));
+    const num = +tr.dataset.week, list = playlist(num);
+    tr.classList.add('is-open');
+    const dr = document.createElement('tr'); dr.className = 'detail-row';
+    const td = document.createElement('td'); td.colSpan = 5;
+    if(!list.length){
+      td.innerHTML = `<div class="viewer show"><div style="padding:30px;text-align:center;color:var(--faint);font-family:'IBM Plex Mono',monospace;font-size:12px">Tidak ada materi untuk dipratinjau.</div></div>`;
+    } else {
+      const v = makeViewer(list, { closable:true, onClose:() => closeDetail(tr) });
+      td.appendChild(v);
+      requestAnimationFrame(() => v.classList.add('show'));
+      setTimeout(() => v.focus({ preventScroll:true }), 60);
+    }
+    dr.appendChild(td); tr.after(dr);
+    setTimeout(() => dr.scrollIntoView({ block:'nearest', behavior:'smooth' }), 80);
+  }
+  function toggleDetail(tr){ tr.classList.contains('is-open') ? closeDetail(tr) : openDetail(tr); }
+
+  /* ---- mobile / fullscreen overlay ---- */
+  document.body.insertAdjacentHTML('beforeend',
+    `<div id="voverlay"><div class="vo-scrim" data-close></div><div class="vo-box"><div class="vo-host"></div></div></div>`);
+  const ov = document.getElementById('voverlay');
+  function openOverlay(num){
+    const list = playlist(num), host = ov.querySelector('.vo-host');
+    host.innerHTML = '';
+    if(list.length){
+      const v = makeViewer(list, { closable:true, onClose:closeOverlay });
+      host.appendChild(v);
+      setTimeout(() => v.focus({ preventScroll:true }), 60);
+    } else {
+      host.innerHTML = `<div style="padding:34px;text-align:center;color:var(--faint)">Tidak ada materi.</div>`;
+    }
+    ov.classList.add('on');
+  }
+  function closeOverlay(){ ov.classList.remove('on'); ov.querySelector('.vo-host').innerHTML = ''; }
+  ov.querySelector('[data-close]').addEventListener('click', closeOverlay);
+
+  /* ---- delegation ---- */
+  document.addEventListener('click', e => {
+    if(e.target.closest('a')) return;
+    if(e.target.closest('.viewer')) return;
+    const pv = e.target.closest('.preview-btn');
+    if(pv){ e.stopPropagation(); openOverlay(+pv.dataset.week); return; }
+    const tr = e.target.closest('.desktop-table-wrap tbody tr[data-week]');
+    if(tr && tr.querySelector('.topic-cell.expandable')) toggleDetail(tr);
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && ov.classList.contains('on')) closeOverlay();
+  });
+})();
 </script>
 </body>
 </html>
