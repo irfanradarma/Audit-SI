@@ -240,6 +240,21 @@ h1.title em {
 .btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
 .btn-ghost:hover { border-color: var(--line-2); background: var(--surface-2); }
+.btn-accent {
+  background: var(--accent); color: #fff; border-color: transparent;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent);
+  animation: pulse-glow 2.6s ease-in-out infinite;
+  font-weight: 500;
+}
+.btn-accent:hover {
+  background: var(--accent-h); transform: translateY(-2px);
+  box-shadow: 0 6px 24px -4px color-mix(in srgb, var(--accent) 55%, transparent);
+  animation: none;
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent); }
+  50%       { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
 kbd {
   font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   background: var(--surface-2); border: 1px solid var(--line-2); border-bottom-width: 2px;
@@ -653,6 +668,10 @@ tr.detail-row { border-bottom: 1px solid var(--line); }
     </div>
 
     <div class="hero-actions reveal" style="animation-delay:.36s">
+      <a class="btn btn-accent" href="https://jurnal.irfanradarma.my.id" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Jurnal Kelas
+      </a>
       <a id="rps-link-main" class="btn btn-primary"
          href="https://github.com/irfanradarma/Audit-SI/raw/main/2026%20-%20RPS%20Audit%20Sistem%20Informasi.pdf" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.877a2 2 0 001.94-1.515L22 17"/></svg>
