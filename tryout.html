@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UTS Audit SI — Bank Soal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#fbfaf7;--surface:#ffffff;--surface-2:#f6f4ef;
+  --ink:#1a1712;--ink-soft:#4a463f;--muted:#6f6a60;--faint:#a39d92;
+  --line:#e8e3da;--line-2:#d9d3c8;
+  --accent:#d9521c;--accent-h:#b8410f;--accent-bg:#fcefe7;--accent-bd:#f2cdb9;
+  --ok:#16a34a;--ok-bg:#f0fdf4;--ok-bd:#bbf7d0;
+  --warn:#b45309;--warn-bg:#fffbeb;--warn-bd:#fde68a;
+  --err:#dc2626;--err-bg:#fef2f2;--err-bd:#fecaca;
+  --shadow-sm:0 1px 3px rgba(26,23,18,.07);
+  --shadow-md:0 4px 16px -4px rgba(26,23,18,.12);
+  --r:10px;--ease:cubic-bezier(.22,.61,.36,1);--ease-out:cubic-bezier(.16,1,.3,1);
+  --maxw:820px;
+}
+[data-theme="dark"]{
+  --paper:#0e0d0b;--surface:#17150f;--surface-2:#1f1c15;
+  --ink:#f2efe7;--ink-soft:#cbc6bb;--muted:#9a948a;--faint:#6a655b;
+  --line:#2a2620;--line-2:#383229;
+  --accent:#f4733c;--accent-h:#ff8a55;--accent-bg:#2a1a10;--accent-bd:#57341f;
+  --ok:#4ade80;--ok-bg:#052e16;--ok-bd:#166534;
+  --warn:#fbbf24;--warn-bg:#451a03;--warn-bd:#92400e;
+  --err:#f87171;--err-bg:#450a0a;--err-bd:#991b1b;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 6px 22px -6px rgba(0,0,0,.6);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;min-height:100vh}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px;border:2px solid var(--paper)}
+::-webkit-scrollbar-thumb:hover{background:var(--faint)}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;background:color-mix(in srgb,var(--paper) 85%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;height:54px;display:flex;align-items:center;gap:12px}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px}
+.brand-dot{width:7px;height:7px;border-radius:99px;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 3px var(--accent-bg);animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 0%,transparent)}}
+.topbar-spacer{flex:1}
+.icon-btn{width:34px;height:34px;display:grid;place-items:center;background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .18s;flex-shrink:0}
+.icon-btn:hover{color:var(--ink);border-color:var(--line-2);background:var(--surface-2)}
+.icon-btn svg{width:15px;height:15px}
+.icon-btn .sun{display:none}
+[data-theme="dark"] .icon-btn .sun{display:block}
+[data-theme="dark"] .icon-btn .moon{display:none}
+
+/* TABS */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--line);max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+.tab-btn{padding:12px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;cursor:pointer;background:transparent;border:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .18s;white-space:nowrap}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;font-size:9px;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:0 6px;height:16px;margin-left:6px;color:var(--muted)}
+.tab-btn.active .tab-count{background:var(--accent-bg);border-color:var(--accent-bd);color:var(--accent)}
+
+/* LAYOUT */
+.page{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 6rem}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;padding:9px 16px;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .18s;border:1px solid transparent;font-weight:500;white-space:nowrap}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-primary{background:var(--ink);color:var(--paper)}
+.btn-primary:hover{background:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-accent{background:var(--accent);color:#fff;animation:pulse-btn 2.6s ease-in-out infinite}
+.btn-accent:hover{background:var(--accent-h);animation:none;transform:translateY(-1px);box-shadow:0 6px 20px -4px color-mix(in srgb,var(--accent) 50%,transparent)}
+@keyframes pulse-btn{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 40%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 0%,transparent)}}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--line-2);background:var(--surface-2)}
+.btn-danger{background:var(--err-bg);color:var(--err);border-color:var(--err-bd)}
+.btn-danger:hover{background:var(--err);color:#fff}
+.btn-sm{padding:6px 12px;font-size:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm)}
+.search-wrap{flex:1;min-width:180px;position:relative;display:flex;align-items:center}
+.search-wrap>svg{position:absolute;left:11px;width:14px;height:14px;color:var(--faint);pointer-events:none}
+.search-input{width:100%;height:38px;padding:0 36px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--ink);transition:border-color .18s,box-shadow .18s}
+.search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.search-input::placeholder{color:var(--faint)}
+.clear-btn{position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--faint);padding:2px;display:none;line-height:0}
+.clear-btn:hover{color:var(--ink)}
+.clear-btn svg{width:14px;height:14px}
+.jump-wrap{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.jump-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.jump-input{width:64px;height:38px;text-align:center;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink)}
+.jump-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.filter-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;padding:4px 10px;border-radius:99px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-bd);white-space:nowrap}
+
+/* QUESTION CARD */
+.q-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow-sm);transition:border-color .18s,box-shadow .18s}
+.q-card:hover{border-color:var(--line-2)}
+.q-num{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:.75rem;display:block}
+.q-text{font-size:14px;font-weight:500;color:var(--ink);line-height:1.65;margin-bottom:1rem}
+.q-options{display:flex;flex-direction:column;gap:6px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--surface-2)}
+.q-opt:hover:not(.disabled){border-color:var(--accent);background:var(--accent-bg)}
+.q-opt.selected{border-color:var(--accent);background:var(--accent-bg)}
+.q-opt.correct{border-color:var(--ok);background:var(--ok-bg);cursor:default}
+.q-opt.wrong{border-color:var(--err);background:var(--err-bg);cursor:default}
+.q-opt.revealed{border-color:var(--ok);background:var(--ok-bg);cursor:default}
+.q-opt.disabled{cursor:default}
+.opt-letter{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;width:20px;flex-shrink:0;padding-top:1px;color:var(--muted)}
+.q-opt.selected .opt-letter{color:var(--accent)}
+.q-opt.correct .opt-letter{color:var(--ok)}
+.q-opt.wrong .opt-letter{color:var(--err)}
+.q-opt.revealed .opt-letter{color:var(--ok)}
+.opt-text{font-size:13px;color:var(--ink-soft);line-height:1.5}
+.answer-reveal{margin-top:.75rem;padding:8px 12px;border-radius:7px;background:var(--ok-bg);border:1px solid var(--ok-bd);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ok);display:flex;align-items:center;gap:6px}
+
+/* EXAM SETUP */
+.exam-setup{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:2.5rem 2rem;text-align:center;box-shadow:var(--shadow-md)}
+.exam-setup h2{font-family:'Fraunces',serif;font-optical-sizing:auto;font-size:2.2rem;font-weight:400;color:var(--ink);margin-bottom:.5rem}
+.exam-setup p{color:var(--ink-soft);margin-bottom:2rem;font-size:14px}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;text-align:left;margin-bottom:2rem;max-width:500px;margin-inline:auto}
+.config-label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.config-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 12px;border-radius:7px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--muted);cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+
+/* EXAM ACTIVE */
+.exam-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+.exam-prog{flex:1;min-width:120px}
+.prog-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.prog-track{height:5px;background:var(--surface-2);border-radius:99px;border:1px solid var(--line);overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-h));border-radius:99px;transition:width .4s var(--ease-out)}
+.timer{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;padding:6px 14px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);transition:all .3s;min-width:70px;text-align:center}
+.timer.warn{border-color:var(--warn-bd);background:var(--warn-bg);color:var(--warn)}
+.timer.danger{border-color:var(--err-bd);background:var(--err-bg);color:var(--err);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* NAV GRID */
+.nav-grid{display:grid;gap:5px;grid-template-columns:repeat(auto-fill,minmax(38px,1fr))}
+.nav-btn{height:38px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);border-radius:7px;background:var(--surface-2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .14s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-btn.answered{background:var(--accent-bg);border-color:var(--accent-bd);color:var(--accent)}
+.nav-btn.flagged{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn)}
+.nav-btn.current{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 8px -2px color-mix(in srgb,var(--accent) 50%,transparent)}
+.nav-btn.correct{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok)}
+.nav-btn.wrong{background:var(--err-bg);border-color:var(--err-bd);color:var(--err)}
+
+.exam-q-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.75rem;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted)}
+.flag-btn{margin-left:auto;padding:5px 10px;border-radius:7px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;display:flex;align-items:center;gap:5px}
+.flag-btn.flagged{border-color:var(--warn-bd);background:var(--warn-bg);color:var(--warn)}
+.flag-btn:hover{border-color:var(--accent);color:var(--accent)}
+.exam-nav-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:1rem}
+
+/* RESULTS */
+.results-hero{text-align:center;padding:2rem 1rem 1rem}
+.results-hero h2{font-family:'Fraunces',serif;font-optical-sizing:auto;font-size:2.2rem;font-weight:400;color:var(--ink);margin-bottom:.5rem}
+.score-big{font-family:'Fraunces',serif;font-optical-sizing:auto;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;font-variation-settings:"SOFT" 30}
+.results-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:420px;margin:1.5rem auto}
+.stat-cell{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem;text-align:center}
+.stat-v{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:400;line-height:1}
+.stat-k{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:.3rem}
+.divider{display:flex;align-items:center;gap:1rem;margin:2rem 0 1rem}
+.divider span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* EMPTY */
+.empty{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty svg{width:40px;height:40px;margin:0 auto 1rem;color:var(--faint);display:block}
+.empty h3{font-size:15px;font-weight:500;color:var(--ink-soft);margin-bottom:.5rem}
+
+/* MISC */
+.hidden{display:none!important}
+@media(max-width:600px){
+  .config-grid{grid-template-columns:1fr}
+  .results-stats{grid-template-columns:1fr 1fr}
+  .page{padding:1.5rem 1rem 5rem}
+  .topbar-inner,.tab-bar{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-dot"></span>UTS · Audit SI</div>
+    <div class="topbar-spacer"></div>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle tema">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-tryout" onclick="switchTab('tryout')">Try Out <span class="tab-count">60</span></button>
+    <button class="tab-btn" id="tab-past" onclick="switchTab('past')">Past Exams <span class="tab-count">50</span></button>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════════ TRY OUT PANE ══════════ -->
+<div id="pane-tryout" class="tab-pane active">
+
+  <!-- SETUP -->
+  <div id="v-setup" class="exam-setup">
+    <div style="margin-bottom:1.25rem">
+      <span class="pill" style="border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)">60 Soal · Pilihan Ganda</span>
+    </div>
+    <h2>Simulasi Ujian</h2>
+    <p>Latihan UTS Audit Sistem Informasi — PKN STAN<br><small style="color:var(--faint)">Soal diacak setiap sesi. Jawaban tersedia setelah submit.</small></p>
+    <div class="config-grid">
+      <div>
+        <span class="config-label">Jumlah Soal</span>
+        <div class="config-chips">
+          <span class="chip" onclick="cfg('n',20,this)">20</span>
+          <span class="chip active" onclick="cfg('n',40,this)">40</span>
+          <span class="chip" onclick="cfg('n',60,this)">Semua 60</span>
+        </div>
+      </div>
+      <div>
+        <span class="config-label">Batas Waktu</span>
+        <div class="config-chips">
+          <span class="chip" onclick="cfg('t',30,this)">30m</span>
+          <span class="chip active" onclick="cfg('t',60,this)">60m</span>
+          <span class="chip" onclick="cfg('t',90,this)">90m</span>
+          <span class="chip" onclick="cfg('t',0,this)">Tanpa Batas</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-accent" onclick="startExam()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Mulai Ujian
+      </button>
+      <button class="btn btn-ghost" onclick="showBrowse()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Browse + Kunci Jawaban
+      </button>
+    </div>
+  </div>
+
+  <!-- EXAM ACTIVE -->
+  <div id="v-exam" class="hidden">
+    <div class="exam-header">
+      <div class="exam-prog">
+        <div class="prog-label">Dijawab: <span id="ex-answered">0</span>/<span id="ex-total">0</span></div>
+        <div class="prog-track"><div class="prog-fill" id="ex-fill" style="width:0%"></div></div>
+      </div>
+      <div class="timer" id="ex-timer">—</div>
+      <button class="btn btn-ghost btn-sm" onclick="toggleNav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Navigasi
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="confirmSubmit()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Submit
+      </button>
+    </div>
+
+    <div id="v-navgrid" class="hidden" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow-sm)">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem;align-items:center">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Navigasi Soal</span>
+        <span class="pill" style="border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)">● Dijawab</span>
+        <span class="pill" style="border-color:var(--warn-bd);background:var(--warn-bg);color:var(--warn)">⚑ Ditandai</span>
+      </div>
+      <div class="nav-grid" id="navgrid"></div>
+    </div>
+
+    <div id="ex-qarea"></div>
+
+    <div class="exam-nav-bar">
+      <button class="btn btn-ghost" id="btn-prev" onclick="examNav(-1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Sebelumnya
+      </button>
+      <button class="flag-btn" id="btn-flag" onclick="toggleFlag()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        Tandai
+      </button>
+      <div style="flex:1"></div>
+      <button class="btn btn-primary" id="btn-next" onclick="examNav(1)">
+        Berikutnya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="v-results" class="hidden">
+    <div class="results-hero">
+      <h2>Hasil Ujian</h2>
+      <div class="score-big" id="r-score">—</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:.5rem" id="r-pct"></div>
+      <div class="results-stats">
+        <div class="stat-cell"><div class="stat-v" id="r-correct" style="color:var(--ok)">—</div><div class="stat-k">Benar</div></div>
+        <div class="stat-cell"><div class="stat-v" id="r-wrong" style="color:var(--err)">—</div><div class="stat-k">Salah</div></div>
+        <div class="stat-cell"><div class="stat-v" id="r-blank" style="color:var(--muted)">—</div><div class="stat-k">Kosong</div></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem">
+        <button class="btn btn-accent" onclick="startExam()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+          Ujian Lagi
+        </button>
+        <button class="btn btn-ghost" onclick="showSetup()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Menu Utama
+        </button>
+      </div>
+    </div>
+    <div class="divider"><span>Pembahasan Jawaban</span></div>
+    <div id="r-review"></div>
+  </div>
+
+  <!-- BROWSE -->
+  <div id="v-browse" class="hidden">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="showSetup()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Kembali
+      </button>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Browse — 60 Soal Try Out + Kunci Jawaban</span>
+    </div>
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="s-tryout" placeholder="Cari kata kunci soal..." oninput="filterQ('tryout')" autocomplete="off">
+        <button class="clear-btn" id="clr-tryout" onclick="clearQ('tryout')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="jump-wrap">
+        <span class="jump-label">No.</span>
+        <input type="number" class="jump-input" id="j-tryout" placeholder="—" min="1" max="60" oninput="jumpQ('tryout')">
+      </div>
+      <span class="filter-badge" id="badge-tryout">60 soal</span>
+    </div>
+    <div id="list-tryout"></div>
+  </div>
+
+</div><!-- end pane-tryout -->
+
+<!-- ══════════ PAST EXAMS PANE ══════════ -->
+<div id="pane-past" class="tab-pane">
+  <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);display:flex;gap:10px;align-items:flex-start">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--accent);flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>
+      <div style="font-weight:600;font-size:13px;color:var(--ink);margin-bottom:2px">Soal Ujian Semester (Past Exams)</div>
+      <div style="font-size:12px;color:var(--muted)">50 soal bank ujian — kunci jawaban tidak tersedia. Gunakan untuk mengenali pola soal ujian.</div>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="s-past" placeholder="Cari kata kunci soal..." oninput="filterQ('past')" autocomplete="off">
+      <button class="clear-btn" id="clr-past" onclick="clearQ('past')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="jump-wrap">
+      <span class="jump-label">No.</span>
+      <input type="number" class="jump-input" id="j-past" placeholder="—" min="1" max="50" oninput="jumpQ('past')">
+    </div>
+    <span class="filter-badge" id="badge-past">50 soal</span>
+  </div>
+  <div id="list-past"></div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+const DATA={"tryout":[{"question":"Seorang auditor SI sedang menyusun audit charter. Tujuan utama audit charter adalah...","options":{"A":"Menentukan prosedur pengujian secara rinci","B":"Menetapkan kewenangan dan tanggung jawab fungsi audit","C":"Menentukan temuan audit","D":"Menyusun laporan hasil audit"},"answer":"B"},{"question":"Dalam tata kelola TI, akuntabilitas atas pencapaian tujuan bisnis melalui TI pada akhirnya berada pada...","options":{"A":"CIO","B":"Kepala audit internal","C":"Dewan direksi dan manajemen puncak","D":"Administrator sistem"},"answer":"C"},{"question":"Auditor menemukan bahwa fungsi pengembangan aplikasi juga memiliki hak untuk memindahkan program ke lingkungan produksi. Risiko utama dari kondisi tersebut adalah...","options":{"A":"Penurunan kapasitas server","B":"Pelanggaran pemisahan tugas","C":"Kegagalan backup","D":"Ketidaksesuaian dokumentasi"},"answer":"B"},{"question":"Tujuan utama penerapan tata kelola TI adalah...","options":{"A":"Mengurangi jumlah staf TI","B":"Memastikan TI mendukung pencapaian tujuan organisasi","C":"Menghilangkan seluruh risiko TI","D":"Memusatkan seluruh keputusan TI pada CIO"},"answer":"B"},{"question":"Independensi auditor internal paling mungkin terganggu apabila auditor...","options":{"A":"Menggunakan perangkat lunak audit","B":"Mengaudit area yang pernah menjadi tanggung jawabnya","C":"Melakukan wawancara dengan auditee","D":"Menelaah dokumentasi sistem"},"answer":"B"},{"question":"Manakah yang PALING menggambarkan perbedaan antara tata kelola TI dan manajemen TI?","options":{"A":"Tata kelola menetapkan arah, manajemen melaksanakan","B":"Tata kelola hanya berlaku pada perusahaan besar","C":"Manajemen hanya mengelola proyek TI","D":"Tata kelola berfokus pada pengawasan, manajemen fokus pada operasional harian"},"answer":"A"},{"question":"Dalam penyusunan rencana audit berbasis risiko, faktor yang PALING berpengaruh adalah...","options":{"A":"Jumlah auditor yang tersedia","B":"Nilai aset tetap perusahaan yang diaudit","C":"Tingkat risiko terhadap tujuan organisasi","D":"Lama berdirinya organisasi dan kompetensi auditor"},"answer":"C"},{"question":"Seorang auditor menemukan bahwa pengendalian sudah dirancang dengan baik tetapi tidak pernah dijalankan. Auditor menyimpulkan bahwa...","options":{"A":"Desain dan efektivitas operasional sama-sama baik","B":"Desain baik tetapi efektivitas operasional lemah","C":"Desain lemah tetapi implementasi baik","D":"Risiko telah dieliminasi"},"answer":"B"},{"question":"Manakah yang merupakan contoh kontrol preventif?","options":{"A":"Rekonsiliasi transaksi","B":"Audit log","C":"Role Base Access Control (RBAC)","D":"Investigasi insiden"},"answer":"C"},{"question":"Tujuan utama pengumpulan bukti audit adalah...","options":{"A":"Membenarkan pendapat auditee","B":"Mendukung kesimpulan auditor","C":"Memenuhi permintaan regulator","D":"Mengurangi waktu audit"},"answer":"B"},{"question":"Manakah bukti audit yang umumnya memiliki tingkat keandalan tertinggi?","options":{"A":"Pernyataan lisan pengguna","B":"Dokumen yang dibuat auditee","C":"Observasi langsung auditor","D":"Whistleblowing System"},"answer":"C"},{"question":"Apabila auditor menemukan kelemahan pengendalian yang meningkatkan kemungkinan terjadinya kesalahan material, auditor harus terlebih dahulu...","options":{"A":"Menghapus temuan tersebut","B":"Menilai dampak dan risikonya","C":"Menghentikan audit","D":"Melakukan audit ulang seluruh organisasi"},"answer":"B"},{"question":"Dalam model Three Lines, fungsi audit internal berperan sebagai...","options":{"A":"Pemilik risiko","B":"Pengelola operasional","C":"Pemberi assurance independen","D":"Penjamin kepatuhan pada peraturan"},"answer":"C"},{"question":"Manakah aktivitas yang termasuk tahap perencanaan audit?","options":{"A":"Menyusun laporan audit","B":"Menentukan ruang lingkup audit","C":"Memantau tindak lanjut","D":"Melakukan pengujian pengendalian intern"},"answer":"B"},{"question":"Dalam SDLC, business case terutama digunakan untuk...","options":{"A":"Menentukan bahasa pemrograman","B":"Meyakinkan kebutuhan investasi","C":"Menentukan struktur database","D":"Menyusun manual pengguna"},"answer":"B"},{"question":"Dokumen yang menjelaskan kebutuhan sistem tanpa menjelaskan bagaimana sistem dibangun adalah...","options":{"A":"Test plan","B":"Functional requirements","C":"Source code","D":"Installation guide"},"answer":"B"},{"question":"Dalam metodologi Agile, karakteristik yang paling membedakannya dari Waterfall adalah...","options":{"A":"Tidak memerlukan dokumentasi","B":"Pengembangan dilakukan secara iteratif","C":"Tidak membutuhkan pengguna","D":"Tidak memerlukan pengujian"},"answer":"B"},{"question":"Audit universe digunakan terutama untuk...","options":{"A":"Menentukan struktur organisasi TI","B":"Mengidentifikasi seluruh area yang berpotensi diaudit","C":"Menyusun jadwal proyek pengembangan","D":"Menentukan konfigurasi sistem operasi"},"answer":"B"},{"question":"Risiko inheren berbeda dengan risiko residual karena risiko inheren...","options":{"A":"Sudah mempertimbangkan efektivitas kontrol","B":"Belum mempertimbangkan adanya kontrol","C":"Selalu lebih rendah daripada risiko residual","D":"Hanya berlaku pada proyek TI"},"answer":"B"},{"question":"Apabila auditor mengandalkan pekerjaan auditor lain, auditor tetap harus...","options":{"A":"Menghilangkan seluruh prosedur audit","B":"Menilai kompetensi dan objektivitas pihak tersebut","C":"Menggunakan seluruh hasil audit tanpa evaluasi","D":"Menghindari dokumentasi tambahan"},"answer":"B"},{"question":"Tujuan utama audit follow-up adalah...","options":{"A":"Menyusun temuan baru","B":"Memastikan rekomendasi telah ditindaklanjuti","C":"Mengubah ruang lingkup audit","D":"Memperbarui audit charter"},"answer":"B"},{"question":"Dalam audit SI, materialitas digunakan terutama untuk...","options":{"A":"Menentukan spesifikasi perangkat keras","B":"Menilai signifikansi suatu temuan","C":"Menentukan metode pengembangan sistem","D":"Mengukur kinerja jaringan"},"answer":"B"},{"question":"Manakah yang merupakan karakteristik tujuan pengendalian (control objective)?","options":{"A":"Menjelaskan langkah teknis implementasi","B":"Menyatakan kondisi yang ingin dicapai oleh pengendalian","C":"Menentukan struktur organisasi","D":"Menggambarkan kelemahan pengendalian"},"answer":"B"},{"question":"Seorang auditor menemukan bahwa seluruh dokumentasi proyek lengkap, tetapi pengguna tidak pernah dilibatkan selama pengembangan. Risiko terbesar adalah...","options":{"A":"Waktu kompilasi meningkat","B":"Sistem tidak memenuhi kebutuhan bisnis","C":"Konsumsi memori bertambah","D":"Kapasitas penyimpanan tidak cukup"},"answer":"B"},{"question":"Dalam proses akuisisi sistem, Request for Proposal (RFP) digunakan untuk...","options":{"A":"Menguji aplikasi sebelum implementasi","B":"Meminta penawaran dan solusi dari calon vendor","C":"Menghapus kontrak vendor lama","D":"Menentukan hak akses administrator"},"answer":"B"},{"question":"Manakah faktor yang PALING penting dalam evaluasi vendor sistem informasi?","options":{"A":"Lokasi kantor vendor","B":"Kemampuan memenuhi kebutuhan bisnis dan teknis","C":"Jumlah karyawan vendor","D":"Warna antarmuka aplikasi"},"answer":"B"},{"question":"Proof of Concept (PoC) biasanya dilakukan untuk...","options":{"A":"Menguji kelayakan solusi sebelum implementasi penuh","B":"Menggantikan User Acceptance Testing","C":"Menghasilkan dokumentasi pengguna","D":"Menyusun audit report"},"answer":"A"},{"question":"Manakah yang PALING tepat mengenai Software as a Service (SaaS)?","options":{"A":"Organisasi bertanggung jawab penuh atas infrastruktur fisik","B":"Penyedia menyediakan aplikasi yang digunakan pelanggan","C":"Seluruh kode sumber diberikan kepada pelanggan","D":"Tidak memerlukan koneksi jaringan"},"answer":"B"},{"question":"Dalam pengembangan sistem, baseline mengacu pada...","options":{"A":"Salinan cadangan basis data","B":"Versi resmi yang menjadi acuan perubahan berikutnya","C":"Daftar pengguna aplikasi","D":"Jadwal pelatihan pengguna"},"answer":"B"},{"question":"Seorang auditor menemukan bahwa seluruh perubahan program telah disetujui, tetapi tidak ada bukti pengujian sebelum implementasi. Auditor seharusnya menyimpulkan bahwa...","options":{"A":"Pengendalian perubahan telah memadai","B":"Risiko implementasi perubahan masih tinggi","C":"Persetujuan formal sudah cukup","D":"Pengujian hanya diperlukan untuk aplikasi baru"},"answer":"B"},{"question":"Dalam Agile, sprint review bertujuan untuk...","options":{"A":"Menyusun anggaran proyek","B":"Mengevaluasi hasil iterasi","C":"Menghapus backlog","D":"Menetapkan struktur organisasi proyek"},"answer":"B"},{"question":"Manakah pernyataan yang BENAR mengenai kontrol kompensasi (compensating control)?","options":{"A":"Menghilangkan kebutuhan seluruh kontrol lainnya","B":"Digunakan ketika kontrol utama tidak cukup","C":"Selalu lebih efektif daripada kontrol preventif","D":"Hanya digunakan pada audit keuangan"},"answer":"B"},{"question":"Dalam proyek TI, sponsor proyek bertanggung jawab terutama untuk...","options":{"A":"Menulis kode aplikasi","B":"Memberikan dukungan, pendanaan, dan keputusan strategis","C":"Melakukan konfigurasi jaringan","D":"Melaksanakan pengujian sistem"},"answer":"B"},{"question":"Seorang auditor diminta memberikan konsultasi mengenai rancangan sistem baru. Agar independensinya tetap terjaga pada audit berikutnya, auditor sebaiknya...","options":{"A":"Menyetujui desain akhir sistem","B":"Mengambil alih peran project manager","C":"Memberikan saran tanpa mengambil tanggung jawab manajemen","D":"Menentukan konfigurasi aplikasi yang akan digunakan"},"answer":"C"},{"question":"Sebuah keputusan mewajibkan seluruh unit bisnis mematuhi satu standar keamanan data yang sama merupakan bentuk dari...","options":{"A":"Operasional harian tim keamanan IT","B":"Management, karena bersifat teknis","C":"Audit internal, karena bersifat pengawasan","D":"Governance, karena menetapkan arah dan aturan yang mengikat semua unit"},"answer":"D"},{"question":"Dalam COBIT 2019, apa yang membedakan objective pada domain EDM dari domain APO/BAI/DSS/MEA?","options":{"A":"EDM adalah governance, sedangkan yang lain adalah management","B":"EDM hanya berlaku untuk perusahaan kecil","C":"EDM adalah domain yang sudah tidak dipakai dalam COBIT 2019","D":"Tidak ada perbedaan fungsi antara kedua kelompok domain tersebut"},"answer":"A"},{"question":"Untuk mengaudit kepatuhan perusahaan terhadap regulasi perlindungan data pribadi, kriteria paling relevan yang digunakan adalah...","options":{"A":"ITIL sebagai standar layanan IT","B":"COBIT domain DSS saja","C":"Regulasi perlindungan data yang berlaku","D":"Standar akuntansi keuangan yang berlaku umum"},"answer":"C"},{"question":"Prinsip pemisahan tugas (segregation of duties) dalam pengembangan sistem terutama bertujuan untuk...","options":{"A":"Mempercepat proses rilis aplikasi ke produksi","B":"Mengurangi jumlah staf yang dibutuhkan dalam tim","C":"Menyederhanakan struktur organisasi TI","D":"Mencegah kendali yang disalahgunakan"},"answer":"D"},{"question":"Apa fungsi utama IT Steering Committee dalam tata kelola IT?","options":{"A":"Menyetujui prioritas serta keputusan strategis terkait IT","B":"Menjalankan operasional harian sistem produksi","C":"Menulis dan menguji kode program aplikasi","D":"Melakukan backup data secara rutin"},"answer":"A"},{"question":"Sebuah sistem baru secara teknis dapat berjalan baik, tetapi pengguna diperkirakan enggan mengubah cara kerja mereka. Aspek kelayakan (feasibility) yang perlu dicermati di sini adalah...","options":{"A":"Kelayakan teknis","B":"Kelayakan hukum","C":"Kelayakan jadwal","D":"Kelayakan operasional"},"answer":"D"},{"question":"Risiko utama pendekatan waterfall paling mungkin muncul ketika...","options":{"A":"Tim pengembang bekerja terlalu cepat","B":"Dokumentasi yang dihasilkan terlalu sedikit","C":"Pengguna dilibatkan terlalu sering sepanjang proyek","D":"Kebutuhan bisnis berubah signifikan sepanjang proyek"},"answer":"D"},{"question":"Otomatisasi penuh pada pipeline CI/CD (proses build-test-deploy otomatis) berisiko menimbulkan...","options":{"A":"Proses rilis yang menjadi jauh lebih lambat","B":"Perubahan lolos ke produksi tanpa pengawasan memadai","C":"Hilangnya kebutuhan pengujian sama sekali","D":"Dokumentasi yang berlebihan pada setiap rilis"},"answer":"B"},{"question":"Mengapa kriteria yang ditetapkan (established criteria) itu penting dalam proses audit?","options":{"A":"Mengurangi persyaratan bukti (evidence).","B":"Menghilangkan perselisihan dengan pengembang (developers).","C":"Menghilangkan kebutuhan akan kebijakan internal.","D":"Memastikan objektivitas, pengulangan (repeatability), dan hasil yang sebanding (comparable)."},"answer":"D"},{"question":"Teknik respons risiko mana yang digunakan ketika sebuah perusahaan membeli asuransi siber (cyber insurance)?","options":{"A":"Mitigation (Mitigasi)","B":"Acceptance (Penerimaan)","C":"Avoidance (Penghindaran)","D":"Transfer (Pengalihan)"},"answer":"D"},{"question":"Pernyataan manakah yang PALING TEPAT menjelaskan \"Model Inti\" (Core Model) dari COBIT 2019?","options":{"A":"Daftar kontrol wajib yang harus diterapkan oleh semua organisasi","B":"\"Daftar tugas\" (to-do list) terstruktur yang mencakup segala sesuatu yang harus diatur (governed) dan dikelola (managed)","C":"Metodologi manajemen proyek langkah demi langkah","D":"Standar kontrol yang berfokus pada keamanan"},"answer":"B"},{"question":"Aktivitas manakah yang termasuk ke dalam tugas manajemen, bukan tata kelola (governance)?","options":{"A":"Menetapkan ambang batas risiko (risk appetite) organisasi.","B":"Menetapkan tujuan strategis (strategic objectives)","C":"Mengalokasikan sumber daya untuk menjalankan proyek yang telah disetujui.","D":"Memantau kinerja organisasi secara keseluruhan."},"answer":"C"},{"question":"Saat melakukan audit tata kelola IT (IT governance), tujuan tata kelola COBIT 2019 manakah yang SECARA LANGSUNG menangani upaya untuk memastikan bahwa nilai pemangku kepentingan telah dioptimalkan?","options":{"A":"APO05 – Manage Portfolio","B":"EDM01 – Ensure Governance Framework Setting","C":"EDM02 – Ensure Benefits Delivery","D":"APO12 – Manage Risk"},"answer":"C"},{"question":"Tujuan utama dari user acceptance testing (UAT) adalah untuk","options":{"A":"Memastikan sistem mendukung proses bisnis dan persyaratan (requirements)","B":"Memvalidasi bahwa modul-modul bekerja bersama sesuai harapan","C":"Memastikan kinerja sistem memenuhi spesifikasi desain","D":"Mengidentifikasi cacat (defects) sebelum melakukan migrasi data"},"answer":"A"},{"question":"Tujuan utama dari integration testing (pengujian integrasi) adalah untuk:","options":{"A":"Mengevaluasi alur kerja pengguna (user workflows)","B":"Memvalidasi interoperabilitas antar komponen sistem","C":"Mengonfirmasi persyaratan teknis yang terperinci","D":"Menguji kinerja sistem di bawah beban kerja (load)"},"answer":"B"},{"question":"Risiko terbesar saat menggunakan pendekatan direct cutover (pengalihan langsung) adalah:","options":{"A":"Biaya implementasi yang lebih tinggi","B":"Operasi sistem ganda yang berkepanjangan","C":"Kurangnya pilihan untuk kembali ke sistem semula","D":"Meningkatnya penolakan pengguna (user resistance)"},"answer":"C"},{"question":"Keuntungan utama dari implementasi percontohan (pilot implementation) adalah:","options":{"A":"Biaya implementasi yang lebih rendah","B":"Kemampuan untuk membatasi paparan risiko","C":"Peluncuran (rollout) yang lebih cepat","D":"Berkurangnya kebutuhan akan pelatihan pengguna"},"answer":"B"},{"question":"Tinjauan pasca-implementasi (post-implementation review atau PIR) harus berfokus pada:","options":{"A":"Apakah dokumentasi proyek telah diarsipkan","B":"Apakah manfaat yang diharapkan telah terealisasi","C":"Apakah pengguna telah dilatih secara memadai","D":"Apakah sistem memiliki cacat (defects) minimal saat peluncuran"},"answer":"B"},{"question":"Keuntungan paling signifikan dari melakukan parallel run (operasi paralel) selama implementasi sistem adalah:","options":{"A":"Biaya keseluruhan yang lebih rendah","B":"Proses migrasi yang lebih cepat","C":"Kemampuan untuk memverifikasi akurasi sistem baru terhadap sistem lama","D":"Berkurangnya beban kerja bagi staf operasional"},"answer":"C"},{"question":"Tujuan utama dari studi kelayakan (feasibility study) selama akuisisi sistem adalah untuk:","options":{"A":"Menentukan apakah sistem akan beroperasi secara efisien","B":"Mengevaluasi kemungkinan keberhasilan secara finansial dan non-finansial","C":"Membandingkan opsi pengembangan sendiri (development) dengan opsi alih daya (outsourcing)","D":"Mengidentifikasi kriteria penerimaan pengguna (user acceptance criteria)"},"answer":"B"},{"question":"Audit risk terdiri dari inherent risk, control risk, dan detection risk (AR = IR x CR x DR). Auditor menilai bahwa inherent risk dan control risk pada suatu siklus transaksi sama-sama tinggi. Agar audit risk tetap berada pada tingkat yang dapat diterima, auditor perlu...","options":{"A":"Menurunkan detection risk dengan memperluas pengujian substantif secara signifikan","B":"Meningkatkan detection risk agar total audit risk tetap berada pada level yang sama","C":"Mengabaikan hasil penilaian control risk karena telah tercermin pada inherent risk","D":"Mengurangi jumlah sampel pengujian substantif untuk mengimbangi risiko yang tinggi"},"answer":"A"},{"question":"Sebuah perusahaan retail memproses jutaan transaksi penjualan setiap hari melalui sistem POS terintegrasi. Auditor SI ingin mendeteksi anomali (misalnya diskon tidak wajar) secara berkelanjutan, bukan hanya pada saat audit tahunan. Pendekatan yang PALING tepat untuk kebutuhan ini adalah...","options":{"A":"Continuous auditing dengan CAATs yang otomatis menganalisis seluruh populasi transaksi","B":"Statistical sampling triwulanan atas sebagian kecil transaksi yang dipilih secara acak","C":"Walkthrough tahunan atas dokumentasi proses dan kebijakan diskon penjualan toko","D":"Wawancara berkala dengan manajer toko mengenai tingkat kepatuhan kebijakan diskon"},"answer":"A"},{"question":"Perusahaan multinasional yang beroperasi di berbagai yurisdiksi dengan regulasi yang berbeda-beda sedang menentukan objective COBIT 2019 mana yang paling prioritas menggunakan COBIT Design Factors. Design factor yang PALING relevan untuk menangkap kompleksitas kepatuhan lintas-yurisdiksi tersebut adalah...","options":{"A":"Threat landscape","B":"Compliance requirements","C":"Enterprise size","D":"Role of IT"},"answer":"B"},{"question":"Sebuah organisasi menetapkan risk appetite IT secara keseluruhan pada level \"sedang\", namun untuk risiko keamanan data pelanggan organisasi menetapkan batas yang jauh lebih ketat dibanding area risiko IT lainnya. Batas yang lebih spesifik dan ketat pada satu area risiko tertentu ini disebut...","options":{"A":"Risk tolerance","B":"Inherent risk","C":"Residual risk","D":"Risk appetite"},"answer":"A"},{"question":"Saat memindahkan data pelanggan dari sistem lama ke sistem baru, auditor ingin memastikan tidak ada data yang hilang atau berubah selama proses pemindahan tersebut. Cara paling tepat untuk memastikan hal ini adalah...","options":{"A":"Membandingkan jumlah dan total data sebelum dan sesudah migrasi","B":"Memeriksa apakah tampilan aplikasi baru terlihat lebih modern","C":"Menanyakan langsung kepada vendor apakah migrasi sudah berhasil","D":"Membandingkan kecepatan akses sistem baru dengan sistem lama"},"answer":"A"},{"question":"Perusahaan membeli sistem inti dari satu vendor tunggal yang mengembangkan software miliknya sendiri. Auditor khawatir jika suatu saat vendor tersebut tutup, perusahaan tidak bisa lagi memperbaiki atau melanjutkan sistem tersebut. Langkah pengamanan yang paling tepat untuk mengantisipasi risiko ini adalah...","options":{"A":"Meminta vendor menitipkan source code ke pihak ketiga yang bisa diakses jika vendor tutup","B":"Meminta vendor memberi diskon harga lisensi setiap tahun","C":"Meminta vendor menandatangani perjanjian kerahasiaan data pelanggan","D":"Meminta vendor berjanji tidak bekerja sama dengan perusahaan pesaing"},"answer":"A"}],"past":[{"question":"Dalam audit berbasis risiko, faktor manakah yang PALING menentukan fokus pengujian oleh auditor?","options":{"A":"Area dengan risiko inheren tinggi dan kontrol yang lemah","B":"Alokasi anggaran dan ketersediaan waktu auditor","C":"Permintaan khusus dari manajemen operasional","D":"Jumlah temuan audit pada periode tahun sebelumnya"},"answer":null},{"question":"Keuntungan UTAMA bagi organisasi yang menerapkan proses Penilaian Mandiri Kontrol (Control Self-Assessment/CSA) adalah:","options":{"A":"Menghilangkan kebutuhan akan pengujian independen oleh auditor","B":"Meningkatkan kesadaran dan tanggung jawab staf terhadap risiko","C":"Mengurangi biaya operasional audit secara signifikan","D":"Memindahkan tanggung jawab kontrol dari manajemen ke auditor"},"answer":null},{"question":"Auditor menggunakan teknik 'Attribute Sampling' terutama untuk:","options":{"A":"Mencari nilai moneter dari kesalahan transaksi","B":"Menilai tingkat kepatuhan terhadap kontrol internal","C":"Melakukan verifikasi saldo pada akun buku besar","D":"Mengestimasi total nilai populasi data keuangan"},"answer":null},{"question":"Teknik 'Variable Sampling' dalam audit SI paling tepat digunakan untuk:","options":{"A":"Memeriksa kelengkapan dokumen pendukung","B":"Menghitung jumlah error pada input data","C":"Menguji efektivitas kontrol otorisasi","D":"Menaksir nilai moneter atau kuantitas dalam populasi"},"answer":null},{"question":"Auditor TI harus mempertimbangkan penggunaan CAATs (Computer Assisted Audit Techniques) terutama saat:","options":{"A":"Auditor ingin mengurangi interaksi dengan auditee","B":"Tidak tersedia dokumentasi tertulis mengenai sistem","C":"Jumlah data transaksi sangat besar dan kompleks","D":"Terjadi pemadaman listrik di lokasi auditee"},"answer":null},{"question":"Mengapa kriteria yang ditetapkan (established criteria) itu penting dalam proses audit?","options":{"A":"Mengurangi persyaratan bukti (evidence).","B":"Menghilangkan perselisihan dengan pengembang (developers).","C":"Menghilangkan kebutuhan akan kebijakan internal.","D":"Memastikan objektivitas, pengulangan (repeatability), dan hasil yang sebanding (comparable)."},"answer":null},{"question":"Teknik respons risiko mana yang digunakan ketika sebuah perusahaan membeli asuransi siber (cyber insurance)?","options":{"A":"Avoidance (Penghindaran)","B":"Transfer (Pengalihan)","C":"Mitigation (Mitigasi)","D":"Acceptance (Penerimaan)"},"answer":null},{"question":"Timeout masuk sistem setelah beberapa periode tidak ada aktivitas dapat diklasifikasikan sebagai kontrol:","options":{"A":"Preventive","B":"Detective","C":"Corrective","D":"Compensating"},"answer":null},{"question":"Seorang IS auditor sedang menyusun rencana audit berbasis risiko. Langkah PERTAMA yang seharusnya dilakukan auditor adalah:","options":{"A":"Menyusun program audit rinci","B":"Menyusun kertas kerja audit (working papers)","C":"Mengidentifikasi dan memahami proses bisnis utama","D":"Memilih teknik sampling yang akan digunakan"},"answer":null},{"question":"Jenis bukti audit yang PALING KUAT di antara berikut ini adalah:","options":{"A":"Dokumentasi prosedur yang dibuat oleh auditee","B":"Hasil observasi auditor tanpa dokumentasi","C":"Pernyataan lisan dari manajer IT","D":"Konfirmasi tertulis dari pihak ketiga independent"},"answer":null},{"question":"Manakah indikator yang PALING efektif untuk mengukur keselarasan antara strategi TI dengan tujuan bisnis organisasi?","options":{"A":"Metrik operasional TI yang dipetakan langsung ke KPI Bisnis","B":"Rasio total biaya TI terhadap pendapatan perusahaan","C":"Persentase proyek TI yang diselesaikan tepat waktu","D":"Jumlah staf TI yang memiliki sertifikasi profesional"},"answer":null},{"question":"Risiko manakah yang PALING signifikan jika Analisis Dampak Bisnis (BIA) tidak diperbarui selama lebih dari dua tahun?","options":{"A":"Target waktu pemulihan (RTO) akan menjadi lebih lama","B":"Strategi pemulihan mungkin tidak selaras dengan prioritas bisnis saat ini","C":"Kapasitas situs pemulihan bencana menjadi tidak mencukupi","D":"Terjadinya ketidakpatuhan terhadap standar audit internal"},"answer":null},{"question":"Siapakah yang memegang tanggung jawab akhir (ultimate responsibility) atas tata kelola TI di organisasi?","options":{"A":"Chief Information Officer (CIO)","B":"Kepala Audit Internal","C":"Dewan Direksi (Board of Directors)","D":"Komite Pengarah TI (IT Steering Committee)"},"answer":null},{"question":"Apa manfaat utama dari penggunaan IT Balanced Scorecard?","options":{"A":"Mengotomatisasi perhitungan depresiasi aset perangkat keras","B":"Melakukan penyaringan terhadap lalu lintas email spam","C":"Memantau tren kompensasi dan tunjangan staf TI","D":"Mengevaluasi kinerja TI dari berbagai perspektif strategis"},"answer":null},{"question":"Apa peran utama dari Komite Pengarah TI (IT Steering Committee) dalam sebuah organisasi?","options":{"A":"Melakukan perbaikan teknis pada infrastruktur PC","B":"Melakukan pengawasan harian terhadap aktivitas koding","C":"Menyelaraskan investasi teknologi dengan strategi bisnis","D":"Mengaudit laporan keuangan departemen TI secara periodik"},"answer":null},{"question":"Fokus utama dari proses Manajemen Risiko TI adalah untuk memastikan bahwa:","options":{"A":"Organisasi memiliki asuransi untuk semua aset TI","B":"Risiko berada pada level yang dapat diterima (acceptable)","C":"Semua risiko TI dihilangkan sepenuhnya","D":"Staf TI yang melakukan kesalahan diberikan sanksi"},"answer":null},{"question":"Apa yang harus dilakukan organisasi SEGERA setelah menetapkan ambang batas selera risiko (risk appetite)?","options":{"A":"Menghapus semua risiko yang teridentifikasi","B":"Menentukan strategi mitigasi risiko yang tepat","C":"Mengabaikan semua risiko dengan dampak rendah","D":"Melakukan pembelian asuransi untuk semua departemen"},"answer":null},{"question":"Pernyataan manakah yang PALING TEPAT menjelaskan \"Model Inti\" (Core Model) dari COBIT 2019?","options":{"A":"\"Daftar tugas\" (to-do list) terstruktur yang mencakup segala sesuatu yang harus diatur (governed) dan dikelola (managed)","B":"Metodologi manajemen proyek langkah demi langkah","C":"Daftar kontrol wajib yang harus diterapkan oleh semua organisasi","D":"Standar kontrol yang berfokus pada keamanan"},"answer":null},{"question":"Aktivitas manakah yang termasuk ke dalam tugas manajemen, bukan tata kelola (governance) dalam pengembanga sistem informasi?","options":{"A":"Menetapkan ambang batas risiko (risk appetite) organisasi.","B":"Menetapkan tujuan strategis (strategic objectives)","C":"Mengalokasikan sumber daya untuk menjalankan proyek yang telah disetujui.","D":"Memantau kinerja organisasi secara keseluruhan."},"answer":null},{"question":"Saat melakukan audit tata kelola IT (IT governance), tujuan tata kelola COBIT 2019 manakah yang SECARA LANGSUNG menangani upaya untuk memastikan bahwa nilai pemangku kepentingan telah dioptimalkan?","options":{"A":"EDM02 – Ensure Benefits Delivery","B":"APO12 – Manage Risk","C":"APO05 – Manage Portfolio","D":"EDM01 – Ensure Governance Framework Setting"},"answer":null},{"question":"Dalam proses data conversion, IS auditor menemukan bahwa konversi dilakukan ulang beberapa kali dengan script konversi yang berbeda, namun hanya hasil akhir yang disimpan. Risiko TERBESAR kondisi ini adalah:","options":{"A":"Penyimpanan storage menjadi redundant sehingga tidak efisien","B":"Adanya biaya yang tambahan akibat pemrosesan data yang berulang","C":"Adanya data yang rusak dan hilang akibat dari proses konversi yang tidak berjalan dengan baik","D":"Sulit melacak sumber kesalahan jika terjadi ketidaksesuaian"},"answer":null},{"question":"Tujuan utama dari user acceptance testing (UAT) adalah untuk","options":{"A":"Memvalidasi bahwa modul-modul bekerja bersama sesuai harapan","B":"Memastikan kinerja sistem memenuhi spesifikasi desain","C":"Mengidentifikasi cacat (defects) sebelum melakukan migrasi data","D":"Memastikan sistem mendukung proses bisnis dan persyaratan (requirements)"},"answer":null},{"question":"Keuntungan utama dari implementasi percontohan (pilot implementation) adalah:","options":{"A":"Berkurangnya kebutuhan akan pelatihan pengguna","B":"Biaya implementasi yang lebih rendah","C":"Kemampuan untuk membatasi paparan risiko","D":"Peluncuran (rollout) yang lebih cepat"},"answer":null},{"question":"Tinjauan pasca-implementasi (post-implementation review atau PIR) harus berfokus pada:","options":{"A":"Apakah dokumentasi proyek telah diarsipkan","B":"Apakah manfaat yang diharapkan telah terealisasi","C":"Apakah pengguna telah dilatih secara memadai","D":"Apakah sistem memiliki cacat (defects) minimal saat peluncuran"},"answer":null},{"question":"Apa pendekatan TERBAIK untuk memitigasi risiko serangan phishing?","options":{"A":"Edukasi kepada pengguna","B":"Autentikasi yang kuat","C":"Implementasi Intrusion Detection System","D":"Asesmen keamanan situs web"},"answer":null},{"question":"Manakah risiko yang PALING mungkin terjadi ketika menggunakan metodologi Agile untuk proyek sistem perusahaan skala besar?","options":{"A":"Kurangnya dokumentasi teknis dan fungsional yang memadai","B":"Meningkatnya biaya lisensi perangkat lunak pengembangan","C":"Penurunan kecepatan rilis fitur ke pengguna akhir","D":"Ketidakmampuan perangkat keras dalam mendukung iterasi"},"answer":null},{"question":"Keuntungan utama penggunaan teknik Prototyping dalam pengembangan sistem adalah:","options":{"A":"Membantu mengklarifikasi kebutuhan pengguna di awal","B":"Mengurangi biaya pelaporan status proyek secara berkala","C":"Dokumentasi sistem akan dihasilkan secara otomatis","D":"Mengurangi kebutuhan akan pengujian integrasi"},"answer":null},{"question":"Risiko terbesar yang ditimbulkan oleh aktivitas 'Shadow IT' bagi organisasi adalah:","options":{"A":"Server TI akan mengalami kelebihan beban kerja","B":"Meningkatnya biaya lisensi perangkat lunak","C":"Munculnya kerentanan keamanan yang tidak terpantau","D":"Terjadinya peningkatan kreativitas di kalangan staf"},"answer":null},{"question":"Risiko utama dari 'Vendor Lock-in' pada layanan komputasi awan (Cloud) adalah:","options":{"A":"Biaya berlangganan bulanan yang tidak stabil","B":"Kesulitan teknis untuk bermigrasi ke penyedia lain","C":"Keamanan penyedia cloud yang umumnya sangat rendah","D":"Kurangnya dukungan teknis dari administrator cloud"},"answer":null},{"question":"Implementasi 'DevSecOps' bertujuan untuk:","options":{"A":"Menghapus peran pengembang dalam operasional","B":"Mengotomatisasi penulisan laporan audit tahunan","C":"Memisahkan tim keamanan dari proses pengembangan","D":"Integrasi keamanan ke dalam seluruh siklus DevOps"},"answer":null},{"question":"Manakah dari berikut ini yang merupakan tujuan utama dari operasional sistem informasi (IS operations)?","options":{"A":"Untuk memastikan sistem hemat biaya (cost-efficient)","B":"Untuk melakukan analisis dampak bisnis (business impact analysis)","C":"Untuk menyediakan layanan IT yang stabil, andal, dan aman","D":"Untuk merancang arsitektur IT yang baru"},"answer":null},{"question":"Skenario manakah yang paling merepresentasikan pelanggaran pemisahan tugas (segregation of duties) dalam operasional?","options":{"A":"Pengembang (developers) mengajukan permintaan untuk perubahan produksi (production changes)","B":"Seorang operator dapat memulai kembali (restart) pekerjaan (jobs) yang gagal","C":"Orang yang sama menjadwalkan dan menyetujui pekerjaan batch (batch jobs)","D":"Administrator sistem mengelola log cadangan (backup logs)"},"answer":null},{"question":"Apa fungsi utama dari UPS (Uninterruptible Power Supply) di Data Center?","options":{"A":"Memberikan daya listrik sementara saat terjadi gangguan","B":"Melindungi sistem dari serangan petir secara langsung","C":"Menurunkan suhu ruangan server secara otomatis","D":"Mempercepat proses cadangan data (backup)"},"answer":null},{"question":"Situasi manakah yang paling membutuhkan proses problem management (manajemen masalah) dibandingkan dengan incident management (manajemen insiden)?","options":{"A":"Kesalahan database yang menyebabkan penurunan performa layanan sementara","B":"Pemadaman jaringan sekali saja yang disebabkan oleh kegagalan daya","C":"Seorang pengguna terkunci (locked out) karena upaya menebak-nebak password","D":"Kebocoran memori (memory leak) berulang yang menyebabkan server crash setiap minggu."},"answer":null},{"question":"Sebuah organisasi memilih warm site sebagai bagian dari strategi Disaster Recovery. Manakah yang merupakan batasan/kelemahan utama dari pilihan tersebut?","options":{"A":"Waktu pemulihan yang lebih lama karena adanya persyaratan pengaturan (setup)","B":"Kurangnya sinkronisasi waktu nyata (real-time)","C":"Ketidakmampuan untuk mendukung semua aplikasi","D":"Biaya yang lebih tinggi daripada hot site"},"answer":null},{"question":"Manakah dari berikut ini yang paling mendukung RTO (Recovery Time Objective) yang lebih cepat?","options":{"A":"Asynchronous replication (Replikasi asinkron)","B":"Hot site","C":"Cold site","D":"Weekly backup (Pencadangan mingguan)"},"answer":null},{"question":"Seorang auditor SI sedang meninjau prosedur backup dan menemukan bahwa meskipun pencadangan berjalan setiap hari, tidak ada yang memverifikasi integritas hasil backup tersebut. Manakah risiko yang paling signifikan?","options":{"A":"Penyimpanan backup mungkin menjadi terlalu mahal","B":"Backup harian melanggar praktik RPO (Recovery Point Objective) standar","C":"Waktu pencadangan (backup windows) mungkin melampaui kapasitas sistem","D":"Backup mungkin tidak dapat digunakan saat dibutuhkan untuk pemulihan (recovery)"},"answer":null},{"question":"Keuntungan paling signifikan dari melakukan parallel run (operasi paralel) selama implementasi sistem adalah:","options":{"A":"Proses migrasi yang lebih cepat","B":"Kemampuan untuk memverifikasi akurasi sistem baru terhadap sistem lama","C":"Biaya keseluruhan yang lebih rendah","D":"Berkurangnya beban kerja bagi staf operasional"},"answer":null},{"question":"IS auditor menilai bahwa organisasi memiliki prosedur incident response, namun tidak pernah dilakukan simulasi. Risiko UTAMA adalah:","options":{"A":"Prosedur tidak terdokumentasi","B":"Pelanggaran regulasi","C":"Tim tidak siap saat insiden nyata","D":"Kemanan aplikasi tidak teruji"},"answer":null},{"question":"Sebelum sistem baru diterapkan, IS auditor diminta menilai kontrol pada fase implementasi sistem baru. Sistem tersebut merupakan system yang sangat kritikal dan tidak boleh ada error saat implementasi. Hal PALING EFEKTIF untuk mengurangi risiko kegagalan implementasi adalah:","options":{"A":"Melakukan unit test dan integration test sebelum aplikasi live","B":"Melakukan code review internal","C":"Training user setelah go-live","D":"Menerapkan parallel run"},"answer":null},{"question":"Seorang IS auditor diminta melakukan audit sistem pembayaran digital yang baru berjalan 6 bulan. Manajemen meminta auditor langsung menguji kontrol aplikasi karena adanya keluhan user. Tindakan PALING TEPAT yang harus dilakukan auditor terlebih dahulu adalah:","options":{"A":"Menguji efektivitas general IT controls","B":"Melakukan walkthrough pengujian kontrol aplikasi","C":"Meninjau hasil audit sebelumnya","D":"Melakukan risk assessment atas proses bisnis terkait"},"answer":null},{"question":"Manakah dari fungsi berikut yang pada hakekatnya ingin dicapai dalam pemisahan tugas (segregation of duties) yang memadai antara bagian SI dan pengguna akhir (end users)?","options":{"A":"Otorisasi yang memadai atas akses ke data","B":"Pemrograman aplikasi oleh tim yang kompeten","C":"Analisis sistem secara independen","D":"Administrasi data oleh Departemen SI tanpa intervensi oleh end-user"},"answer":null},{"question":"Selama audit keamanan proses TI, seorang auditor SI menemukan bahwa tidak terdapat prosedur keamanan yang terdokumentasi . Auditor SI tersebut harus melakukan:","options":{"A":"Melakukan uji kepatuhan (compliance testing).","B":"Mengidentifikasi dan mengevaluasi praktik-praktik yang ada saat ini.","C":"Membuat dokumen prosedur tersebut.","D":"Menghentikan audit."},"answer":null},{"question":"Situasi manakah yang merupakan kegagalan ketersediaan (availability)","options":{"A":"Pemadaman sistem yang mencegah akses (System outage preventing access)","B":"Hak istimewa pengguna yang salah (Incorrect user privileges)","C":"Data corruption","D":"Pengungkapan tidak sah (Unauthorized disclosure)"},"answer":null},{"question":"Situasi manakah yang merepresentasikan pelanggaran kerahasiaan (breach of confidentiality)?","options":{"A":"System downtime","B":"Peninjauan informasi sensitif oleh pihak yang tidak berwenang","C":"Modifikasi data yang tidak sah (Unauthorized modification of data)","D":"Hilangnya catatan transaksi"},"answer":null},{"question":"Seorang auditor SI akan PALING khawatir dengan integritas data (data integrity) ketika:","options":{"A":"Data tidak tersedia karena kegagalan sistem","B":"Data disimpan di luar lokasi (offsite)","C":"Data diubah tanpa otorisasi","D":"Data diungkapkan kepada pengguna yang tidak sah"},"answer":null},{"question":"Manakah bukti yang memberikan keyakinan PALING memadai mengenai efektivitas kontrol internal pada penyedia Cloud pihak ketiga?","options":{"A":"Keberadaan klausul hak untuk mengaudit dalam kontrak","B":"Sertifikat kepatuhan ISO 27001 yang masih berlaku","C":"Salinan kebijakan keamanan informasi internal penyedia","D":"Laporan audit independen SOC (System and Organization Controls) 2 Tipe II"},"answer":null},{"question":"Setelah mengidentifikasi akun aktif milik mantan karyawan, tindakan manakah yang PALING tepat dilakukan auditor selanjutnya?","options":{"A":"Segera menonaktifkan akun tersebut secara mandiri","B":"Merekomendasikan implementasi sistem manajemen identitas (IAM)","C":"Melakukan peninjauan log akses untuk mendeteksi penyalahgunaan","D":"Melaporkan insiden tersebut kepada Departemen SDM"},"answer":null},{"question":"Manakah metode PALING efektif untuk menjamin kerahasiaan data yang dikirimkan melalui jaringan komunikasi publik?","options":{"A":"Penggunaan teknik enkripsi (seperti VPN atau TLS)","B":"Penerapan server proxy untuk menyembunyikan alamat IP","C":"Implementasi firewall berlapis pada perimeter jaringan","D":"Pemantauan penggunaan bandwidth secara berkelanjutan"},"answer":null},{"question":"Mengapa perangkat IoT (Internet of Things) menimbulkan risiko keamanan yang lebih tinggi dibandingkan sistem tradisional?","options":{"A":"Karena menggunakan protokol kepemilikan (proprietary protocols)","B":"Karena menyimpan lebih banyak data sensitif","C":"Karena selalu terhubung ke internet","D":"Karena sering kali kurang memiliki kontrol keamanan yang kuat"},"answer":null}]};
+
+/* ── Theme ── */
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('theme',t);
+}
+(()=>{const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
+
+/* ── Tabs ── */
+function switchTab(tab){
+  ['tryout','past'].forEach(t=>{
+    document.getElementById('pane-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='past') renderList('past');
+}
+
+/* ── Exam State ── */
+let examCfg={n:40,t:60};
+let examQs=[], answers={}, flagged=new Set(), cur=0, timerInt=null, tLeft=0;
+
+function cfg(key,val,el){
+  examCfg[key]=val;
+  el.closest('.config-chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── Views ── */
+function showV(id){
+  ['v-setup','v-exam','v-results','v-browse'].forEach(v=>document.getElementById(v).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+function showSetup(){clearInterval(timerInt);showV('v-setup')}
+function showBrowse(){showV('v-browse');renderList('tryout')}
+
+/* ── Start Exam ── */
+function startExam(){
+  answers={};flagged=new Set();cur=0;
+  let pool=[...DATA.tryout].map((q,i)=>({...q,oi:i})).sort(()=>Math.random()-.5).slice(0,examCfg.n);
+  examQs=pool;
+  showV('v-exam');
+  document.getElementById('v-navgrid').classList.add('hidden');
+  clearInterval(timerInt);
+  if(examCfg.t>0){
+    tLeft=examCfg.t*60;
+    updateTimer();
+    timerInt=setInterval(()=>{tLeft--;updateTimer();if(tLeft<=0){clearInterval(timerInt);submitExam();}},1000);
+  } else {
+    document.getElementById('ex-timer').textContent='∞';
+    document.getElementById('ex-timer').className='timer';
+  }
+  renderExamQ();updateHdr();
+}
+
+function updateTimer(){
+  const el=document.getElementById('ex-timer');
+  const m=Math.floor(tLeft/60),s=tLeft%60;
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='timer'+(tLeft<60?' danger':tLeft<300?' warn':'');
+}
+
+function updateHdr(){
+  const ans=Object.keys(answers).length, tot=examQs.length;
+  document.getElementById('ex-answered').textContent=ans;
+  document.getElementById('ex-total').textContent=tot;
+  document.getElementById('ex-fill').style.width=(tot?ans/tot*100:0)+'%';
+  renderNavGrid();
+}
+
+function renderNavGrid(){
+  document.getElementById('navgrid').innerHTML=examQs.map((_,i)=>{
+    let c='nav-btn';
+    if(i===cur)c+=' current';
+    else if(flagged.has(i))c+=' flagged';
+    else if(answers[i])c+=' answered';
+    return `<div class="${c}" onclick="goQ(${i})">${i+1}</div>`;
+  }).join('');
+}
+
+function toggleNav(){
+  const el=document.getElementById('v-navgrid');
+  el.classList.toggle('hidden');
+  if(!el.classList.contains('hidden'))renderNavGrid();
+}
+
+function goQ(i){cur=i;renderExamQ();updateHdr();document.getElementById('v-navgrid').classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+
+function renderExamQ(){
+  const q=examQs[cur],fl=flagged.has(cur);
+  const opts=Object.entries(q.options).map(([l,t])=>`
+    <div class="q-opt${answers[cur]===l?' selected':''}" onclick="pick('${l}')">
+      <span class="opt-letter">${l}</span><span class="opt-text">${t}</span>
+    </div>`).join('');
+  document.getElementById('ex-qarea').innerHTML=`
+    <div class="exam-q-card">
+      <div class="q-meta">
+        <span class="q-num">Soal ${cur+1} / ${examQs.length}</span>
+        ${answers[cur]?`<span class="pill" style="border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)">Pilihan: ${answers[cur]}</span>`:''}
+        ${fl?`<span class="pill" style="border-color:var(--warn-bd);background:var(--warn-bg);color:var(--warn)">⚑ Ditandai</span>`:''}
+        <button class="flag-btn${fl?' flagged':''}" id="btn-flag" onclick="toggleFlag()">
+          <svg viewBox="0 0 24 24" fill="${fl?'currentColor':'none'}" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          ${fl?'Ditandai':'Tandai'}
+        </button>
+      </div>
+      <p class="q-text">${q.question}</p>
+      <div class="q-options">${opts}</div>
+    </div>`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===examQs.length-1;
+}
+
+function pick(l){answers[cur]=l;renderExamQ();updateHdr()}
+function toggleFlag(){if(flagged.has(cur))flagged.delete(cur);else flagged.add(cur);renderExamQ();renderNavGrid()}
+function examNav(d){const n=cur+d;if(n>=0&&n<examQs.length){cur=n;renderExamQ();updateHdr();window.scrollTo({top:0,behavior:'smooth'})}}
+
+function confirmSubmit(){
+  const blank=examQs.length-Object.keys(answers).length;
+  if(blank>0&&!confirm(`${blank} soal belum dijawab. Submit sekarang?`))return;
+  submitExam();
+}
+
+function submitExam(){
+  clearInterval(timerInt);
+  let ok=0,wrong=0,blank=0;
+  examQs.forEach((q,i)=>{
+    const a=answers[i];
+    if(!a)blank++;
+    else if(a===q.answer)ok++;
+    else wrong++;
+  });
+  const tot=examQs.length,pct=Math.round(ok/tot*100);
+  document.getElementById('r-score').textContent=ok+'/'+tot;
+  document.getElementById('r-pct').textContent='Nilai: '+pct+' — '+(pct>=70?'✅ Lulus':'❌ Perlu belajar lebih');
+  document.getElementById('r-correct').textContent=ok;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-blank').textContent=blank;
+
+  document.getElementById('r-review').innerHTML=examQs.map((q,i)=>{
+    const ua=answers[i]||null,isOk=ua===q.answer,isBlank=!ua;
+    const col=isBlank?'var(--muted)':isOk?'var(--ok)':'var(--err)';
+    const icon=isBlank?'○':isOk?'✓':'✗';
+    const opts=Object.entries(q.options).map(([l,t])=>{
+      const isC=l===q.answer,isU=l===ua;
+      let cls='q-opt disabled';
+      if(isC&&isU)cls+=' correct';
+      else if(isC)cls+=' revealed';
+      else if(isU)cls+=' wrong';
+      return `<div class="${cls}"><span class="opt-letter">${l}</span><span class="opt-text">${t}</span></div>`;
+    }).join('');
+    return `<div class="q-card" style="border-left:3px solid ${col}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap">
+        <span class="q-num">Soal ${i+1}</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:${col}">${icon} ${isBlank?'Tidak Dijawab':isOk?'Benar':'Salah'}</span>
+        ${ua?`<span style="font-size:12px;color:var(--muted)">Jawaban Anda: <b style="color:${isOk?'var(--ok)':'var(--err)'}">${ua}</b></span>`:''}
+      </div>
+      <p class="q-text">${q.question}</p>
+      <div class="q-options">${opts}</div>
+      <div class="answer-reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 11l3 3L22 4"/></svg>Jawaban benar: <b>${q.answer}) ${q.options[q.answer]}</b></div>
+    </div>`;
+  }).join('');
+  showV('v-results');window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Browse ── */
+let revealed=new Set();
+function renderList(tab){
+  const q=tab==='tryout'?DATA.tryout:DATA.past;
+  const sv=document.getElementById('s-'+tab).value.toLowerCase();
+  const filtered=sv?q.filter(x=>x.question.toLowerCase().includes(sv)||Object.values(x.options).some(o=>o.toLowerCase().includes(sv))):q;
+  document.getElementById('badge-'+tab).textContent=filtered.length+' soal';
+  const el=document.getElementById('list-'+tab);
+  if(!filtered.length){el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><h3>Tidak ditemukan</h3><p>Coba kata kunci lain</p></div>`;return}
+  el.innerHTML=filtered.map(item=>{
+    const oi=q.indexOf(item);
+    const opts=Object.entries(item.options).map(([l,t])=>{
+      const rev=tab==='tryout'&&revealed.has(oi)&&l===item.answer;
+      return `<div class="q-opt disabled${rev?' revealed':''}" id="opt-${tab}-${oi}-${l}"><span class="opt-letter">${l}</span><span class="opt-text">${hl(t,sv)}</span></div>`;
+    }).join('');
+    const hasAns=tab==='tryout';
+    const isRev=hasAns&&revealed.has(oi);
+    return `<div class="q-card" id="qc-${tab}-${oi}">
+      <span class="q-num">Soal ${oi+1}</span>
+      <p class="q-text">${hl(item.question,sv)}</p>
+      <div class="q-options">${opts}</div>
+      ${hasAns&&isRev?`<div class="answer-reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 11l3 3L22 4"/></svg>Jawaban: <b>${item.answer}) ${item.options[item.answer]}</b></div>`:
+        hasAns&&!isRev?`<button class="btn btn-ghost btn-sm" style="margin-top:.75rem" onclick="reveal(${oi})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Lihat Jawaban</button>`:
+        `<div style="margin-top:.75rem;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--faint);display:flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Kunci jawaban tidak tersedia</div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function reveal(oi){
+  revealed.add(oi);
+  const q=DATA.tryout[oi];
+  const card=document.getElementById('qc-tryout-'+oi);
+  const optEl=card.querySelector(`[id="opt-tryout-${oi}-${q.answer}"]`);
+  if(optEl)optEl.classList.add('revealed');
+  const btn=card.querySelector('.btn-ghost');
+  if(btn)btn.outerHTML=`<div class="answer-reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 11l3 3L22 4"/></svg>Jawaban: <b>${q.answer}) ${q.options[q.answer]}</b></div>`;
+}
+
+function filterQ(tab){
+  const sv=document.getElementById('s-'+tab).value;
+  document.getElementById('clr-'+tab).style.display=sv?'flex':'none';
+  if(tab==='tryout')revealed.clear();
+  renderList(tab);
+}
+
+function clearQ(tab){
+  document.getElementById('s-'+tab).value='';
+  document.getElementById('clr-'+tab).style.display='none';
+  if(tab==='tryout')revealed.clear();
+  renderList(tab);
+}
+
+function jumpQ(tab){
+  const n=parseInt(document.getElementById('j-'+tab).value);
+  if(!n||isNaN(n))return;
+  const max=tab==='tryout'?DATA.tryout.length:DATA.past.length;
+  const idx=Math.max(1,Math.min(n,max))-1;
+  setTimeout(()=>{
+    const el=document.getElementById(`qc-${tab}-${idx}`);
+    if(el){
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.style.borderColor='var(--accent)';
+      el.style.boxShadow='0 0 0 3px var(--accent-bg)';
+      setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},1500);
+    }
+  },100);
+}
+
+function hl(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<mark style="background:var(--accent-bg);color:var(--accent);border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown',e=>{
+  if(document.activeElement.tagName==='INPUT')return;
+  if(!document.getElementById('v-exam').classList.contains('hidden')){
+    if(e.key==='ArrowLeft')examNav(-1);
+    if(e.key==='ArrowRight')examNav(1);
+    if(e.key==='f'||e.key==='F')toggleFlag();
+    if('abcd'.includes(e.key.toLowerCase()))pick(e.key.toUpperCase());
+  }
+});
+
+/* ── Init ── */
+renderList('past');
+</script>
+</body>
+</html>
