@@ -115,12 +115,16 @@
                 </div>
                 <button onclick="app.navigateTo('standards')" id="nav-standards" class="nav-item w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition font-medium overflow-hidden" title="Standards Library">
                     <i class="fa-solid fa-book w-5 text-center"></i>
-                    <span class="nav-text">Standards & Frameworks</span>
+                    <span class="nav-text">Standards & Framework</span>
                 </button>
-                <button onclick="app.navigateTo('assessment')" id="nav-assessment" class="nav-item w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition font-medium overflow-hidden" title="Assessments">
+                <button onclick="app.navigateTo('design-factor')" id="nav-assessment" class="nav-item w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition font-medium overflow-hidden" title="Assessment">
                     <i class="fa-solid fa-list-check w-5 text-center"></i>
-                    <span class="nav-text">Assessment Projects</span>
+                    <span class="nav-text">Assessment</span>
                 </button>
+                <div class="nav-text ml-7 flex flex-col space-y-1 border-l border-slate-200 pl-3">
+                    <button onclick="app.navigateTo('design-factor')" id="nav-design-factor" class="nav-item w-full rounded-md px-3 py-2 text-left text-xs font-semibold text-slate-500 transition hover:bg-indigo-50 hover:text-indigo-700"><i class="fa-solid fa-sliders mr-2 w-4 text-center"></i>Design Factor</button>
+                    <button onclick="app.navigateTo('capability')" id="nav-capability" class="nav-item w-full rounded-md px-3 py-2 text-left text-xs font-semibold text-slate-500 transition hover:bg-indigo-50 hover:text-indigo-700"><i class="fa-solid fa-chart-simple mr-2 w-4 text-center"></i>Capability Level</button>
+                </div>
                 <button onclick="app.navigateTo('files')" id="nav-files" class="nav-item w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition font-medium overflow-hidden" title="File Management">
                     <i class="fa-solid fa-folder-open w-5 text-center"></i>
                     <span class="nav-text">File Management</span>
@@ -171,6 +175,92 @@
             ]
         };
 
+        // Survey structure transcribed from COBIT-2019-Design-Toolkit.xlsx (DF1-DF10 input sections).
+        const DESIGN_FACTOR_DEFINITIONS = [
+            { id: 'DF1', name: 'Enterprise Strategy', mode: 'scale', scale: 5, scaleLabel: 'Importance (1-5)', items: [
+                ['growth', 'Growth/Acquisition', ['EDM02','APO02','APO05','BAI01']],
+                ['innovation', 'Innovation/Differentiation', ['APO04','BAI03','BAI06','BAI11']],
+                ['cost', 'Cost Leadership', ['EDM04','APO06','BAI09','DSS01']],
+                ['service', 'Client Service/Stability', ['APO08','APO09','APO11','DSS02','DSS04']]
+            ]},
+            { id: 'DF2', name: 'Enterprise Goals', mode: 'scale', scale: 5, scaleLabel: 'Importance (1-5)', items: [
+                ['eg01', 'EG01—Portfolio of competitive products and services', ['EDM02','APO05','BAI01']],
+                ['eg02', 'EG02—Managed business risk', ['EDM03','APO12','DSS04']],
+                ['eg03', 'EG03—Compliance with external laws and regulations', ['EDM03','MEA03','APO12']],
+                ['eg04', 'EG04—Quality of financial information', ['EDM05','APO14','MEA02']],
+                ['eg05', 'EG05—Customer-oriented service culture', ['APO08','APO09','DSS02']],
+                ['eg06', 'EG06—Business-service continuity and availability', ['DSS01','DSS04','BAI04']],
+                ['eg07', 'EG07—Quality of management information', ['EDM05','APO14','MEA01']],
+                ['eg08', 'EG08—Optimization of internal business process functionality', ['APO03','BAI03','DSS06']],
+                ['eg09', 'EG09—Optimization of business process costs', ['EDM04','APO06','BAI09']],
+                ['eg10', 'EG10—Staff skills, motivation and productivity', ['APO07','BAI05']],
+                ['eg11', 'EG11—Compliance with internal policies', ['MEA02','MEA04','DSS06']],
+                ['eg12', 'EG12—Managed digital transformation programs', ['APO02','BAI01','BAI11']],
+                ['eg13', 'EG13—Product and business innovation', ['APO04','BAI03','BAI11']]
+            ]},
+            { id: 'DF3', name: 'Risk Profile', mode: 'risk', scaleLabel: 'Impact × Likelihood (1-5)', items: [
+                ['risk01','IT investment decision making, portfolio definition & maintenance',['EDM02','APO05']],
+                ['risk02','Program & projects life cycle management',['BAI01','BAI11']],
+                ['risk03','IT cost & oversight',['EDM04','APO06']],
+                ['risk04','IT expertise, skills & behavior',['APO07','BAI05']],
+                ['risk05','Enterprise/IT architecture',['APO03','BAI03']],
+                ['risk06','IT operational infrastructure incidents',['DSS01','DSS04']],
+                ['risk07','Unauthorized actions',['APO13','DSS05']],
+                ['risk08','Software adoption/usage problems',['BAI05','DSS02']],
+                ['risk09','Hardware incidents',['BAI09','DSS01']],
+                ['risk10','Software failures',['BAI03','DSS03']],
+                ['risk11','Logical attacks (hacking, malware, etc.)',['APO13','DSS05']],
+                ['risk12','Third-party/supplier incidents',['APO10','DSS04']],
+                ['risk13','Noncompliance',['MEA03','MEA04']],
+                ['risk14','Geopolitical issues',['EDM03','APO12']],
+                ['risk15','Industrial action',['APO07','DSS04']],
+                ['risk16','Acts of nature',['DSS04','APO12']],
+                ['risk17','Technology-based innovation',['APO04','BAI11']],
+                ['risk18','Environmental',['EDM03','APO12']],
+                ['risk19','Data & information management',['APO14','DSS06']]
+            ]},
+            { id: 'DF4', name: 'I&T-Related Issues', mode: 'scale', scale: 3, scaleLabel: 'Importance (1-3)', items: [
+                ['issue01','Frustration between different IT entities because of perceived low contribution to business value',['EDM02','APO01','APO08']],
+                ['issue02','Frustration between business departments and IT because of failed initiatives or low contribution to value',['EDM02','APO08','BAI01']],
+                ['issue03','Significant I&T-related incidents such as data loss, security breaches, project failure and application errors',['EDM03','APO13','DSS05']],
+                ['issue04','Service delivery problems by IT outsourcer(s)',['APO09','APO10','DSS01']],
+                ['issue05','Failures to meet I&T-related regulatory or contractual requirements',['MEA03','APO12']],
+                ['issue06','Regular audit findings or assessment reports about poor IT performance, quality or service',['MEA01','MEA02']],
+                ['issue07','Substantial hidden and rogue I&T spending outside normal investment mechanisms and approved budgets',['EDM04','APO05','APO06']],
+                ['issue08','Duplications or overlaps between initiatives, or other forms of wasted resources',['APO03','APO05']],
+                ['issue09','Insufficient IT resources, inadequate skills or staff burnout/dissatisfaction',['APO07','BAI05']],
+                ['issue10','I&T-enabled changes or projects frequently failing business needs or delivered late/over budget',['BAI01','BAI11']],
+                ['issue11','Reluctance of board, executives or senior management to engage with IT; weak business sponsorship',['EDM01','EDM05']],
+                ['issue12','Complex IT operating model and/or unclear I&T decision mechanisms',['EDM01','APO01']],
+                ['issue13','Excessively high cost of IT',['EDM04','APO06']],
+                ['issue14','New initiatives or innovations obstructed by current IT architecture and systems',['APO03','APO04']],
+                ['issue15','Business–technical knowledge gap causing different professional languages',['APO08','BAI05']],
+                ['issue16','Regular data quality and integration issues across sources',['APO14','DSS06']],
+                ['issue17','High end-user computing with insufficient oversight and quality control',['APO14','BAI03']],
+                ['issue18','Business departments implement information solutions with little or no enterprise IT involvement',['APO01','APO03']],
+                ['issue19','Ignorance of and/or noncompliance with privacy regulations',['APO13','MEA03']],
+                ['issue20','Inability to exploit new technologies or innovate using I&T',['APO04','BAI11']]
+            ]},
+            { id: 'DF5', name: 'Threat Landscape', mode: 'percent', scaleLabel: 'Distribution (100%)', items: [
+                ['high','High',['EDM03','APO12','APO13','DSS04','DSS05']], ['normal','Normal',['APO01','DSS01']]
+            ]},
+            { id: 'DF6', name: 'Compliance Requirements', mode: 'percent', scaleLabel: 'Distribution (100%)', items: [
+                ['high','High',['EDM03','APO12','APO13','MEA03']], ['normal','Normal',['APO01','MEA02']], ['low','Low',['MEA01']]
+            ]},
+            { id: 'DF7', name: 'Role of IT', mode: 'scale', scale: 5, scaleLabel: 'Importance (1-5)', items: [
+                ['support','Support',['DSS01','DSS02']], ['factory','Factory',['DSS01','BAI04']], ['turnaround','Turnaround',['APO02','BAI01']], ['strategic','Strategic',['EDM02','APO02','APO04']]
+            ]},
+            { id: 'DF8', name: 'Sourcing Model for IT', mode: 'percent', scaleLabel: 'Distribution (100%)', items: [
+                ['outsourcing','Outsourcing',['APO09','APO10']], ['cloud','Cloud',['APO10','APO13','BAI10']], ['insourced','Insourced',['APO07','BAI09']]
+            ]},
+            { id: 'DF9', name: 'IT Implementation Methods', mode: 'percent', scaleLabel: 'Distribution (100%)', items: [
+                ['agile','Agile',['BAI01','BAI02','BAI03']], ['devops','DevOps',['BAI06','BAI07','DSS01']], ['traditional','Traditional',['BAI01','BAI11']]
+            ]},
+            { id: 'DF10', name: 'Technology Adoption Strategy', mode: 'percent', scaleLabel: 'Distribution (100%)', items: [
+                ['first','First mover',['APO04','BAI03','BAI11']], ['follower','Follower',['APO02','BAI01']], ['slow','Slow adopter',['BAI06','DSS01']]
+            ]}
+        ];
+
         const app = (() => {
             
             // --- DATA STORE ---
@@ -202,6 +292,13 @@
                 attachmentTarget: null,
                 files: [],
 
+                // Design Factor Assessment State
+                designFactorView: 'list',
+                selectedDesignEntityId: null,
+                selectedDesignFactorId: 'DF1',
+                designFactorDetailTab: 'details',
+                designFactorAssessments: [],
+
                 // Seed Data: Standards (loaded from the COBIT workbook when available)
                 standards: [],
 
@@ -223,6 +320,7 @@
 
             async function init() {
                 updateRoleUI();
+                loadDesignFactorAssessments();
                 loadFilesFromStorage();
                 await loadStandardsFromWorkbook();
                 navigateTo('dashboard');
@@ -382,13 +480,190 @@
                 localStorage.setItem('cobit-ams-files', JSON.stringify(STATE.files));
             }
 
+            function defaultDesignFactorResponses(profile = 0) {
+                const percentDefaults = {
+                    DF5: [33, 67], DF6: [0, 100, 0], DF8: [33, 33, 34],
+                    DF9: [15, 10, 75], DF10: [15, 70, 15]
+                };
+                const responses = {};
+                DESIGN_FACTOR_DEFINITIONS.forEach((factor, factorIndex) => {
+                    responses[factor.id] = {};
+                    factor.items.forEach((item, itemIndex) => {
+                        if (factor.mode === 'risk') {
+                            responses[factor.id][item[0]] = {
+                                impact: Math.max(1, Math.min(5, 3 + ((factorIndex + itemIndex + profile) % 3) - 1)),
+                                likelihood: Math.max(1, Math.min(5, 3 + ((itemIndex + profile * 2) % 3) - 1))
+                            };
+                        } else if (factor.mode === 'percent') {
+                            responses[factor.id][item[0]] = percentDefaults[factor.id][itemIndex];
+                        } else {
+                            const baseline = factor.scale === 3 ? 2 : 3;
+                            responses[factor.id][item[0]] = Math.max(1, Math.min(factor.scale, baseline + ((factorIndex + itemIndex + profile) % 3) - 1));
+                        }
+                    });
+                });
+                return responses;
+            }
+
+            function loadDesignFactorAssessments() {
+                try {
+                    const stored = JSON.parse(localStorage.getItem('cobit-design-factor-assessments') || 'null');
+                    if (Array.isArray(stored) && stored.length) {
+                        STATE.designFactorAssessments = stored;
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('Unable to load design factor assessments', error);
+                }
+                const assessedDates = ['2026-07-28', '2026-07-24', '2026-07-18', '2026-07-09'];
+                STATE.designFactorAssessments = STATE.organizationRecords.map((entity, index) => ({
+                    entityId: entity.id,
+                    entityName: entity.name,
+                    entityType: entity.type,
+                    assessed: index < assessedDates.length,
+                    lastUpdated: assessedDates[index] || null,
+                    responses: defaultDesignFactorResponses(index)
+                }));
+            }
+
+            function saveDesignFactorAssessments() {
+                localStorage.setItem('cobit-design-factor-assessments', JSON.stringify(STATE.designFactorAssessments));
+            }
+
+            function getDesignFactorAssessment(entityId = STATE.selectedDesignEntityId) {
+                return STATE.designFactorAssessments.find((item) => item.entityId === entityId);
+            }
+
+            function calculateDesignPriorities(assessment) {
+                if (!assessment || !assessment.assessed) return [];
+                const scores = {};
+                DESIGN_FACTOR_DEFINITIONS.forEach((factor) => {
+                    factor.items.forEach((item) => {
+                        const answer = assessment.responses?.[factor.id]?.[item[0]];
+                        let normalized = 0;
+                        if (factor.mode === 'risk') normalized = (Number(answer?.impact || 0) * Number(answer?.likelihood || 0)) / 25;
+                        else if (factor.mode === 'percent') normalized = Number(answer || 0) / 100;
+                        else normalized = Number(answer || 0) / factor.scale;
+                        item[2].forEach((objectiveCode) => {
+                            scores[objectiveCode] = (scores[objectiveCode] || 0) + normalized * 100;
+                        });
+                    });
+                });
+                ['EDM01','EDM02','EDM03','EDM04','EDM05',
+                 'APO01','APO02','APO03','APO04','APO05','APO06','APO07','APO08','APO09','APO10','APO11','APO12','APO13','APO14',
+                 'BAI01','BAI02','BAI03','BAI04','BAI05','BAI06','BAI07','BAI08','BAI09','BAI10','BAI11',
+                 'DSS01','DSS02','DSS03','DSS04','DSS05','DSS06',
+                 'MEA01','MEA02','MEA03','MEA04'].forEach((code) => {
+                    if (!(code in scores)) scores[code] = 0;
+                });
+                const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+                const maximum = ranked[0]?.[1] || 1;
+                return ranked.map(([code, score]) => ({ code, score: Math.round(score / maximum * 100) }));
+            }
+
+            function getObjectiveName(code) {
+                for (const standard of STATE.standards) {
+                    const objective = (standard.objectives || []).find((item) => item.code === code);
+                    if (objective) return objective.name;
+                }
+                return 'COBIT governance/management objective';
+            }
+
+            function openDesignFactorEntity(entityId) {
+                STATE.selectedDesignEntityId = entityId;
+                STATE.selectedDesignFactorId = 'DF1';
+                STATE.designFactorDetailTab = 'details';
+                STATE.designFactorView = 'detail';
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function closeDesignFactorEntity() {
+                STATE.designFactorView = 'list';
+                STATE.selectedDesignEntityId = null;
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function selectDesignFactor(factorId) {
+                STATE.selectedDesignFactorId = factorId;
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function setDesignFactorDetailTab(tab) {
+                STATE.designFactorDetailTab = tab;
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function updateDesignFactorAnswer(factorId, itemId, field, rawValue) {
+                const assessment = getDesignFactorAssessment();
+                const factor = DESIGN_FACTOR_DEFINITIONS.find((item) => item.id === factorId);
+                if (!assessment || !factor) return;
+                const max = factor.mode === 'percent' ? 100 : (factor.scale || 5);
+                const value = Math.max(0, Math.min(max, Number(rawValue) || 0));
+                if (factor.mode === 'risk') {
+                    assessment.responses[factorId][itemId][field] = Math.max(1, value);
+                } else {
+                    assessment.responses[factorId][itemId] = value;
+                }
+                saveDesignFactorAssessments();
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function completeDesignFactorAssessment() {
+                const assessment = getDesignFactorAssessment();
+                if (!assessment) return;
+                const invalid = DESIGN_FACTOR_DEFINITIONS.filter((factor) => factor.mode === 'percent').find((factor) => {
+                    const total = factor.items.reduce((sum, item) => sum + Number(assessment.responses[factor.id][item[0]] || 0), 0);
+                    return Math.round(total) !== 100;
+                });
+                if (invalid) {
+                    alert(`${invalid.id} ${invalid.name} must total 100%.`);
+                    STATE.selectedDesignFactorId = invalid.id;
+                    STATE.designFactorDetailTab = 'details';
+                    renderDesignFactor(document.getElementById('app-container'));
+                    return;
+                }
+                assessment.assessed = true;
+                assessment.lastUpdated = new Date().toISOString().slice(0, 10);
+                saveDesignFactorAssessments();
+                STATE.designFactorDetailTab = 'summary';
+                renderDesignFactor(document.getElementById('app-container'));
+            }
+
+            function renderDesignFactorInput(factor, assessment) {
+                const answers = assessment.responses[factor.id];
+                if (factor.mode === 'risk') {
+                    return `<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full min-w-[720px] text-sm"><thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-4 py-3">Risk scenario category</th><th class="w-32 px-4 py-3 text-center">Impact (1-5)</th><th class="w-36 px-4 py-3 text-center">Likelihood (1-5)</th><th class="w-28 px-4 py-3 text-center">Risk rating</th></tr></thead><tbody class="divide-y divide-slate-100 bg-white">${factor.items.map((item) => { const answer=answers[item[0]]; return `<tr><td class="px-4 py-3 text-slate-700">${item[1]}</td><td class="px-4 py-3"><select aria-label="${item[1]} impact" onchange="app.updateDesignFactorAnswer('${factor.id}','${item[0]}','impact',this.value)" class="w-full rounded-lg border border-slate-300 bg-white p-2 text-center">${[1,2,3,4,5].map((value) => `<option value="${value}" ${Number(answer.impact) === value ? 'selected' : ''}>${value}</option>`).join('')}</select></td><td class="px-4 py-3"><select aria-label="${item[1]} likelihood" onchange="app.updateDesignFactorAnswer('${factor.id}','${item[0]}','likelihood',this.value)" class="w-full rounded-lg border border-slate-300 bg-white p-2 text-center">${[1,2,3,4,5].map((value) => `<option value="${value}" ${Number(answer.likelihood) === value ? 'selected' : ''}>${value}</option>`).join('')}</select></td><td class="px-4 py-3 text-center"><span class="inline-flex min-w-12 justify-center rounded-full px-3 py-1 text-xs font-bold ${answer.impact * answer.likelihood >= 15 ? 'bg-red-50 text-red-700' : answer.impact * answer.likelihood >= 8 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}">${answer.impact * answer.likelihood}</span></td></tr>`; }).join('')}</tbody></table></div>`;
+                }
+                const percentTotal = factor.mode === 'percent' ? factor.items.reduce((sum, item) => sum + Number(answers[item[0]] || 0), 0) : null;
+                return `<div class="space-y-3">${factor.items.map((item) => { const value=Number(answers[item[0]] || 0); const max=factor.mode === 'percent' ? 100 : factor.scale; return `<label class="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-[1fr_220px] sm:items-center"><div><span class="font-medium text-slate-700">${item[1]}</span><p class="mt-1 text-xs text-slate-400">${factor.mode === 'percent' ? 'Share of this design factor profile' : `COBIT toolkit scale: 1 (low) to ${max} (high)`}</p></div><div class="flex items-center gap-3"><input aria-label="${item[1]}" type="range" min="${factor.mode === 'percent' ? 0 : 1}" max="${max}" step="1" value="${value}" onchange="app.updateDesignFactorAnswer('${factor.id}','${item[0]}','value',this.value)" class="w-full accent-indigo-600"><span class="inline-flex min-w-14 justify-center rounded-lg bg-indigo-50 px-2 py-1.5 text-sm font-bold text-indigo-700">${value}${factor.mode === 'percent' ? '%' : ''}</span></div></label>`; }).join('')}${factor.mode === 'percent' ? `<div class="flex items-center justify-between rounded-lg border px-4 py-3 text-sm ${Math.round(percentTotal) === 100 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}"><span class="font-semibold">Distribution total</span><span class="font-bold">${percentTotal}% ${Math.round(percentTotal) === 100 ? '✓' : '— must equal 100%'}</span></div>` : ''}</div>`;
+            }
+
+            function renderDesignFactor(container) {
+                if (STATE.designFactorView === 'list') {
+                    container.innerHTML = `<div class="mb-6"><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">Assessment</p><h2 class="mt-1 text-2xl font-bold text-slate-800 lg:text-3xl">Design Factor</h2><p class="mt-1 text-slate-500">Evaluate the COBIT 2019 governance system design profile for every entity.</p></div>
+                    <div class="grid gap-4">${STATE.designFactorAssessments.map((assessment) => { const top=calculateDesignPriorities(assessment).slice(0,5); return `<article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"><div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"><div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><h3 class="text-lg font-bold text-slate-800">${assessment.entityName}</h3><span class="rounded-full px-2.5 py-1 text-[11px] font-bold ${assessment.assessed ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}">${assessment.assessed ? 'Assessed' : 'Not assessed'}</span></div><p class="mt-1 text-xs text-slate-500">${assessment.entityType} · ${assessment.lastUpdated ? `Last updated ${assessment.lastUpdated}` : 'No assessment history'}</p></div><div class="min-w-0 flex-1 xl:max-w-2xl"><p class="mb-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Top 5 most important objectives</p>${top.length ? `<div class="flex flex-wrap gap-2">${top.map((item, index) => `<span class="rounded-md border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">${index + 1}. ${item.code}</span>`).join('')}</div>` : '<p class="text-sm italic text-slate-400">Complete DF1–DF10 to generate objective priorities.</p>'}</div><button type="button" onclick="app.openDesignFactorEntity('${assessment.entityId}')" class="shrink-0 rounded-lg ${assessment.assessed ? 'border border-indigo-200 bg-white text-indigo-700 hover:bg-indigo-50' : 'bg-indigo-600 text-white hover:bg-indigo-700'} px-4 py-2 text-sm font-bold transition">${assessment.assessed ? 'View / Re-assess' : 'Assess Now'}</button></div></article>`; }).join('')}</div>`;
+                    return;
+                }
+                const assessment = getDesignFactorAssessment();
+                if (!assessment) { closeDesignFactorEntity(); return; }
+                const factor = DESIGN_FACTOR_DEFINITIONS.find((item) => item.id === STATE.selectedDesignFactorId) || DESIGN_FACTOR_DEFINITIONS[0];
+                const priorities = calculateDesignPriorities({ ...assessment, assessed: true });
+                const completedCount = DESIGN_FACTOR_DEFINITIONS.filter((item) => item.mode !== 'percent' || Math.round(item.items.reduce((sum, row) => sum + Number(assessment.responses[item.id][row[0]] || 0), 0)) === 100).length;
+                container.innerHTML = `<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><button type="button" onclick="app.closeDesignFactorEntity()" class="text-sm font-medium text-indigo-600 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i>Back to entities</button><button type="button" onclick="app.completeDesignFactorAssessment()" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-indigo-700"><i class="fa-solid fa-check mr-2"></i>${assessment.assessed ? 'Save Re-assessment' : 'Complete Assessment'}</button></div>
+                    <section class="mb-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><div class="flex flex-wrap items-start justify-between gap-4"><div><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">${assessment.assessed ? 'Design factor assessment' : 'New design factor assessment'}</p><h2 class="mt-1 text-2xl font-bold text-slate-800">${assessment.entityName}</h2><p class="mt-1 text-sm text-slate-500">${assessment.entityType} · ${assessment.lastUpdated ? `Last assessed ${assessment.lastUpdated}` : 'Not previously assessed'}</p></div><div class="min-w-52"><div class="mb-1 flex justify-between text-xs font-semibold text-slate-500"><span>Survey validation</span><span>${completedCount}/10</span></div><div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:${completedCount * 10}%"></div></div></div></div></section>
+                    <div class="mb-5 inline-flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm"><button type="button" onclick="app.setDesignFactorDetailTab('details')" class="rounded-md px-4 py-2 text-sm font-semibold ${STATE.designFactorDetailTab === 'details' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}">Design Factor Details</button><button type="button" onclick="app.setDesignFactorDetailTab('summary')" class="rounded-md px-4 py-2 text-sm font-semibold ${STATE.designFactorDetailTab === 'summary' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}">Summary</button></div>
+                    ${STATE.designFactorDetailTab === 'summary' ? `<section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><h3 class="text-lg font-bold text-slate-800">Governance objective priorities</h3><p class="mt-1 text-sm text-slate-500">All COBIT 2019 governance and management objectives ranked by relative design importance.</p><div class="mt-5 divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200">${priorities.map((item,index) => `<div class="grid grid-cols-[40px_minmax(220px,1fr)_minmax(160px,1.2fr)_56px] items-center gap-3 px-4 py-3 text-xs"><span class="text-slate-400">${index+1}</span><div><span class="font-mono font-bold text-slate-700">${item.code}</span><p class="mt-0.5 text-xs text-slate-500">${getObjectiveName(item.code)}</p></div><div class="h-2.5 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-indigo-500" style="width:${item.score}%"></div></div><span class="text-right font-bold text-indigo-700">${item.score}</span></div>`).join('')}</div><p class="mt-4 rounded-lg bg-amber-50 p-3 text-xs text-amber-800"><i class="fa-solid fa-circle-info mr-1"></i>These design scores feed the Capability Level project Reporting tab for design-versus-realization comparison.</p></section>` : `<div class="flex min-h-[650px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"><aside class="w-64 shrink-0 border-r border-slate-200 bg-slate-50 p-3"><p class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">COBIT 2019 Design Factors</p><div class="space-y-1">${DESIGN_FACTOR_DEFINITIONS.map((item) => `<button type="button" onclick="app.selectDesignFactor('${item.id}')" class="w-full rounded-lg px-3 py-2.5 text-left transition ${factor.id === item.id ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700'}"><span class="block text-xs font-bold">${item.id}</span><span class="mt-0.5 block text-xs ${factor.id === item.id ? 'text-indigo-100' : 'text-slate-400'}">${item.name}</span></button>`).join('')}</div></aside><main class="min-w-0 flex-1 p-6 lg:p-8"><div class="mb-6 border-b border-slate-100 pb-4"><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">${factor.id}</p><h3 class="mt-1 text-xl font-bold text-slate-800">${factor.name}</h3><p class="mt-1 text-sm text-slate-500">${factor.scaleLabel} · ${factor.items.length} survey item${factor.items.length === 1 ? '' : 's'}</p></div>${renderDesignFactorInput(factor, assessment)}</main></div>`}`;
+            }
+
             function renderCurrentView() {
                 const container = document.getElementById('app-container');
                 if (!container) return;
                 switch (STATE.activeMenu) {
                     case 'dashboard': renderDashboard(container); break;
                     case 'standards': renderStandards(container); break;
-                    case 'assessment': renderAssessment(container); break;
+                    case 'assessment':
+                    case 'design-factor': renderDesignFactor(container); break;
+                    case 'capability': renderAssessment(container); break;
                     case 'files': renderFileManagement(container); break;
                     case 'admin': renderAdmin(container); break;
                     default: renderDashboard(container); break;
@@ -643,8 +918,14 @@
             function renderProjectReport(project, standard) {
                 const report = calculateProjectReport(standard);
                 const assignedPeople = (project.assignedUsers || []).map((id) => STATE.users.find((user) => String(user.id) === String(id))).filter(Boolean);
+                const designAssessment = STATE.designFactorAssessments.find((item) => item.entityName === project.org && item.assessed);
+                const designPriorities = calculateDesignPriorities(designAssessment).slice(0, 10);
                 return `
                     <div class="space-y-6">
+                        <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <div class="flex flex-wrap items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">Design vs. realization</p><h3 class="mt-1 font-bold text-slate-800">Design factor priority compared with achieved capability</h3><p class="mt-1 text-xs text-slate-500">Design score is sourced from the latest DF1–DF10 assessment; realization equals achieved capability level × 20.</p></div>${designAssessment ? `<span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Design assessed ${designAssessment.lastUpdated}</span>` : ''}</div>
+                            ${designAssessment ? `<div class="mt-5 overflow-x-auto"><table class="w-full min-w-[720px] text-sm"><thead class="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-4 py-3">Objective</th><th class="px-4 py-3">Design importance</th><th class="px-4 py-3">Realized capability</th><th class="px-4 py-3 text-right">Gap</th></tr></thead><tbody class="divide-y divide-slate-100">${designPriorities.map((priority) => { const realizedEntry=report.objectives.find((entry) => entry.objective.code === priority.code); const level=realizedEntry?.capability.highestAchievedLevel || 0; const realization=level*20; const gap=priority.score-realization; return `<tr><td class="px-4 py-3"><span class="font-mono font-bold text-slate-700">${priority.code}</span><p class="mt-0.5 text-xs text-slate-400">${getObjectiveName(priority.code)}</p></td><td class="px-4 py-3"><div class="flex items-center gap-2"><div class="h-2 w-28 overflow-hidden rounded-full bg-slate-100"><div class="h-full bg-indigo-500" style="width:${priority.score}%"></div></div><span class="text-xs font-bold text-indigo-700">${priority.score}</span></div></td><td class="px-4 py-3"><span class="font-semibold text-slate-700">Level ${level}</span><span class="ml-2 text-xs text-slate-400">(${realization}/100)</span></td><td class="px-4 py-3 text-right"><span class="rounded-full px-2.5 py-1 text-xs font-bold ${gap > 20 ? 'bg-red-50 text-red-700' : gap > 0 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}">${gap > 0 ? '+' : ''}${gap}</span></td></tr>`; }).join('')}</tbody></table></div>` : `<div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i>No completed design factor assessment is available for ${project.org}. Complete DF1–DF10 in Assessment → Design Factor to enable this comparison.</div>`}
+                        </section>
                         <div class="grid gap-4 lg:grid-cols-2">
                             <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                                 <h3 class="font-bold text-slate-800">Domain capability overview</h3>
@@ -807,10 +1088,10 @@
                     STATE.activeObjectiveId = null;
                     STATE.isEditMode = false;
                 }
-                if (menuName !== 'assessment') {
-                    STATE.assessmentView = 'list';
-                    STATE.selectedProjectId = null;
-                }
+                STATE.assessmentView = 'list';
+                STATE.selectedProjectId = null;
+                STATE.designFactorView = 'list';
+                STATE.selectedDesignEntityId = null;
 
                 // Update Nav UI Active State
                 document.querySelectorAll('.nav-item').forEach(el => {
@@ -821,6 +1102,11 @@
                 if(activeNav) {
                     activeNav.classList.add('bg-indigo-50', 'text-indigo-700', 'border-r-4', 'border-indigo-600');
                     activeNav.classList.remove('text-slate-600');
+                }
+                if (menuName === 'design-factor' || menuName === 'capability') {
+                    const assessmentNav = document.getElementById('nav-assessment');
+                    assessmentNav?.classList.add('bg-indigo-50', 'text-indigo-700');
+                    assessmentNav?.classList.remove('text-slate-600');
                 }
 
                 // Render Content with simple fade
@@ -890,7 +1176,7 @@
                     html = `
                     <div class="flex justify-between items-center mb-6">
                         <div>
-                            <h2 class="text-2xl lg:text-3xl font-bold text-slate-800">Standards & Frameworks</h2>
+                            <h2 class="text-2xl lg:text-3xl font-bold text-slate-800">Standards & Framework</h2>
                             <p class="text-slate-500 mt-1">Manage assessment criteria and derivations.</p>
                         </div>
                         ${canEdit ? `<button onclick="alert('Create standard flow would open here.')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm shadow-sm transition font-medium flex items-center"><i class="fa-solid fa-plus mr-2"></i>New Standard</button>` : ''}
@@ -1245,8 +1531,9 @@
                 let html = STATE.assessmentView === 'detail' ? '' : `
                     <div class="flex justify-between items-center mb-6">
                         <div>
-                            <h2 class="text-2xl lg:text-3xl font-bold text-slate-800">Assessment Projects</h2>
-                            <p class="text-slate-500 mt-1">Manage and execute capability assessments.</p>
+                            <p class="text-xs font-bold uppercase tracking-wider text-indigo-600">Assessment</p>
+                            <h2 class="mt-1 text-2xl lg:text-3xl font-bold text-slate-800">Capability Level</h2>
+                            <p class="text-slate-500 mt-1">Manage projects and assess realized capability against the entity's design priorities.</p>
                         </div>
                         ${canCreate && STATE.assessmentView === 'list' ? `<button onclick="app.setAssessmentView('create')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm shadow-sm transition font-medium flex items-center"><i class="fa-solid fa-plus mr-2"></i>New Project</button>` : ''}
                     </div>
@@ -1752,7 +2039,9 @@
                 openAttachmentModal, closeAttachmentModal, attachFileToTarget, removeFileFromTarget, handleAttachmentUpload, runAiAssessmentForTarget,
                 updateActivityAssessment, selectAssessmentObjective, setAssessmentDetailTab, setProjectWorkspaceTab, filterPersonnelByOrganization,
                 toggleObjectivesNav, setObjectiveDomainFilter, togglePractice, selectPracticeTab,
-                setAssessmentView, viewAssessmentDetail, submitNewProject
+                setAssessmentView, viewAssessmentDetail, submitNewProject,
+                openDesignFactorEntity, closeDesignFactorEntity, selectDesignFactor, setDesignFactorDetailTab,
+                updateDesignFactorAnswer, completeDesignFactorAssessment
             };
 
         })();
