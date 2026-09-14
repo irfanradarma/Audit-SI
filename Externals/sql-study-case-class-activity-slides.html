@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SQL Study Case — Class Activity</title>
+    <style>
+      :root {
+        --ink: #10213b;
+        --muted: #68758a;
+        --blue: #2563eb;
+        --sky: #38bdf8;
+        --green: #059669;
+        --amber: #d97706;
+        --red: #dc2626;
+        --panel: #eef3f9;
+        --line: #d7e0ea;
+        --white: #ffffff;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        overflow: hidden;
+        background: #091426;
+        color: var(--ink);
+        font-family: Inter, Aptos, "Segoe UI", Arial, sans-serif;
+      }
+      button { font: inherit; }
+      .deck { height: 100%; display: grid; place-items: center; padding: 30px; }
+      .slide {
+        position: absolute;
+        width: min(calc(100vw - 60px), calc((100vh - 60px) * 16 / 9));
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        padding: 4.8% 5.5%;
+        background: var(--white);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(45px) scale(.985);
+        transition: opacity .25s ease, transform .3s ease;
+        box-shadow: 0 30px 80px rgba(0,0,0,.38);
+      }
+      .slide.active { opacity: 1; pointer-events: auto; transform: none; }
+      .slide::after {
+        content: attr(data-page);
+        position: absolute; right: 4%; bottom: 3.2%;
+        color: #94a3b8; font-size: clamp(9px, 1vw, 14px); font-weight: 700;
+      }
+      .eyebrow {
+        margin: 0 0 1.2%; color: var(--blue); font-size: clamp(11px, 1.15vw, 17px);
+        font-weight: 900; letter-spacing: .16em; text-transform: uppercase;
+      }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { max-width: 850px; margin-bottom: 3%; font-size: clamp(42px, 6.1vw, 88px); line-height: .98; letter-spacing: -.045em; }
+      h2 { margin-bottom: 3.2%; font-size: clamp(30px, 3.8vw, 55px); line-height: 1.06; letter-spacing: -.035em; }
+      h3 { margin-bottom: 2%; font-size: clamp(18px, 2vw, 29px); line-height: 1.15; }
+      p, li { font-size: clamp(14px, 1.45vw, 21px); line-height: 1.42; }
+      .lead { max-width: 760px; color: var(--muted); font-size: clamp(18px, 2.2vw, 31px); line-height: 1.35; }
+      .muted { color: var(--muted); }
+      .accent { color: var(--blue); }
+      .big-number { font-size: clamp(54px, 8vw, 116px); font-weight: 900; line-height: .85; letter-spacing: -.06em; }
+      .rule { width: 100%; height: 1px; margin: 2.5% 0; background: var(--line); }
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 5%; align-items: stretch; }
+      .split.wide-left { grid-template-columns: 1.25fr .75fr; }
+      .cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2%; }
+      .cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.7%; }
+      .panel { padding: 5%; background: var(--panel); border-top: 5px solid var(--blue); }
+      .panel.green { border-color: var(--green); }
+      .panel.amber { border-color: var(--amber); }
+      .panel.red { border-color: var(--red); }
+      .panel p:last-child { margin-bottom: 0; }
+      .kicker { display: block; margin-bottom: 7%; color: var(--blue); font-size: clamp(10px, 1vw, 15px); font-weight: 900; letter-spacing: .12em; }
+      .timeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2%; margin-top: 7%; }
+      .timeline::before { content: ""; position: absolute; top: 19px; left: 4%; right: 4%; height: 2px; background: var(--ink); }
+      .step { position: relative; padding-top: 54px; }
+      .step::before { content: ""; position: absolute; top: 12px; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 7px solid white; box-shadow: 0 0 0 2px var(--blue); }
+      .step b { display: block; margin-bottom: 7px; font-size: clamp(14px, 1.3vw, 19px); }
+      .step span { color: var(--muted); font-size: clamp(11px, 1.05vw, 15px); line-height: 1.4; }
+      .route { display: flex; align-items: stretch; gap: 2.5%; margin-top: 5%; }
+      .route > div { flex: 1; padding: 3.5%; background: var(--panel); }
+      .route .arrow { flex: 0; align-self: center; padding: 0; color: var(--blue); background: none; font-size: clamp(25px, 3vw, 44px); }
+      .route b { display: block; margin-bottom: 7px; font-size: clamp(18px, 1.9vw, 27px); }
+      .route span { color: var(--muted); font-size: clamp(12px, 1.15vw, 17px); line-height: 1.35; }
+      .score { display: grid; grid-template-columns: 1.4fr .6fr; gap: 5%; align-items: center; }
+      .meter { height: 34px; display: flex; overflow: hidden; margin: 3% 0 1.5%; background: var(--panel); }
+      .meter i:first-child { width: 80%; background: var(--blue); }
+      .meter i:last-child { width: 20%; background: var(--sky); }
+      .legend { display: flex; gap: 5%; color: var(--muted); font-size: clamp(12px, 1.2vw, 17px); }
+      .dot { display: inline-block; width: 10px; height: 10px; margin-right: 7px; background: var(--blue); }
+      .dot.sky { background: var(--sky); }
+      .group-balance { display: flex; align-items: flex-end; justify-content: space-between; gap: 4%; height: 300px; padding: 2% 4% 0; border-bottom: 2px solid var(--ink); }
+      .team { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; }
+      .team .bar { width: 78%; background: var(--blue); }
+      .team:nth-child(2) .bar { background: var(--sky); }
+      .team:nth-child(3) .bar { background: var(--green); }
+      .team:nth-child(4) .bar { background: var(--amber); }
+      .team b { font-size: clamp(13px, 1.2vw, 18px); }
+      .team span { color: var(--muted); font-size: clamp(10px, 1vw, 14px); }
+      .assignment { display: grid; grid-template-columns: 1fr 1fr; gap: 2%; }
+      .procedure { display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: center; padding: 3%; border: 1px solid var(--line); }
+      .procedure .no { display: grid; place-items: center; width: 36px; height: 36px; background: var(--panel); color: var(--blue); font-weight: 900; }
+      .procedure b { font-size: clamp(12px, 1.15vw, 17px); }
+      .procedure small { display: block; margin-top: 4px; color: var(--muted); }
+      .owner { color: var(--green); font-size: clamp(10px, .95vw, 14px); font-weight: 800; }
+      .workspace { display: grid; grid-template-columns: .55fr 1.2fr .75fr; min-height: 390px; border: 1px solid var(--line); }
+      .workspace > div { padding: 6%; border-right: 1px solid var(--line); }
+      .workspace > div:last-child { border-right: 0; background: var(--panel); }
+      .mini-row { margin-bottom: 8px; padding: 10px; border-left: 4px solid var(--blue); background: white; font-size: clamp(10px, .95vw, 14px); }
+      .editor-line { height: 12px; margin: 11px 0; background: #dbe4ef; }
+      .editor-line.short { width: 62%; }
+      .sample-table { width: 100%; border-collapse: collapse; font-size: clamp(9px, .85vw, 13px); }
+      .sample-table th, .sample-table td { padding: 8px; border: 1px solid #cbd5e1; text-align: left; }
+      .sample-table th { background: white; }
+      .state-flow { display: grid; grid-template-columns: 1fr .2fr 1fr .2fr 1fr .2fr 1fr .2fr 1fr; gap: 1%; align-items: center; margin-top: 6%; }
+      .state { padding: 18% 7%; text-align: center; background: var(--panel); border-bottom: 5px solid #94a3b8; font-weight: 800; font-size: clamp(12px, 1.25vw, 18px); }
+      .state:nth-of-type(2) { border-color: var(--blue); }
+      .state:nth-of-type(3) { border-color: var(--amber); }
+      .state:nth-of-type(4) { border-color: var(--red); }
+      .state:nth-of-type(5) { border-color: var(--green); }
+      .flow-arrow { color: var(--blue); text-align: center; font-size: clamp(20px, 2.3vw, 34px); }
+      .checklist { list-style: none; margin: 0; padding: 0; }
+      .checklist li { position: relative; margin: 0 0 3%; padding-left: 38px; }
+      .checklist li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--green); font-weight: 900; }
+      .warning { padding: 4%; border-left: 6px solid var(--amber); background: #fff7ed; }
+      .controls { position: fixed; z-index: 100; left: 50%; bottom: 12px; display: flex; align-items: center; gap: 10px; transform: translateX(-50%); }
+      .controls button { width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; background: rgba(15,23,42,.82); color: white; cursor: pointer; backdrop-filter: blur(8px); }
+      .controls button:hover { background: var(--blue); }
+      .counter { min-width: 60px; color: #dbeafe; text-align: center; font-size: 12px; font-weight: 700; }
+      .progress { position: fixed; z-index: 100; left: 0; bottom: 0; width: 0; height: 4px; background: var(--sky); transition: width .25s; }
+      @media (max-width: 750px) {
+        .deck { padding: 10px; }
+        .slide { width: calc(100vw - 20px); }
+        .controls { bottom: 5px; }
+      }
+      @media print {
+        @page { size: 13.333in 7.5in; margin: 0; }
+        body { overflow: visible; background: white; }
+        .deck { display: block; height: auto; padding: 0; }
+        .slide { position: relative; display: block; width: 13.333in; height: 7.5in; page-break-after: always; opacity: 1; transform: none; box-shadow: none; }
+        .controls, .progress { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck">
+      <section class="slide active" data-page="01 / 12">
+        <p class="eyebrow">POST-UTS · SQL STUDY CASE</p>
+        <h1>Class Activity:<br><span class="accent">SQL Audit Investigation</span></h1>
+        <p class="lead">Berkompetisi sebagai individu. Berkolaborasi sebagai tim. Menyusun kesimpulan sebagai auditor.</p>
+        <div class="rule"></div>
+        <p class="muted">jurnal.irfanradarma.my.id · Post-UTS → SQL Study Case → Exercise</p>
+      </section>
+
+      <section class="slide" data-page="02 / 12">
+        <p class="eyebrow">GAMBAR BESAR</p>
+        <h2>Satu aktivitas, dua cara berpikir</h2>
+        <div class="split">
+          <div class="panel">
+            <span class="kicker">01 · QUALIFICATION</span>
+            <h3>Buktikan fondasi SQL secara individu</h3>
+            <p class="muted">Tiga fase singkat menguji ketepatan dan kecepatan: SELECT, agregasi, fungsi tanggal, dan JOIN.</p>
+          </div>
+          <div class="panel green">
+            <span class="kicker">02 · AUDIT PHASE</span>
+            <h3>Gunakan SQL untuk menemukan cerita di balik data</h3>
+            <p class="muted">Tim membagi prosedur, menguji bukti, lalu menyusun kesimpulan audit yang dapat dipertanggungjawabkan.</p>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="step"><b>Check-in</b><span>Masuk sesuai kelas</span></div>
+          <div class="step"><b>3 fase</b><span>Qualification individu</span></div>
+          <div class="step"><b>Ranking</b><span>Leaderboard kumulatif</span></div>
+          <div class="step"><b>Grup</b><span>Dibentuk seimbang</span></div>
+          <div class="step"><b>Audit</b><span>Investigasi bersama</span></div>
+        </div>
+      </section>
+
+      <section class="slide" data-page="03 / 12">
+        <p class="eyebrow">LANGKAH PERTAMA</p>
+        <h2>Masuk dari kelas dan perangkat Anda sendiri</h2>
+        <div class="route">
+          <div><b>1. Buka Jurnal</b><span>Login menggunakan akun mahasiswa.</span></div>
+          <div class="arrow">→</div>
+          <div><b>2. Pilih menu</b><span>Post-UTS → SQL Study Case → Exercise.</span></div>
+          <div class="arrow">→</div>
+          <div><b>3. Check-in</b><span>Masukkan kode yang diberikan dosen.</span></div>
+        </div>
+        <div class="split" style="margin-top:6%">
+          <div>
+            <h3>Aktivitas terpisah per kelas</h3>
+            <p class="muted">Leaderboard, grup, jawaban, dan progres kelas lain tidak akan tercampur.</p>
+          </div>
+          <div class="warning">
+            <h3>Tunggu aba-aba dosen</h3>
+            <p>Setiap fase hanya muncul setelah dibuka oleh admin.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page="04 / 12">
+        <p class="eyebrow">QUALIFICATION PHASE</p>
+        <h2>Tiga sprint menguji fondasi SQL</h2>
+        <div class="cols-3">
+          <div class="panel">
+            <span class="big-number">10</span>
+            <h3>Fase 1</h3>
+            <p>SELECT · FROM · WHERE · kondisi dasar</p>
+          </div>
+          <div class="panel amber">
+            <span class="big-number">5</span>
+            <h3>Fase 2</h3>
+            <p>Aggregate function · date function</p>
+          </div>
+          <div class="panel green">
+            <span class="big-number">5</span>
+            <h3>Fase 3</h3>
+            <p>JOIN dan hubungan antartabel</p>
+          </div>
+        </div>
+        <p class="lead" style="margin-top:4%">Semua soal berbentuk pilihan ganda dan dikerjakan sendiri.</p>
+      </section>
+
+      <section class="slide" data-page="05 / 12">
+        <p class="eyebrow">WAKTU & SKOR</p>
+        <h2>Tepat lebih penting; cepat menjadi pembeda</h2>
+        <div class="score">
+          <div>
+            <h3>Skor setiap fase</h3>
+            <div class="meter"><i></i><i></i></div>
+            <div class="legend"><span><i class="dot"></i>80% ketepatan</span><span><i class="dot sky"></i>20% kecepatan</span></div>
+            <div class="rule"></div>
+            <p class="muted">Bonus kecepatan hanya bernilai jika jawaban benar. Menebak cepat tidak otomatis menguntungkan.</p>
+          </div>
+          <div class="panel">
+            <span class="big-number">5</span>
+            <h3>menit per fase</h3>
+            <p>Jawaban tersimpan saat dipilih dan otomatis disubmit ketika waktu habis.</p>
+          </div>
+        </div>
+        <div class="warning" style="margin-top:3%"><b>Jika semua peserta sudah submit lebih awal, fase selesai otomatis.</b></div>
+      </section>
+
+      <section class="slide" data-page="06 / 12">
+        <p class="eyebrow">LEADERBOARD & GROUPING</p>
+        <h2>Hasil individu membentuk tim yang seimbang</h2>
+        <div class="split wide-left">
+          <div class="group-balance">
+            <div class="team"><div class="bar" style="height:72%"></div><b>Grup 1</b><span>total 241</span></div>
+            <div class="team"><div class="bar" style="height:74%"></div><b>Grup 2</b><span>total 247</span></div>
+            <div class="team"><div class="bar" style="height:70%"></div><b>Grup 3</b><span>total 236</span></div>
+            <div class="team"><div class="bar" style="height:73%"></div><b>Grup 4</b><span>total 243</span></div>
+          </div>
+          <div>
+            <h3>Skor kumulatif</h3>
+            <p>Fase 1 <b>30%</b><br>Fase 2 <b>30%</b><br>Fase 3 <b>40%</b></p>
+            <div class="rule"></div>
+            <p class="muted">Setelah Fase 3, sistem membagi sekitar tiga mahasiswa per grup dan menyeimbangkan total skor antartim.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page="07 / 12">
+        <p class="eyebrow">AUDIT PHASE</p>
+        <h2>Anda bukan sekadar menulis query—Anda mencari bukti</h2>
+        <div class="split">
+          <div>
+            <h3>Dataset investigasi</h3>
+            <ul class="checklist">
+              <li>User dan aset perusahaan</li>
+              <li>Login dan autentikasi</li>
+              <li>Aktivitas database</li>
+              <li>Traffic jaringan</li>
+              <li>Laporan insiden</li>
+            </ul>
+          </div>
+          <div class="panel red">
+            <span class="kicker">MISSION</span>
+            <h3>Rekonstruksi insiden keamanan informasi</h3>
+            <p>Gunakan prosedur audit untuk menentukan pola normal, anomali, pihak terkait, waktu kejadian, aset terdampak, dan modus serangan.</p>
+            <p class="muted">Waspadai red herring dan easter egg di dalam data.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page="08 / 12">
+        <p class="eyebrow">AUDIT PROGRAM ASSIGNMENT</p>
+        <h2>Bagikan pekerjaan sebelum membuka workpaper</h2>
+        <div class="assignment">
+          <div class="procedure"><span class="no">01</span><div><b>Profil traffic harian</b><small>Analisis deskriptif</small></div><span class="owner">Dina</span></div>
+          <div class="procedure"><span class="no">02</span><div><b>Rush hour & anomali</b><small>Analisis per jam</small></div><span class="owner">Raka</span></div>
+          <div class="procedure"><span class="no">03</span><div><b>Pola autentikasi</b><small>Login gagal</small></div><span class="owner">Sari</span></div>
+          <div class="procedure"><span class="no">04</span><div><b>User & aset Finance</b><small>JOIN</small></div><span class="owner">Dina</span></div>
+          <div class="procedure"><span class="no">05</span><div><b>Sumber login gagal</b><small>IP eksternal</small></div><span class="owner">Raka</span></div>
+          <div class="procedure"><span class="no">06</span><div><b>Login luar jam kerja</b><small>Time condition</small></div><span class="owner">Sari</span></div>
+        </div>
+        <div class="warning" style="margin-top:3%"><b>Klik Ambil untuk diri sendiri.</b> Semua prosedur harus memiliki pemilik sebelum workspace terbuka.</div>
+      </section>
+
+      <section class="slide" data-page="09 / 12">
+        <p class="eyebrow">INDIVIDUAL WORKSPACE</p>
+        <h2>Fokus pada prosedur milik Anda</h2>
+        <div class="workspace">
+          <div>
+            <h3>My Procedures</h3>
+            <div class="mini-row">01 · Traffic harian</div>
+            <div class="mini-row">04 · Aset Finance</div>
+            <div class="mini-row">09 · Ekspor data</div>
+          </div>
+          <div>
+            <h3>Query & kesimpulan</h3>
+            <p class="muted">Prosedur audit menjelaskan bukti yang harus dicari.</p>
+            <div class="editor-line"></div><div class="editor-line"></div><div class="editor-line short"></div>
+            <div class="rule"></div>
+            <div class="editor-line"></div><div class="editor-line short"></div>
+          </div>
+          <div>
+            <h3>Expected Output</h3>
+            <p class="muted">Contoh dummy menunjukkan struktur, bukan jawaban sebenarnya.</p>
+            <table class="sample-table"><tr><th>date</th><th>events</th></tr><tr><td>2026-08-01</td><td>1,048</td></tr><tr><td>2026-08-02</td><td>132</td></tr></table>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:2%">Draft Anda bersifat pribadi dan tidak akan tertimpa refresh anggota lain.</p>
+      </section>
+
+      <section class="slide" data-page="10 / 12">
+        <p class="eyebrow">SUBMISSION & REVIEW</p>
+        <h2>Satu workpaper melewati dua pemeriksaan</h2>
+        <div class="state-flow">
+          <div class="state">Draft</div><div class="flow-arrow">→</div>
+          <div class="state">Submit</div><div class="flow-arrow">→</div>
+          <div class="state">SQL check</div><div class="flow-arrow">→</div>
+          <div class="state">Review dosen</div><div class="flow-arrow">→</div>
+          <div class="state">Selesai</div>
+        </div>
+        <div class="split" style="margin-top:7%">
+          <div>
+            <h3>Otomatis: hasil SQL</h3>
+            <p class="muted">Nama kolom, jumlah baris, dan isi seluruh hasil dibandingkan dengan kunci backend.</p>
+          </div>
+          <div>
+            <h3>Manual: kesimpulan audit</h3>
+            <p class="muted">Dosen menyetujui argumentasi atau mengirim catatan revisi.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page="11 / 12">
+        <p class="eyebrow">KENDALI ADMIN</p>
+        <h2>Dosen mengatur ritme dan memantau semua kelas</h2>
+        <div class="cols-4">
+          <div><span class="kicker">OPEN</span><h3>Check-in</h3><p class="muted">Aktivitas tersembunyi sampai dibuka.</p></div>
+          <div><span class="kicker">TRIGGER</span><h3>Fase 1–3</h3><p class="muted">Setiap fase dimulai oleh admin.</p></div>
+          <div><span class="kicker">MONITOR</span><h3>Progress</h3><p class="muted">Pantau jawaban, assignment, dan submission.</p></div>
+          <div><span class="kicker">REVIEW</span><h3>Kesimpulan</h3><p class="muted">Setujui atau minta revisi per prosedur.</p></div>
+        </div>
+        <div class="rule" style="margin-top:5%"></div>
+        <p class="lead">Seluruh aktivitas dikompartemenkan per kelas—mulai dari check-in sampai kertas kerja.</p>
+      </section>
+
+      <section class="slide" data-page="12 / 12">
+        <p class="eyebrow">SIAP MULAI</p>
+        <h2>Strategi terbaik: akurat, terkoordinasi, dan berbasis bukti</h2>
+        <div class="split">
+          <ul class="checklist">
+            <li>Pastikan koneksi dan login sebelum check-in</li>
+            <li>Baca pilihan dengan teliti pada qualification</li>
+            <li>Bagikan prosedur secara seimbang</li>
+          </ul>
+          <ul class="checklist">
+            <li>Uji query di SQL client bila diperlukan</li>
+            <li>Submit jawaban melalui Jurnal</li>
+            <li>Tulis kesimpulan berdasarkan bukti, bukan dugaan</li>
+          </ul>
+        </div>
+        <div class="panel green" style="margin-top:5%">
+          <h3>Tujuan akhir</h3>
+          <p>Jelaskan apa yang terjadi, kapan terjadi, siapa yang terlibat, bagaimana modusnya, dan bukti SQL apa yang mendukung kesimpulan Anda.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="controls" aria-label="Navigasi slide">
+      <button id="prev" aria-label="Slide sebelumnya">←</button>
+      <span class="counter" id="counter">1 / 12</span>
+      <button id="next" aria-label="Slide berikutnya">→</button>
+      <button id="full" aria-label="Layar penuh">⛶</button>
+    </div>
+    <div class="progress" id="progress"></div>
+    <script>
+      const slides = [...document.querySelectorAll('.slide')];
+      let index = 0;
+      function show(next) {
+        index = Math.max(0, Math.min(slides.length - 1, next));
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+        document.getElementById('counter').textContent = `${index + 1} / ${slides.length}`;
+        document.getElementById('progress').style.width = `${((index + 1) / slides.length) * 100}%`;
+        history.replaceState(null, '', `#${index + 1}`);
+      }
+      document.getElementById('prev').onclick = () => show(index - 1);
+      document.getElementById('next').onclick = () => show(index + 1);
+      document.getElementById('full').onclick = () => document.documentElement.requestFullscreen?.();
+      addEventListener('keydown', (event) => {
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) show(index + 1);
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) show(index - 1);
+        if (event.key === 'Home') show(0);
+        if (event.key === 'End') show(slides.length - 1);
+        if (event.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
+      });
+      const initial = Number(location.hash.slice(1));
+      show(Number.isFinite(initial) && initial > 0 ? initial - 1 : 0);
+    </script>
+  </body>
+</html>
