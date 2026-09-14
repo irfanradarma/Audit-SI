@@ -1,24 +1,24 @@
--- Synthetic training data for the SQL Audit Incident Lab.
+-- --------------------------------------------------------
+-- SQL Audit Incident Lab
+-- Compatible with MySQL and MariaDB imports (HeidiSQL-style dump)
 -- All persons, addresses, events, and identifiers are fictional.
--- Run this file with a MySQL/MariaDB account that may create databases.
--- The script creates and selects its own database so no manual setup is needed.
+-- --------------------------------------------------------
 
-CREATE DATABASE IF NOT EXISTS audit_incident_lab
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 
-USE audit_incident_lab;
+-- Dumping database structure for audit_incident_lab
+DROP DATABASE IF EXISTS `audit_incident_lab`;
+CREATE DATABASE IF NOT EXISTS `audit_incident_lab` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+USE `audit_incident_lab`;
 
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS incident_reports;
-DROP TABLE IF EXISTS network_traffic;
-DROP TABLE IF EXISTS database_activity;
-DROP TABLE IF EXISTS login_logs;
-DROP TABLE IF EXISTS assets;
-DROP TABLE IF EXISTS users;
-SET FOREIGN_KEY_CHECKS = 1;
-
-CREATE TABLE users (
+-- Dumping structure for table audit_incident_lab.users
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS users (
   user_id INT PRIMARY KEY,
   username VARCHAR(80) NOT NULL UNIQUE,
   full_name VARCHAR(120) NOT NULL,
@@ -28,9 +28,11 @@ CREATE TABLE users (
   work_end TIME NOT NULL,
   mfa_enabled BOOLEAN NOT NULL,
   account_status VARCHAR(20) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE assets (
+-- Dumping structure for table audit_incident_lab.assets
+DROP TABLE IF EXISTS `assets`;
+CREATE TABLE IF NOT EXISTS assets (
   asset_id INT PRIMARY KEY,
   owner_user_id INT NOT NULL,
   asset_tag VARCHAR(30) NOT NULL UNIQUE,
@@ -39,9 +41,11 @@ CREATE TABLE assets (
   registered_ip VARCHAR(45),
   asset_status VARCHAR(20) NOT NULL,
   FOREIGN KEY (owner_user_id) REFERENCES users(user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE login_logs (
+-- Dumping structure for table audit_incident_lab.login_logs
+DROP TABLE IF EXISTS `login_logs`;
+CREATE TABLE IF NOT EXISTS login_logs (
   login_id BIGINT PRIMARY KEY,
   user_id INT NOT NULL,
   asset_id INT NULL,
@@ -52,9 +56,11 @@ CREATE TABLE login_logs (
   failure_reason VARCHAR(80),
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (asset_id) REFERENCES assets(asset_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE database_activity (
+-- Dumping structure for table audit_incident_lab.database_activity
+DROP TABLE IF EXISTS `database_activity`;
+CREATE TABLE IF NOT EXISTS database_activity (
   activity_id BIGINT PRIMARY KEY,
   login_id BIGINT NOT NULL,
   user_id INT NOT NULL,
@@ -67,9 +73,11 @@ CREATE TABLE database_activity (
   query_text TEXT NOT NULL,
   FOREIGN KEY (login_id) REFERENCES login_logs(login_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE network_traffic (
+-- Dumping structure for table audit_incident_lab.network_traffic
+DROP TABLE IF EXISTS `network_traffic`;
+CREATE TABLE IF NOT EXISTS network_traffic (
   traffic_id BIGINT PRIMARY KEY,
   asset_id INT NULL,
   user_id INT NOT NULL,
@@ -82,9 +90,11 @@ CREATE TABLE network_traffic (
   action VARCHAR(20) NOT NULL,
   FOREIGN KEY (asset_id) REFERENCES assets(asset_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE incident_reports (
+-- Dumping structure for table audit_incident_lab.incident_reports
+DROP TABLE IF EXISTS `incident_reports`;
+CREATE TABLE IF NOT EXISTS incident_reports (
   report_id BIGINT PRIMARY KEY,
   related_login_id BIGINT NULL,
   reported_by_user_id INT NOT NULL,
@@ -96,8 +106,11 @@ CREATE TABLE incident_reports (
   resolution_notes TEXT,
   FOREIGN KEY (related_login_id) REFERENCES login_logs(login_id),
   FOREIGN KEY (reported_by_user_id) REFERENCES users(user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Dumping data for the six audit_incident_lab tables.
+-- Large log tables are intentionally split into batches of at most 250 rows
+-- to remain compatible with clients that use a small max_allowed_packet value.
 INSERT INTO users (user_id, username, full_name, department, role_name, work_start, work_end, mfa_enabled, account_status) VALUES
 (1, 'arif.hidayat', 'Arif Hidayat', 'Information Technology', 'IT Manager', '08:00:00', '17:00:00', 1, 'ACTIVE'),
 (2, 'sita.maharani', 'Sita Maharani', 'Information Technology', 'Database Administrator', '08:00:00', '17:00:00', 1, 'ACTIVE'),
@@ -413,7 +426,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (247, 2, 2, '2026-08-11 09:19:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (248, 2, 2, '2026-08-11 10:20:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (249, 2, 2, '2026-08-11 11:01:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
-(250, 2, 2, '2026-08-11 12:34:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
+(250, 2, 2, '2026-08-11 12:34:00', '10.20.1.22', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (251, 2, 2, '2026-08-11 13:03:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (252, 2, 2, '2026-08-11 14:17:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (253, 2, 2, '2026-08-11 15:26:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
@@ -663,7 +678,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (497, 8, 8, '2026-08-12 08:55:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
 (498, 8, 8, '2026-08-12 09:46:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
 (499, 8, 8, '2026-08-12 10:06:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
-(500, 8, 8, '2026-08-12 11:51:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
+(500, 8, 8, '2026-08-12 11:51:00', '10.20.1.28', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (501, 8, 8, '2026-08-12 12:58:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
 (502, 8, 8, '2026-08-12 13:34:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
 (503, 8, 8, '2026-08-12 14:11:00', '10.20.1.28', 'ID', 'SUCCESS', NULL),
@@ -913,7 +930,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (747, 15, 15, '2026-08-13 14:26:00', '10.20.1.35', 'ID', 'SUCCESS', NULL),
 (748, 15, 15, '2026-08-13 15:49:00', '10.20.1.35', 'ID', 'SUCCESS', NULL),
 (749, 16, 16, '2026-08-13 08:03:00', '10.20.1.36', 'ID', 'SUCCESS', NULL),
-(750, 16, 16, '2026-08-13 09:43:00', '10.20.1.36', 'ID', 'SUCCESS', NULL),
+(750, 16, 16, '2026-08-13 09:43:00', '10.20.1.36', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (751, 16, 16, '2026-08-13 10:25:00', '10.20.1.36', 'ID', 'SUCCESS', NULL),
 (752, 16, 16, '2026-08-13 11:31:00', '10.20.1.36', 'ID', 'SUCCESS', NULL),
 (753, 16, 16, '2026-08-13 12:03:00', '10.20.1.36', 'ID', 'SUCCESS', NULL),
@@ -1163,7 +1182,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (997, 21, 21, '2026-08-14 10:09:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
 (998, 21, 21, '2026-08-14 11:06:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
 (999, 21, 21, '2026-08-14 12:15:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
-(1000, 21, 21, '2026-08-14 13:19:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
+(1000, 21, 21, '2026-08-14 13:19:00', '10.20.2.41', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (1001, 21, 21, '2026-08-14 14:32:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
 (1002, 21, 21, '2026-08-14 15:44:00', '10.20.2.41', 'ID', 'SUCCESS', NULL),
 (1003, 22, 22, '2026-08-14 08:24:00', '10.20.2.42', 'ID', 'SUCCESS', NULL),
@@ -1413,7 +1434,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (1247, 25, 25, '2026-08-17 08:48:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
 (1248, 25, 25, '2026-08-17 09:41:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
 (1249, 25, 25, '2026-08-17 10:25:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
-(1250, 25, 25, '2026-08-17 11:08:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
+(1250, 25, 25, '2026-08-17 11:08:00', '10.20.2.45', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (1251, 25, 25, '2026-08-17 12:53:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
 (1252, 25, 25, '2026-08-17 13:16:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
 (1253, 25, 25, '2026-08-17 14:49:00', '10.20.2.45', 'ID', 'SUCCESS', NULL),
@@ -1663,7 +1686,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (1497, 1, 1, '2026-08-19 15:42:00', '10.20.1.21', 'ID', 'SUCCESS', NULL),
 (1498, 2, 2, '2026-08-19 08:30:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (1499, 2, 2, '2026-08-19 09:15:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
-(1500, 2, 2, '2026-08-19 10:36:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
+(1500, 2, 2, '2026-08-19 10:36:00', '10.20.1.22', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (1501, 2, 2, '2026-08-19 11:07:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (1502, 2, 2, '2026-08-19 13:31:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
 (1503, 2, 2, '2026-08-19 14:09:00', '10.20.1.22', 'ID', 'SUCCESS', NULL),
@@ -1913,7 +1938,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (1747, 9, 9, '2026-08-20 10:31:00', '10.20.1.29', 'ID', 'SUCCESS', NULL),
 (1748, 9, 9, '2026-08-20 11:30:00', '10.20.1.29', 'ID', 'SUCCESS', NULL),
 (1749, 9, 9, '2026-08-20 13:18:00', '10.20.1.29', 'ID', 'FAILED', 'INVALID_PASSWORD'),
-(1750, 9, 9, '2026-08-20 13:19:00', '10.20.1.29', 'ID', 'SUCCESS', NULL),
+(1750, 9, 9, '2026-08-20 13:19:00', '10.20.1.29', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (1751, 9, 9, '2026-08-20 14:09:00', '10.20.1.29', 'ID', 'SUCCESS', NULL),
 (1752, 9, 9, '2026-08-20 15:51:00', '10.20.1.29', 'ID', 'SUCCESS', NULL),
 (1753, 10, 10, '2026-08-20 07:50:00', '10.20.1.30', 'ID', 'SUCCESS', NULL),
@@ -2163,7 +2190,9 @@ INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, co
 (1997, 17, 17, '2026-08-21 11:23:00', '10.20.1.37', 'ID', 'SUCCESS', NULL),
 (1998, 17, 17, '2026-08-21 12:13:00', '10.20.1.37', 'ID', 'SUCCESS', NULL),
 (1999, 17, 17, '2026-08-21 13:35:00', '10.20.1.37', 'ID', 'SUCCESS', NULL),
-(2000, 17, 17, '2026-08-21 14:43:00', '10.20.1.37', 'ID', 'SUCCESS', NULL),
+(2000, 17, 17, '2026-08-21 14:43:00', '10.20.1.37', 'ID', 'SUCCESS', NULL);
+
+INSERT INTO login_logs (login_id, user_id, asset_id, attempted_at, source_ip, country_code, login_status, failure_reason) VALUES
 (2001, 17, 17, '2026-08-21 15:53:00', '10.20.1.37', 'ID', 'SUCCESS', NULL),
 (2002, 18, 18, '2026-08-21 08:42:00', '10.20.1.38', 'ID', 'SUCCESS', NULL),
 (2003, 18, 18, '2026-08-21 09:00:00', '10.20.1.38', 'ID', 'FAILED', 'INVALID_PASSWORD'),
@@ -2549,7 +2578,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (247, 72, 8, '2026-08-10 13:48:00', 'corp_main', 'SELECT', 'customer_accounts', 35, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 35'),
 (248, 72, 8, '2026-08-10 13:50:00', 'corp_main', 'SELECT', 'employee_directory', 145, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 145'),
 (249, 73, 8, '2026-08-10 15:00:00', 'corp_main', 'SELECT', 'employee_directory', 113, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 113'),
-(250, 73, 8, '2026-08-10 15:02:00', 'corp_main', 'SELECT', 'purchase_orders', 117, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 117'),
+(250, 73, 8, '2026-08-10 15:02:00', 'corp_main', 'SELECT', 'purchase_orders', 117, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 117');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (251, 73, 8, '2026-08-10 15:04:00', 'corp_main', 'SELECT', 'employee_directory', 153, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 153'),
 (252, 74, 8, '2026-08-10 15:32:00', 'corp_main', 'SELECT', 'purchase_orders', 73, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 73'),
 (253, 74, 8, '2026-08-10 15:34:00', 'corp_main', 'SELECT', 'purchase_orders', 243, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 243'),
@@ -2799,7 +2830,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (497, 145, 18, '2026-08-10 15:00:00', 'corp_main', 'SELECT', 'employee_directory', 132, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 132'),
 (498, 145, 18, '2026-08-10 15:02:00', 'corp_main', 'SELECT', 'customer_accounts', 36, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 36'),
 (499, 146, 18, '2026-08-10 15:04:00', 'corp_main', 'SELECT', 'employee_directory', 58, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 58'),
-(500, 146, 18, '2026-08-10 15:06:00', 'corp_main', 'SELECT', 'customer_accounts', 224, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 224'),
+(500, 146, 18, '2026-08-10 15:06:00', 'corp_main', 'SELECT', 'customer_accounts', 224, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 224');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (501, 146, 18, '2026-08-10 15:08:00', 'corp_main', 'SELECT', 'employee_directory', 115, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 115'),
 (502, 146, 18, '2026-08-10 15:10:00', 'corp_main', 'SELECT', 'employee_directory', 38, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 38'),
 (503, 146, 18, '2026-08-10 15:12:00', 'corp_main', 'SELECT', 'finance_payments', 99, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 99'),
@@ -3049,7 +3082,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (747, 223, 28, '2026-08-10 13:13:00', 'corp_main', 'SELECT', 'employee_directory', 31, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 31'),
 (748, 224, 28, '2026-08-10 14:28:00', 'corp_main', 'SELECT', 'employee_directory', 209, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 209'),
 (749, 224, 28, '2026-08-10 14:30:00', 'corp_main', 'SELECT', 'purchase_orders', 37, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 37'),
-(750, 224, 28, '2026-08-10 14:32:00', 'corp_main', 'SELECT', 'sales_orders', 164, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 164'),
+(750, 224, 28, '2026-08-10 14:32:00', 'corp_main', 'SELECT', 'sales_orders', 164, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 164');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (751, 224, 28, '2026-08-10 14:34:00', 'corp_main', 'SELECT', 'sales_orders', 9, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 9'),
 (752, 224, 28, '2026-08-10 14:36:00', 'corp_main', 'SELECT', 'employee_directory', 2, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 2'),
 (753, 225, 29, '2026-08-10 08:18:00', 'corp_main', 'SELECT', 'purchase_orders', 248, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 248'),
@@ -3299,7 +3334,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (997, 293, 9, '2026-08-11 08:10:00', 'corp_main', 'SELECT', 'customer_accounts', 215, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 215'),
 (998, 295, 9, '2026-08-11 09:20:00', 'corp_main', 'SELECT', 'customer_accounts', 155, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 155'),
 (999, 295, 9, '2026-08-11 09:22:00', 'corp_main', 'SELECT', 'customer_accounts', 168, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 168'),
-(1000, 296, 9, '2026-08-11 11:40:00', 'corp_main', 'SELECT', 'employee_directory', 51, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 51'),
+(1000, 296, 9, '2026-08-11 11:40:00', 'corp_main', 'SELECT', 'employee_directory', 51, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 51');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (1001, 296, 9, '2026-08-11 11:42:00', 'corp_main', 'SELECT', 'finance_payments', 213, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 213'),
 (1002, 296, 9, '2026-08-11 11:44:00', 'corp_main', 'SELECT', 'employee_directory', 244, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 244'),
 (1003, 296, 9, '2026-08-11 11:46:00', 'corp_main', 'SELECT', 'purchase_orders', 178, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 178'),
@@ -3549,7 +3586,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (1247, 368, 18, '2026-08-11 13:28:00', 'corp_main', 'SELECT', 'employee_directory', 142, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 142'),
 (1248, 368, 18, '2026-08-11 13:30:00', 'corp_main', 'SELECT', 'sales_orders', 130, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 130'),
 (1249, 368, 18, '2026-08-11 13:32:00', 'corp_main', 'SELECT', 'customer_accounts', 146, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 146'),
-(1250, 369, 18, '2026-08-11 14:17:00', 'corp_main', 'SELECT', 'finance_payments', 80, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 80'),
+(1250, 369, 18, '2026-08-11 14:17:00', 'corp_main', 'SELECT', 'finance_payments', 80, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 80');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (1251, 369, 18, '2026-08-11 14:19:00', 'corp_main', 'SELECT', 'customer_accounts', 212, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 212'),
 (1252, 369, 18, '2026-08-11 14:21:00', 'corp_main', 'SELECT', 'employee_directory', 21, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 21'),
 (1253, 370, 18, '2026-08-11 15:55:00', 'corp_main', 'SELECT', 'purchase_orders', 238, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 238'),
@@ -3799,7 +3838,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (1497, 444, 29, '2026-08-11 08:45:00', 'corp_main', 'SELECT', 'finance_payments', 241, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 241'),
 (1498, 444, 29, '2026-08-11 08:47:00', 'corp_main', 'SELECT', 'sales_orders', 79, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 79'),
 (1499, 445, 29, '2026-08-11 09:14:00', 'corp_main', 'SELECT', 'employee_directory', 74, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 74'),
-(1500, 445, 29, '2026-08-11 09:16:00', 'corp_main', 'SELECT', 'purchase_orders', 56, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 56'),
+(1500, 445, 29, '2026-08-11 09:16:00', 'corp_main', 'SELECT', 'purchase_orders', 56, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 56');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (1501, 445, 29, '2026-08-11 09:18:00', 'corp_main', 'SELECT', 'customer_accounts', 201, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 201'),
 (1502, 445, 29, '2026-08-11 09:20:00', 'corp_main', 'SELECT', 'customer_accounts', 49, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 49'),
 (1503, 446, 29, '2026-08-11 10:27:00', 'corp_main', 'SELECT', 'customer_accounts', 244, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 244'),
@@ -4049,7 +4090,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (1747, 515, 10, '2026-08-12 08:13:00', 'corp_main', 'SELECT', 'customer_accounts', 187, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 187'),
 (1748, 516, 10, '2026-08-12 09:28:00', 'corp_main', 'SELECT', 'purchase_orders', 155, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 155'),
 (1749, 516, 10, '2026-08-12 09:30:00', 'corp_main', 'SELECT', 'employee_directory', 63, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 63'),
-(1750, 516, 10, '2026-08-12 09:32:00', 'corp_main', 'SELECT', 'sales_orders', 142, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 142'),
+(1750, 516, 10, '2026-08-12 09:32:00', 'corp_main', 'SELECT', 'sales_orders', 142, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 142');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (1751, 516, 10, '2026-08-12 09:34:00', 'corp_main', 'SELECT', 'finance_payments', 85, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 85'),
 (1752, 516, 10, '2026-08-12 09:36:00', 'corp_main', 'SELECT', 'customer_accounts', 65, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 65'),
 (1753, 517, 10, '2026-08-12 10:40:00', 'corp_main', 'SELECT', 'purchase_orders', 66, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 66'),
@@ -4299,7 +4342,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (1997, 590, 20, '2026-08-12 14:59:00', 'corp_main', 'SELECT', 'sales_orders', 97, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 97'),
 (1998, 590, 20, '2026-08-12 15:01:00', 'corp_main', 'SELECT', 'sales_orders', 171, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 171'),
 (1999, 590, 20, '2026-08-12 15:03:00', 'corp_main', 'SELECT', 'finance_payments', 184, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 184'),
-(2000, 591, 21, '2026-08-12 08:18:00', 'corp_main', 'SELECT', 'employee_directory', 137, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 137'),
+(2000, 591, 21, '2026-08-12 08:18:00', 'corp_main', 'SELECT', 'employee_directory', 137, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 137');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (2001, 591, 21, '2026-08-12 08:20:00', 'corp_main', 'SELECT', 'finance_payments', 121, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 121'),
 (2002, 591, 21, '2026-08-12 08:22:00', 'corp_main', 'SELECT', 'customer_accounts', 179, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 179'),
 (2003, 591, 21, '2026-08-12 08:24:00', 'corp_main', 'SELECT', 'employee_directory', 128, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 128'),
@@ -4549,7 +4594,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (2247, 665, 3, '2026-08-13 10:56:00', 'corp_main', 'SELECT', 'customer_accounts', 198, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 198'),
 (2248, 666, 3, '2026-08-13 11:02:00', 'corp_main', 'SELECT', 'purchase_orders', 247, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 247'),
 (2249, 666, 3, '2026-08-13 11:04:00', 'corp_main', 'SELECT', 'sales_orders', 200, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 200'),
-(2250, 666, 3, '2026-08-13 11:06:00', 'corp_main', 'SELECT', 'finance_payments', 194, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 194'),
+(2250, 666, 3, '2026-08-13 11:06:00', 'corp_main', 'SELECT', 'finance_payments', 194, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 194');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (2251, 667, 3, '2026-08-13 13:55:00', 'corp_main', 'SELECT', 'finance_payments', 18, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 18'),
 (2252, 667, 3, '2026-08-13 13:57:00', 'corp_main', 'SELECT', 'employee_directory', 244, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 244'),
 (2253, 667, 3, '2026-08-13 13:59:00', 'corp_main', 'SELECT', 'customer_accounts', 75, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 75'),
@@ -4799,7 +4846,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (2497, 741, 14, '2026-08-13 13:14:00', 'corp_main', 'SELECT', 'sales_orders', 222, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 222'),
 (2498, 741, 14, '2026-08-13 13:16:00', 'corp_main', 'SELECT', 'customer_accounts', 93, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 93'),
 (2499, 742, 14, '2026-08-13 14:16:00', 'corp_main', 'SELECT', 'sales_orders', 25, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 25'),
-(2500, 742, 14, '2026-08-13 14:18:00', 'corp_main', 'SELECT', 'customer_accounts', 87, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 87'),
+(2500, 742, 14, '2026-08-13 14:18:00', 'corp_main', 'SELECT', 'customer_accounts', 87, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 87');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (2501, 742, 14, '2026-08-13 14:20:00', 'corp_main', 'SELECT', 'finance_payments', 20, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 20'),
 (2502, 742, 14, '2026-08-13 14:22:00', 'corp_main', 'SELECT', 'sales_orders', 165, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 165'),
 (2503, 743, 15, '2026-08-13 08:14:00', 'corp_main', 'SELECT', 'employee_directory', 145, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 145'),
@@ -5049,7 +5098,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (2747, 817, 24, '2026-08-13 13:20:00', 'corp_main', 'SELECT', 'finance_payments', 29, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 29'),
 (2748, 817, 24, '2026-08-13 13:22:00', 'corp_main', 'SELECT', 'customer_accounts', 118, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 118'),
 (2749, 818, 24, '2026-08-13 14:04:00', 'corp_main', 'SELECT', 'finance_payments', 31, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 31'),
-(2750, 818, 24, '2026-08-13 14:06:00', 'corp_main', 'SELECT', 'finance_payments', 80, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 80'),
+(2750, 818, 24, '2026-08-13 14:06:00', 'corp_main', 'SELECT', 'finance_payments', 80, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 80');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (2751, 820, 24, '2026-08-13 15:27:00', 'corp_main', 'SELECT', 'finance_payments', 29, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 29'),
 (2752, 820, 24, '2026-08-13 15:29:00', 'corp_main', 'SELECT', 'employee_directory', 207, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 207'),
 (2753, 820, 24, '2026-08-13 15:31:00', 'corp_main', 'SELECT', 'finance_payments', 219, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 219'),
@@ -5299,7 +5350,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (2997, 895, 6, '2026-08-14 16:00:00', 'corp_main', 'SELECT', 'sales_orders', 204, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 204'),
 (2998, 896, 7, '2026-08-14 02:06:00', 'corp_main', 'SELECT', 'sales_orders', 213, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 213'),
 (2999, 896, 7, '2026-08-14 02:08:00', 'corp_main', 'SELECT', 'sales_orders', 31, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 31'),
-(3000, 897, 8, '2026-08-14 08:26:00', 'corp_main', 'SELECT', 'sales_orders', 146, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 146'),
+(3000, 897, 8, '2026-08-14 08:26:00', 'corp_main', 'SELECT', 'sales_orders', 146, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 146');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (3001, 897, 8, '2026-08-14 08:28:00', 'corp_main', 'SELECT', 'employee_directory', 169, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 169'),
 (3002, 897, 8, '2026-08-14 08:30:00', 'corp_main', 'SELECT', 'customer_accounts', 22, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 22'),
 (3003, 898, 8, '2026-08-14 09:30:00', 'corp_main', 'SELECT', 'customer_accounts', 116, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 116'),
@@ -5549,7 +5602,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (3247, 972, 18, '2026-08-14 08:11:00', 'corp_main', 'SELECT', 'finance_payments', 141, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 141'),
 (3248, 972, 18, '2026-08-14 08:13:00', 'corp_main', 'SELECT', 'finance_payments', 44, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 44'),
 (3249, 973, 18, '2026-08-14 09:58:00', 'corp_main', 'SELECT', 'customer_accounts', 237, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 237'),
-(3250, 973, 18, '2026-08-14 10:00:00', 'corp_main', 'SELECT', 'employee_directory', 118, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 118'),
+(3250, 973, 18, '2026-08-14 10:00:00', 'corp_main', 'SELECT', 'employee_directory', 118, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 118');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (3251, 974, 18, '2026-08-14 12:00:00', 'corp_main', 'SELECT', 'employee_directory', 215, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 215'),
 (3252, 974, 18, '2026-08-14 12:02:00', 'corp_main', 'SELECT', 'purchase_orders', 193, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 193'),
 (3253, 975, 18, '2026-08-14 12:10:00', 'corp_main', 'SELECT', 'employee_directory', 195, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 195'),
@@ -5799,7 +5854,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (3497, 1053, 28, '2026-08-14 14:32:00', 'corp_main', 'SELECT', 'employee_directory', 95, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 95'),
 (3498, 1053, 28, '2026-08-14 14:34:00', 'corp_main', 'SELECT', 'purchase_orders', 43, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 43'),
 (3499, 1053, 28, '2026-08-14 14:36:00', 'corp_main', 'SELECT', 'finance_payments', 140, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 140'),
-(3500, 1053, 28, '2026-08-14 14:38:00', 'corp_main', 'SELECT', 'customer_accounts', 46, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 46'),
+(3500, 1053, 28, '2026-08-14 14:38:00', 'corp_main', 'SELECT', 'customer_accounts', 46, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 46');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (3501, 1054, 29, '2026-08-14 08:43:00', 'corp_main', 'SELECT', 'customer_accounts', 244, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 244'),
 (3502, 1054, 29, '2026-08-14 08:45:00', 'corp_main', 'SELECT', 'sales_orders', 232, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 232'),
 (3503, 1055, 29, '2026-08-14 09:14:00', 'corp_main', 'SELECT', 'customer_accounts', 241, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 241'),
@@ -6049,7 +6106,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (3747, 1127, 5, '2026-08-17 12:15:00', 'corp_main', 'SELECT', 'employee_directory', 126, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 126'),
 (3748, 1127, 5, '2026-08-17 12:17:00', 'corp_main', 'SELECT', 'employee_directory', 223, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 223'),
 (3749, 1127, 5, '2026-08-17 12:19:00', 'corp_main', 'SELECT', 'employee_directory', 212, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 212'),
-(3750, 1128, 5, '2026-08-17 13:13:00', 'corp_main', 'SELECT', 'sales_orders', 72, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 72'),
+(3750, 1128, 5, '2026-08-17 13:13:00', 'corp_main', 'SELECT', 'sales_orders', 72, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 72');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (3751, 1128, 5, '2026-08-17 13:15:00', 'corp_main', 'SELECT', 'finance_payments', 80, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 80'),
 (3752, 1128, 5, '2026-08-17 13:17:00', 'corp_main', 'SELECT', 'employee_directory', 193, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 193'),
 (3753, 1128, 5, '2026-08-17 13:19:00', 'corp_main', 'SELECT', 'sales_orders', 157, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 157'),
@@ -6299,7 +6358,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (3997, 1201, 16, '2026-08-17 14:54:00', 'corp_main', 'SELECT', 'finance_payments', 202, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 202'),
 (3998, 1201, 16, '2026-08-17 14:56:00', 'corp_main', 'SELECT', 'customer_accounts', 58, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 58'),
 (3999, 1202, 16, '2026-08-17 15:46:00', 'corp_main', 'SELECT', 'employee_directory', 165, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 165'),
-(4000, 1202, 16, '2026-08-17 15:48:00', 'corp_main', 'SELECT', 'customer_accounts', 139, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 139'),
+(4000, 1202, 16, '2026-08-17 15:48:00', 'corp_main', 'SELECT', 'customer_accounts', 139, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 139');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (4001, 1202, 16, '2026-08-17 15:50:00', 'corp_main', 'SELECT', 'customer_accounts', 188, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 188'),
 (4002, 1204, 17, '2026-08-17 08:50:00', 'corp_main', 'SELECT', 'purchase_orders', 200, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 200'),
 (4003, 1204, 17, '2026-08-17 08:52:00', 'corp_main', 'SELECT', 'sales_orders', 191, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 191'),
@@ -6549,7 +6610,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (4247, 1287, 30, '2026-08-17 16:14:00', 'corp_main', 'SELECT', 'customer_accounts', 188, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 188'),
 (4248, 1288, 30, '2026-08-17 17:03:00', 'corp_main', 'SELECT', 'finance_payments', 117, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 117'),
 (4249, 1288, 30, '2026-08-17 17:05:00', 'corp_main', 'SELECT', 'finance_payments', 41, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 41'),
-(4250, 1288, 30, '2026-08-17 17:07:00', 'corp_main', 'SELECT', 'finance_payments', 108, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 108'),
+(4250, 1288, 30, '2026-08-17 17:07:00', 'corp_main', 'SELECT', 'finance_payments', 108, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 108');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (4251, 1288, 30, '2026-08-17 17:09:00', 'corp_main', 'SELECT', 'sales_orders', 61, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 61'),
 (4252, 1289, 30, '2026-08-17 18:44:00', 'corp_main', 'SELECT', 'finance_payments', 109, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 109'),
 (4253, 1289, 30, '2026-08-17 18:46:00', 'corp_main', 'SELECT', 'sales_orders', 178, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 178'),
@@ -6799,7 +6862,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (4497, 1364, 12, '2026-08-18 13:54:00', 'corp_main', 'SELECT', 'finance_payments', 40, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 40'),
 (4498, 1364, 12, '2026-08-18 13:56:00', 'corp_main', 'SELECT', 'sales_orders', 100, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 100'),
 (4499, 1364, 12, '2026-08-18 13:58:00', 'corp_main', 'SELECT', 'finance_payments', 18, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 18'),
-(4500, 1364, 12, '2026-08-18 14:00:00', 'corp_main', 'SELECT', 'employee_directory', 126, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 126'),
+(4500, 1364, 12, '2026-08-18 14:00:00', 'corp_main', 'SELECT', 'employee_directory', 126, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 126');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (4501, 1365, 12, '2026-08-18 14:47:00', 'corp_main', 'SELECT', 'sales_orders', 94, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 94'),
 (4502, 1365, 12, '2026-08-18 14:49:00', 'corp_main', 'SELECT', 'customer_accounts', 49, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 49'),
 (4503, 1365, 12, '2026-08-18 14:51:00', 'corp_main', 'SELECT', 'customer_accounts', 133, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 133'),
@@ -7049,7 +7114,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (4747, 1435, 23, '2026-08-18 11:14:00', 'corp_main', 'SELECT', 'purchase_orders', 152, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 152'),
 (4748, 1435, 23, '2026-08-18 11:16:00', 'corp_main', 'SELECT', 'finance_payments', 210, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 210'),
 (4749, 1435, 23, '2026-08-18 11:18:00', 'corp_main', 'SELECT', 'customer_accounts', 185, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 185'),
-(4750, 1435, 23, '2026-08-18 11:20:00', 'corp_main', 'SELECT', 'customer_accounts', 179, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 179'),
+(4750, 1435, 23, '2026-08-18 11:20:00', 'corp_main', 'SELECT', 'customer_accounts', 179, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 179');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (4751, 1435, 23, '2026-08-18 11:22:00', 'corp_main', 'SELECT', 'customer_accounts', 124, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 124'),
 (4752, 1436, 23, '2026-08-18 12:24:00', 'corp_main', 'SELECT', 'purchase_orders', 99, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 99'),
 (4753, 1436, 23, '2026-08-18 12:26:00', 'corp_main', 'SELECT', 'employee_directory', 140, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 140'),
@@ -7299,7 +7366,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (4997, 1511, 3, '2026-08-19 14:48:00', 'corp_main', 'SELECT', 'employee_directory', 158, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 158'),
 (4998, 1511, 3, '2026-08-19 14:50:00', 'corp_main', 'SELECT', 'customer_accounts', 52, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 52'),
 (4999, 1512, 3, '2026-08-19 15:09:00', 'corp_main', 'SELECT', 'customer_accounts', 96, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 96'),
-(5000, 1512, 3, '2026-08-19 15:11:00', 'corp_main', 'SELECT', 'sales_orders', 3, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 3'),
+(5000, 1512, 3, '2026-08-19 15:11:00', 'corp_main', 'SELECT', 'sales_orders', 3, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 3');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (5001, 1513, 4, '2026-08-19 08:30:00', 'corp_main', 'SELECT', 'sales_orders', 163, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 163'),
 (5002, 1513, 4, '2026-08-19 08:32:00', 'corp_main', 'SELECT', 'finance_payments', 209, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 209'),
 (5003, 1514, 4, '2026-08-19 09:25:00', 'corp_main', 'SELECT', 'customer_accounts', 73, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 73'),
@@ -7549,7 +7618,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (5247, 1591, 18, '2026-08-19 09:03:00', 'corp_main', 'SELECT', 'employee_directory', 9, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 9'),
 (5248, 1591, 18, '2026-08-19 09:05:00', 'corp_main', 'SELECT', 'finance_payments', 227, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 227'),
 (5249, 1591, 18, '2026-08-19 09:07:00', 'corp_main', 'SELECT', 'customer_accounts', 41, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 41'),
-(5250, 1592, 18, '2026-08-19 10:05:00', 'corp_main', 'SELECT', 'customer_accounts', 29, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 29'),
+(5250, 1592, 18, '2026-08-19 10:05:00', 'corp_main', 'SELECT', 'customer_accounts', 29, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 29');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (5251, 1592, 18, '2026-08-19 10:07:00', 'corp_main', 'SELECT', 'purchase_orders', 66, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 66'),
 (5252, 1592, 18, '2026-08-19 10:09:00', 'corp_main', 'SELECT', 'finance_payments', 242, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 242'),
 (5253, 1592, 18, '2026-08-19 10:11:00', 'corp_main', 'SELECT', 'customer_accounts', 106, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 106'),
@@ -7799,7 +7870,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (5497, 1672, 29, '2026-08-19 08:23:00', 'corp_main', 'SELECT', 'sales_orders', 205, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 205'),
 (5498, 1672, 29, '2026-08-19 08:25:00', 'corp_main', 'SELECT', 'customer_accounts', 83, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 83'),
 (5499, 1672, 29, '2026-08-19 08:27:00', 'corp_main', 'SELECT', 'customer_accounts', 75, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 75'),
-(5500, 1672, 29, '2026-08-19 08:29:00', 'corp_main', 'SELECT', 'sales_orders', 83, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 83'),
+(5500, 1672, 29, '2026-08-19 08:29:00', 'corp_main', 'SELECT', 'sales_orders', 83, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 83');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (5501, 1673, 29, '2026-08-19 09:07:00', 'corp_main', 'SELECT', 'finance_payments', 168, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 168'),
 (5502, 1673, 29, '2026-08-19 09:09:00', 'corp_main', 'SELECT', 'employee_directory', 174, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 174'),
 (5503, 1674, 29, '2026-08-19 10:43:00', 'corp_main', 'SELECT', 'employee_directory', 97, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 97'),
@@ -8049,7 +8122,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (5747, 1760, 11, '2026-08-20 09:32:00', 'corp_main', 'SELECT', 'purchase_orders', 189, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 189'),
 (5748, 1760, 11, '2026-08-20 09:34:00', 'corp_main', 'SELECT', 'customer_accounts', 204, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 204'),
 (5749, 1761, 11, '2026-08-20 10:04:00', 'corp_main', 'SELECT', 'employee_directory', 156, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 156'),
-(5750, 1761, 11, '2026-08-20 10:06:00', 'corp_main', 'SELECT', 'sales_orders', 222, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 222'),
+(5750, 1761, 11, '2026-08-20 10:06:00', 'corp_main', 'SELECT', 'sales_orders', 222, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 222');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (5751, 1761, 11, '2026-08-20 10:08:00', 'corp_main', 'SELECT', 'employee_directory', 110, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 110'),
 (5752, 1761, 11, '2026-08-20 10:10:00', 'corp_main', 'SELECT', 'sales_orders', 90, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 90'),
 (5753, 1761, 11, '2026-08-20 10:12:00', 'corp_main', 'SELECT', 'finance_payments', 133, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 133'),
@@ -8299,7 +8374,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (5997, 1838, 24, '2026-08-20 10:20:00', 'corp_main', 'SELECT', 'purchase_orders', 202, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 202'),
 (5998, 1838, 24, '2026-08-20 10:22:00', 'corp_main', 'SELECT', 'finance_payments', 232, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 232'),
 (5999, 1838, 24, '2026-08-20 10:24:00', 'corp_main', 'SELECT', 'sales_orders', 238, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 238'),
-(6000, 1838, 24, '2026-08-20 10:26:00', 'corp_main', 'SELECT', 'employee_directory', 76, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 76'),
+(6000, 1838, 24, '2026-08-20 10:26:00', 'corp_main', 'SELECT', 'employee_directory', 76, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 76');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (6001, 1839, 24, '2026-08-20 11:13:00', 'corp_main', 'SELECT', 'finance_payments', 212, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 212'),
 (6002, 1839, 24, '2026-08-20 11:15:00', 'corp_main', 'SELECT', 'purchase_orders', 86, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 86'),
 (6003, 1839, 24, '2026-08-20 11:17:00', 'corp_main', 'SELECT', 'customer_accounts', 109, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 109'),
@@ -8549,7 +8626,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (6247, 1907, 4, '2026-08-21 12:53:00', 'corp_main', 'SELECT', 'sales_orders', 111, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 111'),
 (6248, 1908, 4, '2026-08-21 14:46:00', 'corp_main', 'SELECT', 'purchase_orders', 171, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 171'),
 (6249, 1908, 4, '2026-08-21 14:48:00', 'corp_main', 'SELECT', 'customer_accounts', 248, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 248'),
-(6250, 1908, 4, '2026-08-21 14:50:00', 'corp_main', 'SELECT', 'employee_directory', 213, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 213'),
+(6250, 1908, 4, '2026-08-21 14:50:00', 'corp_main', 'SELECT', 'employee_directory', 213, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 213');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (6251, 1908, 4, '2026-08-21 14:52:00', 'corp_main', 'SELECT', 'employee_directory', 116, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 116'),
 (6252, 1909, 4, '2026-08-21 15:47:00', 'corp_main', 'SELECT', 'employee_directory', 220, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 220'),
 (6253, 1909, 4, '2026-08-21 15:49:00', 'corp_main', 'SELECT', 'employee_directory', 177, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 177'),
@@ -8799,7 +8878,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (6497, 1984, 15, '2026-08-21 14:12:00', 'corp_main', 'SELECT', 'purchase_orders', 36, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 36'),
 (6498, 1985, 15, '2026-08-21 15:06:00', 'corp_main', 'SELECT', 'customer_accounts', 176, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 176'),
 (6499, 1985, 15, '2026-08-21 15:08:00', 'corp_main', 'SELECT', 'employee_directory', 86, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 86'),
-(6500, 1985, 15, '2026-08-21 15:10:00', 'corp_main', 'SELECT', 'finance_payments', 84, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 84'),
+(6500, 1985, 15, '2026-08-21 15:10:00', 'corp_main', 'SELECT', 'finance_payments', 84, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 84');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (6501, 1985, 15, '2026-08-21 15:12:00', 'corp_main', 'SELECT', 'sales_orders', 136, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 136'),
 (6502, 1986, 16, '2026-08-21 08:49:00', 'corp_main', 'SELECT', 'finance_payments', 201, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 201'),
 (6503, 1986, 16, '2026-08-21 08:51:00', 'corp_main', 'SELECT', 'finance_payments', 56, 0, 'SELECT * FROM finance_payments WHERE status = ''ACTIVE'' LIMIT 56'),
@@ -9049,7 +9130,9 @@ INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, data
 (6747, 2064, 26, '2026-08-21 11:22:00', 'corp_main', 'SELECT', 'customer_accounts', 81, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 81'),
 (6748, 2064, 26, '2026-08-21 11:24:00', 'corp_main', 'SELECT', 'sales_orders', 51, 0, 'SELECT * FROM sales_orders WHERE status = ''ACTIVE'' LIMIT 51'),
 (6749, 2064, 26, '2026-08-21 11:26:00', 'corp_main', 'SELECT', 'purchase_orders', 176, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 176'),
-(6750, 2065, 26, '2026-08-21 13:58:00', 'corp_main', 'SELECT', 'employee_directory', 22, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 22'),
+(6750, 2065, 26, '2026-08-21 13:58:00', 'corp_main', 'SELECT', 'employee_directory', 22, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 22');
+
+INSERT INTO database_activity (activity_id, login_id, user_id, executed_at, database_name, query_type, target_table, returned_rows, exported, query_text) VALUES
 (6751, 2065, 26, '2026-08-21 14:00:00', 'corp_main', 'SELECT', 'purchase_orders', 123, 0, 'SELECT * FROM purchase_orders WHERE status = ''ACTIVE'' LIMIT 123'),
 (6752, 2065, 26, '2026-08-21 14:02:00', 'corp_main', 'SELECT', 'employee_directory', 94, 0, 'SELECT * FROM employee_directory WHERE status = ''ACTIVE'' LIMIT 94'),
 (6753, 2065, 26, '2026-08-21 14:04:00', 'corp_main', 'SELECT', 'customer_accounts', 181, 0, 'SELECT * FROM customer_accounts WHERE status = ''ACTIVE'' LIMIT 181'),
@@ -9413,7 +9496,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (247, 24, 24, '2026-08-09 15:03:03', '10.20.2.44', '198.51.100.20', 443, 14765, 65575, 'ALLOWED'),
 (248, 24, 24, '2026-08-09 14:55:56', '10.20.2.44', '198.51.100.20', 443, 185971, 337521, 'ALLOWED'),
 (249, 25, 25, '2026-08-09 13:51:26', '10.20.2.45', '10.20.10.12', 443, 97165, 854359, 'ALLOWED'),
-(250, 25, 25, '2026-08-09 09:38:14', '10.20.2.45', '198.51.100.20', 443, 205351, 423986, 'ALLOWED'),
+(250, 25, 25, '2026-08-09 09:38:14', '10.20.2.45', '198.51.100.20', 443, 205351, 423986, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (251, 25, 25, '2026-08-09 10:46:50', '10.20.2.45', '10.20.30.15', 443, 84190, 63594, 'ALLOWED'),
 (252, 25, 25, '2026-08-09 16:19:51', '10.20.2.45', '10.20.10.20', 443, 157201, 261437, 'ALLOWED'),
 (253, 25, 25, '2026-08-09 11:16:38', '10.20.2.45', '10.20.10.20', 443, 207182, 786139, 'ALLOWED'),
@@ -9663,7 +9748,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (497, 31, 7, '2026-08-10 00:28:52', '10.20.10.11', '198.51.100.20', 443, 345169, 580425, 'ALLOWED'),
 (498, 31, 7, '2026-08-10 02:55:41', '10.20.10.11', '10.20.10.20', 443, 145734, 85548, 'ALLOWED'),
 (499, 31, 7, '2026-08-10 09:21:40', '10.20.10.11', '10.20.10.12', 443, 60461, 547513, 'ALLOWED'),
-(500, 31, 7, '2026-08-10 02:11:57', '10.20.10.11', '198.51.100.20', 443, 300424, 331485, 'ALLOWED'),
+(500, 31, 7, '2026-08-10 02:11:57', '10.20.10.11', '198.51.100.20', 443, 300424, 331485, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (501, 31, 7, '2026-08-10 06:23:09', '10.20.10.11', '10.20.10.20', 443, 127017, 778637, 'ALLOWED'),
 (502, 31, 7, '2026-08-10 03:02:31', '10.20.10.11', '10.20.10.12', 443, 289949, 587180, 'ALLOWED'),
 (503, 31, 7, '2026-08-10 18:08:57', '10.20.10.11', '10.20.10.12', 443, 129436, 503309, 'ALLOWED'),
@@ -9913,7 +10000,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (747, 14, 14, '2026-08-10 14:28:38', '10.20.1.34', '10.20.10.20', 443, 212664, 128665, 'ALLOWED'),
 (748, 14, 14, '2026-08-10 14:06:04', '10.20.1.34', '10.20.10.12', 443, 186876, 106156, 'ALLOWED'),
 (749, 14, 14, '2026-08-10 10:49:17', '10.20.1.34', '10.20.30.15', 443, 157078, 674784, 'ALLOWED'),
-(750, 14, 14, '2026-08-10 15:02:00', '10.20.1.34', '10.20.30.15', 443, 23667, 616979, 'ALLOWED'),
+(750, 14, 14, '2026-08-10 15:02:00', '10.20.1.34', '10.20.30.15', 443, 23667, 616979, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (751, 14, 14, '2026-08-10 10:28:09', '10.20.1.34', '10.20.10.12', 443, 218468, 365369, 'ALLOWED'),
 (752, 14, 14, '2026-08-10 08:31:35', '10.20.1.34', '10.20.30.15', 443, 160500, 809231, 'ALLOWED'),
 (753, 14, 14, '2026-08-10 14:49:38', '10.20.1.34', '10.20.10.20', 443, 146109, 807184, 'ALLOWED'),
@@ -10163,7 +10252,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (997, 21, 21, '2026-08-10 13:44:02', '10.20.2.41', '198.51.100.20', 443, 5215, 720796, 'ALLOWED'),
 (998, 21, 21, '2026-08-10 14:31:15', '10.20.2.41', '198.51.100.20', 443, 350082, 316591, 'ALLOWED'),
 (999, 21, 21, '2026-08-10 15:13:18', '10.20.2.41', '10.20.10.12', 443, 26055, 378324, 'ALLOWED'),
-(1000, 21, 21, '2026-08-10 10:19:56', '10.20.2.41', '198.51.100.20', 443, 302110, 502902, 'ALLOWED'),
+(1000, 21, 21, '2026-08-10 10:19:56', '10.20.2.41', '198.51.100.20', 443, 302110, 502902, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (1001, 21, 21, '2026-08-10 10:38:56', '10.20.2.41', '10.20.10.12', 443, 73287, 830637, 'ALLOWED'),
 (1002, 21, 21, '2026-08-10 15:24:51', '10.20.2.41', '10.20.10.20', 443, 169077, 46633, 'ALLOWED'),
 (1003, 21, 21, '2026-08-10 09:24:16', '10.20.2.41', '198.51.100.20', 443, 264608, 495805, 'ALLOWED'),
@@ -10413,7 +10504,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (1247, 28, 28, '2026-08-10 14:10:44', '10.20.2.48', '198.51.100.20', 443, 146213, 822465, 'ALLOWED'),
 (1248, 28, 28, '2026-08-10 13:23:36', '10.20.2.48', '198.51.100.20', 443, 94269, 664255, 'ALLOWED'),
 (1249, 28, 28, '2026-08-10 14:00:21', '10.20.2.48', '198.51.100.20', 443, 90450, 418088, 'ALLOWED'),
-(1250, 28, 28, '2026-08-10 09:27:47', '10.20.2.48', '10.20.10.12', 443, 347685, 456663, 'ALLOWED'),
+(1250, 28, 28, '2026-08-10 09:27:47', '10.20.2.48', '10.20.10.12', 443, 347685, 456663, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (1251, 28, 28, '2026-08-10 09:38:16', '10.20.2.48', '10.20.10.20', 443, 94379, 226811, 'ALLOWED'),
 (1252, 28, 28, '2026-08-10 16:25:55', '10.20.2.48', '198.51.100.20', 443, 314590, 521784, 'ALLOWED'),
 (1253, 28, 28, '2026-08-10 14:45:51', '10.20.2.48', '198.51.100.20', 443, 262589, 703748, 'ALLOWED'),
@@ -10663,7 +10756,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (1497, 5, 5, '2026-08-11 10:02:15', '10.20.1.25', '198.51.100.20', 443, 10947, 731256, 'ALLOWED'),
 (1498, 5, 5, '2026-08-11 13:14:14', '10.20.1.25', '10.20.30.15', 443, 63187, 292587, 'ALLOWED'),
 (1499, 5, 5, '2026-08-11 13:27:36', '10.20.1.25', '198.51.100.20', 443, 212340, 712470, 'ALLOWED'),
-(1500, 5, 5, '2026-08-11 10:19:47', '10.20.1.25', '10.20.10.12', 443, 175236, 702630, 'ALLOWED'),
+(1500, 5, 5, '2026-08-11 10:19:47', '10.20.1.25', '10.20.10.12', 443, 175236, 702630, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (1501, 5, 5, '2026-08-11 13:49:16', '10.20.1.25', '198.51.100.20', 443, 146004, 826013, 'ALLOWED'),
 (1502, 5, 5, '2026-08-11 09:40:42', '10.20.1.25', '198.51.100.20', 443, 271460, 409209, 'ALLOWED'),
 (1503, 5, 5, '2026-08-11 10:33:16', '10.20.1.25', '10.20.30.15', 443, 212948, 326169, 'ALLOWED'),
@@ -10913,7 +11008,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (1747, 12, 12, '2026-08-11 16:34:37', '10.20.1.32', '10.20.10.12', 443, 174907, 236422, 'ALLOWED'),
 (1748, 12, 12, '2026-08-11 09:25:46', '10.20.1.32', '198.51.100.20', 443, 64260, 375603, 'ALLOWED'),
 (1749, 12, 12, '2026-08-11 17:36:12', '10.20.1.32', '10.20.30.15', 443, 194001, 398669, 'ALLOWED'),
-(1750, 12, 12, '2026-08-11 09:59:29', '10.20.1.32', '198.51.100.20', 443, 75440, 186882, 'ALLOWED'),
+(1750, 12, 12, '2026-08-11 09:59:29', '10.20.1.32', '198.51.100.20', 443, 75440, 186882, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (1751, 12, 12, '2026-08-11 11:11:01', '10.20.1.32', '198.51.100.20', 443, 320334, 608008, 'ALLOWED'),
 (1752, 12, 12, '2026-08-11 14:32:15', '10.20.1.32', '10.20.10.20', 443, 195279, 244957, 'ALLOWED'),
 (1753, 12, 12, '2026-08-11 15:54:16', '10.20.1.32', '10.20.10.20', 443, 321650, 831440, 'ALLOWED'),
@@ -11163,7 +11260,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (1997, 19, 19, '2026-08-11 13:51:28', '10.20.1.39', '10.20.10.20', 443, 47168, 528998, 'ALLOWED'),
 (1998, 19, 19, '2026-08-11 13:28:59', '10.20.1.39', '198.51.100.20', 443, 178669, 124304, 'ALLOWED'),
 (1999, 19, 19, '2026-08-11 09:07:30', '10.20.1.39', '10.20.30.15', 443, 151634, 49298, 'ALLOWED'),
-(2000, 19, 19, '2026-08-11 13:09:22', '10.20.1.39', '10.20.30.15', 443, 39871, 770774, 'ALLOWED'),
+(2000, 19, 19, '2026-08-11 13:09:22', '10.20.1.39', '10.20.30.15', 443, 39871, 770774, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (2001, 19, 19, '2026-08-11 11:15:17', '10.20.1.39', '10.20.10.20', 443, 216602, 470334, 'ALLOWED'),
 (2002, 19, 19, '2026-08-11 14:18:08', '10.20.1.39', '198.51.100.20', 443, 240773, 732333, 'ALLOWED'),
 (2003, 19, 19, '2026-08-11 12:30:09', '10.20.1.39', '198.51.100.20', 443, 351252, 711984, 'ALLOWED'),
@@ -11413,7 +11512,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (2247, 26, 26, '2026-08-11 11:42:09', '10.20.2.46', '198.51.100.20', 443, 83357, 257759, 'ALLOWED'),
 (2248, 26, 26, '2026-08-11 13:20:12', '10.20.2.46', '10.20.30.15', 443, 108185, 397861, 'ALLOWED'),
 (2249, 26, 26, '2026-08-11 11:21:53', '10.20.2.46', '198.51.100.20', 443, 51882, 79988, 'ALLOWED'),
-(2250, 26, 26, '2026-08-11 16:43:09', '10.20.2.46', '198.51.100.20', 443, 174980, 123261, 'ALLOWED'),
+(2250, 26, 26, '2026-08-11 16:43:09', '10.20.2.46', '198.51.100.20', 443, 174980, 123261, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (2251, 26, 26, '2026-08-11 17:11:17', '10.20.2.46', '10.20.10.20', 443, 34212, 805024, 'ALLOWED'),
 (2252, 26, 26, '2026-08-11 14:13:00', '10.20.2.46', '10.20.10.12', 443, 152913, 485148, 'ALLOWED'),
 (2253, 26, 26, '2026-08-11 14:49:45', '10.20.2.46', '10.20.30.15', 443, 99945, 133468, 'ALLOWED'),
@@ -11663,7 +11764,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (2497, 3, 3, '2026-08-12 09:57:54', '10.20.1.23', '10.20.30.15', 443, 243573, 709916, 'ALLOWED'),
 (2498, 3, 3, '2026-08-12 11:55:25', '10.20.1.23', '198.51.100.20', 443, 279567, 186222, 'ALLOWED'),
 (2499, 3, 3, '2026-08-12 09:45:04', '10.20.1.23', '10.20.10.12', 443, 308026, 357085, 'ALLOWED'),
-(2500, 3, 3, '2026-08-12 10:06:11', '10.20.1.23', '10.20.30.15', 443, 5216, 456364, 'ALLOWED'),
+(2500, 3, 3, '2026-08-12 10:06:11', '10.20.1.23', '10.20.30.15', 443, 5216, 456364, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (2501, 3, 3, '2026-08-12 10:49:33', '10.20.1.23', '198.51.100.20', 443, 168680, 184198, 'ALLOWED'),
 (2502, 3, 3, '2026-08-12 08:40:43', '10.20.1.23', '198.51.100.20', 443, 303696, 419136, 'ALLOWED'),
 (2503, 3, 3, '2026-08-12 11:37:47', '10.20.1.23', '10.20.30.15', 443, 245368, 172840, 'ALLOWED'),
@@ -11913,7 +12016,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (2747, 11, 11, '2026-08-12 09:19:14', '10.20.1.31', '198.51.100.20', 443, 40379, 322254, 'ALLOWED'),
 (2748, 11, 11, '2026-08-12 10:03:07', '10.20.1.31', '10.20.10.20', 443, 30799, 883946, 'ALLOWED'),
 (2749, 11, 11, '2026-08-12 14:36:36', '10.20.1.31', '198.51.100.20', 443, 237678, 831714, 'ALLOWED'),
-(2750, 11, 11, '2026-08-12 13:59:53', '10.20.1.31', '198.51.100.20', 443, 199972, 273881, 'ALLOWED'),
+(2750, 11, 11, '2026-08-12 13:59:53', '10.20.1.31', '198.51.100.20', 443, 199972, 273881, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (2751, 11, 11, '2026-08-12 09:10:57', '10.20.1.31', '10.20.10.20', 443, 348281, 13023, 'ALLOWED'),
 (2752, 11, 11, '2026-08-12 15:00:53', '10.20.1.31', '198.51.100.20', 443, 23266, 100481, 'ALLOWED'),
 (2753, 11, 11, '2026-08-12 09:16:37', '10.20.1.31', '198.51.100.20', 443, 67614, 557686, 'ALLOWED'),
@@ -12163,7 +12268,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (2997, 18, 18, '2026-08-12 11:54:32', '10.20.1.38', '10.20.10.12', 443, 294511, 643564, 'ALLOWED'),
 (2998, 18, 18, '2026-08-12 11:26:54', '10.20.1.38', '10.20.10.20', 443, 177586, 206954, 'ALLOWED'),
 (2999, 18, 18, '2026-08-12 11:02:19', '10.20.1.38', '10.20.10.12', 443, 13443, 102237, 'ALLOWED'),
-(3000, 18, 18, '2026-08-12 10:20:44', '10.20.1.38', '10.20.10.12', 443, 310394, 659789, 'ALLOWED'),
+(3000, 18, 18, '2026-08-12 10:20:44', '10.20.1.38', '10.20.10.12', 443, 310394, 659789, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (3001, 18, 18, '2026-08-12 16:28:30', '10.20.1.38', '198.51.100.20', 443, 211553, 228492, 'ALLOWED'),
 (3002, 18, 18, '2026-08-12 10:42:42', '10.20.1.38', '10.20.10.20', 443, 22868, 425736, 'ALLOWED'),
 (3003, 18, 18, '2026-08-12 15:40:32', '10.20.1.38', '198.51.100.20', 443, 48990, 474330, 'ALLOWED'),
@@ -12413,7 +12520,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (3247, 24, 24, '2026-08-12 09:36:58', '10.20.2.44', '10.20.10.20', 443, 170027, 305934, 'ALLOWED'),
 (3248, 24, 24, '2026-08-12 10:28:49', '10.20.2.44', '10.20.10.20', 443, 100464, 22326, 'ALLOWED'),
 (3249, 25, 25, '2026-08-12 09:28:36', '10.20.2.45', '10.20.10.12', 443, 285854, 95774, 'ALLOWED'),
-(3250, 25, 25, '2026-08-12 15:15:44', '10.20.2.45', '198.51.100.20', 443, 75916, 906156, 'ALLOWED'),
+(3250, 25, 25, '2026-08-12 15:15:44', '10.20.2.45', '198.51.100.20', 443, 75916, 906156, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (3251, 25, 25, '2026-08-12 13:40:59', '10.20.2.45', '10.20.10.12', 443, 108148, 894609, 'ALLOWED'),
 (3252, 25, 25, '2026-08-12 10:51:40', '10.20.2.45', '10.20.10.12', 443, 32528, 725053, 'ALLOWED'),
 (3253, 25, 25, '2026-08-12 08:59:32', '10.20.2.45', '10.20.30.15', 443, 188438, 308768, 'ALLOWED'),
@@ -12663,7 +12772,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (3497, 1, 1, '2026-08-13 15:15:30', '10.20.1.21', '198.51.100.20', 443, 351869, 779147, 'ALLOWED'),
 (3498, 1, 1, '2026-08-13 13:17:27', '10.20.1.21', '198.51.100.20', 443, 198095, 366884, 'ALLOWED'),
 (3499, 1, 1, '2026-08-13 13:36:49', '10.20.1.21', '198.51.100.20', 443, 329583, 24985, 'ALLOWED'),
-(3500, 1, 1, '2026-08-13 11:38:47', '10.20.1.21', '198.51.100.20', 443, 219238, 648391, 'ALLOWED'),
+(3500, 1, 1, '2026-08-13 11:38:47', '10.20.1.21', '198.51.100.20', 443, 219238, 648391, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (3501, 2, 2, '2026-08-13 14:50:54', '10.20.1.22', '198.51.100.20', 443, 207365, 234663, 'ALLOWED'),
 (3502, 2, 2, '2026-08-13 09:07:53', '10.20.1.22', '198.51.100.20', 443, 160159, 428564, 'ALLOWED'),
 (3503, 2, 2, '2026-08-13 12:30:28', '10.20.1.22', '10.20.10.12', 443, 212881, 527773, 'ALLOWED'),
@@ -12913,7 +13024,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (3747, 9, 9, '2026-08-13 10:08:37', '10.20.1.29', '198.51.100.20', 443, 204095, 832968, 'ALLOWED'),
 (3748, 9, 9, '2026-08-13 10:33:24', '10.20.1.29', '10.20.10.20', 443, 324710, 80564, 'ALLOWED'),
 (3749, 9, 9, '2026-08-13 17:38:33', '10.20.1.29', '10.20.30.15', 443, 352373, 599894, 'ALLOWED'),
-(3750, 9, 9, '2026-08-13 08:45:37', '10.20.1.29', '10.20.10.20', 443, 12810, 143045, 'ALLOWED'),
+(3750, 9, 9, '2026-08-13 08:45:37', '10.20.1.29', '10.20.10.20', 443, 12810, 143045, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (3751, 9, 9, '2026-08-13 14:05:11', '10.20.1.29', '198.51.100.20', 443, 325657, 125199, 'ALLOWED'),
 (3752, 9, 9, '2026-08-13 10:02:27', '10.20.1.29', '10.20.30.15', 443, 197379, 871601, 'ALLOWED'),
 (3753, 9, 9, '2026-08-13 10:56:22', '10.20.1.29', '10.20.30.15', 443, 250742, 68753, 'ALLOWED'),
@@ -13163,7 +13276,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (3997, 16, 16, '2026-08-13 09:43:19', '10.20.1.36', '10.20.10.20', 443, 231371, 475104, 'ALLOWED'),
 (3998, 16, 16, '2026-08-13 13:40:34', '10.20.1.36', '198.51.100.20', 443, 110441, 438506, 'ALLOWED'),
 (3999, 16, 16, '2026-08-13 11:11:31', '10.20.1.36', '10.20.30.15', 443, 308692, 458492, 'ALLOWED'),
-(4000, 16, 16, '2026-08-13 09:53:56', '10.20.1.36', '198.51.100.20', 443, 327972, 909170, 'ALLOWED'),
+(4000, 16, 16, '2026-08-13 09:53:56', '10.20.1.36', '198.51.100.20', 443, 327972, 909170, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (4001, 16, 16, '2026-08-13 14:15:15', '10.20.1.36', '10.20.30.15', 443, 328911, 512865, 'ALLOWED'),
 (4002, 16, 16, '2026-08-13 14:44:39', '10.20.1.36', '10.20.10.12', 443, 172286, 147852, 'ALLOWED'),
 (4003, 16, 16, '2026-08-13 12:14:05', '10.20.1.36', '10.20.10.20', 443, 351110, 833053, 'ALLOWED'),
@@ -13413,7 +13528,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (4247, 23, 23, '2026-08-13 16:19:21', '10.20.2.43', '10.20.30.15', 443, 174311, 461600, 'ALLOWED'),
 (4248, 23, 23, '2026-08-13 17:17:43', '10.20.2.43', '10.20.10.12', 443, 157954, 510142, 'ALLOWED'),
 (4249, 23, 23, '2026-08-13 14:15:46', '10.20.2.43', '10.20.10.20', 443, 114664, 472111, 'ALLOWED'),
-(4250, 23, 23, '2026-08-13 09:07:15', '10.20.2.43', '198.51.100.20', 443, 20685, 639079, 'ALLOWED'),
+(4250, 23, 23, '2026-08-13 09:07:15', '10.20.2.43', '198.51.100.20', 443, 20685, 639079, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (4251, 23, 23, '2026-08-13 17:56:02', '10.20.2.43', '10.20.30.15', 443, 235139, 182456, 'ALLOWED'),
 (4252, 23, 23, '2026-08-13 10:19:50', '10.20.2.43', '10.20.10.12', 443, 69981, 669328, 'ALLOWED'),
 (4253, 23, 23, '2026-08-13 13:21:59', '10.20.2.43', '10.20.30.15', 443, 167533, 865347, 'ALLOWED'),
@@ -13663,7 +13780,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (4497, 30, 30, '2026-08-13 10:38:51', '10.20.2.50', '10.20.10.12', 443, 204627, 557605, 'ALLOWED'),
 (4498, 30, 30, '2026-08-13 14:04:47', '10.20.2.50', '198.51.100.20', 443, 130536, 728552, 'ALLOWED'),
 (4499, 30, 30, '2026-08-13 09:39:56', '10.20.2.50', '10.20.10.20', 443, 232427, 444598, 'ALLOWED'),
-(4500, 30, 30, '2026-08-13 15:57:41', '10.20.2.50', '10.20.10.12', 443, 235499, 634982, 'ALLOWED'),
+(4500, 30, 30, '2026-08-13 15:57:41', '10.20.2.50', '10.20.10.12', 443, 235499, 634982, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (4501, 30, 30, '2026-08-13 13:51:23', '10.20.2.50', '10.20.10.12', 443, 44504, 225749, 'ALLOWED'),
 (4502, 30, 30, '2026-08-13 14:46:23', '10.20.2.50', '10.20.10.12', 443, 193648, 788949, 'ALLOWED'),
 (4503, 30, 30, '2026-08-13 15:35:08', '10.20.2.50', '10.20.30.15', 443, 330450, 314704, 'ALLOWED'),
@@ -13913,7 +14032,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (4747, 31, 7, '2026-08-14 23:33:50', '10.20.10.11', '198.51.100.20', 443, 18935, 823104, 'ALLOWED'),
 (4748, 31, 7, '2026-08-14 01:45:31', '10.20.10.11', '10.20.10.20', 443, 219910, 552026, 'ALLOWED'),
 (4749, 31, 7, '2026-08-14 11:19:17', '10.20.10.11', '198.51.100.20', 443, 7907, 82770, 'ALLOWED'),
-(4750, 31, 7, '2026-08-14 03:22:35', '10.20.10.11', '10.20.10.20', 443, 169433, 672627, 'ALLOWED'),
+(4750, 31, 7, '2026-08-14 03:22:35', '10.20.10.11', '10.20.10.20', 443, 169433, 672627, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (4751, 31, 7, '2026-08-14 07:34:46', '10.20.10.11', '198.51.100.20', 443, 203427, 209222, 'ALLOWED'),
 (4752, 31, 7, '2026-08-14 19:13:17', '10.20.10.11', '10.20.30.15', 443, 136751, 246501, 'ALLOWED'),
 (4753, 31, 7, '2026-08-14 02:26:20', '10.20.10.11', '10.20.10.20', 443, 148932, 510896, 'ALLOWED'),
@@ -14163,7 +14284,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (4997, 14, 14, '2026-08-14 09:39:21', '10.20.1.34', '10.20.10.12', 443, 70740, 628117, 'ALLOWED'),
 (4998, 14, 14, '2026-08-14 13:46:04', '10.20.1.34', '198.51.100.20', 443, 15694, 600761, 'ALLOWED'),
 (4999, 14, 14, '2026-08-14 17:39:20', '10.20.1.34', '198.51.100.20', 443, 38223, 17424, 'ALLOWED'),
-(5000, 14, 14, '2026-08-14 13:00:46', '10.20.1.34', '10.20.30.15', 443, 319826, 74096, 'ALLOWED'),
+(5000, 14, 14, '2026-08-14 13:00:46', '10.20.1.34', '10.20.30.15', 443, 319826, 74096, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (5001, 14, 14, '2026-08-14 09:46:05', '10.20.1.34', '10.20.30.15', 443, 16714, 900245, 'ALLOWED'),
 (5002, 14, 14, '2026-08-14 14:40:40', '10.20.1.34', '198.51.100.20', 443, 327631, 95987, 'ALLOWED'),
 (5003, 14, 14, '2026-08-14 08:27:38', '10.20.1.34', '10.20.10.12', 443, 336089, 464264, 'ALLOWED'),
@@ -14413,7 +14536,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (5247, 21, 21, '2026-08-14 11:08:55', '10.20.2.41', '10.20.10.12', 443, 285908, 317564, 'ALLOWED'),
 (5248, 21, 21, '2026-08-14 11:48:25', '10.20.2.41', '198.51.100.20', 443, 253410, 724830, 'ALLOWED'),
 (5249, 21, 21, '2026-08-14 09:37:19', '10.20.2.41', '10.20.10.12', 443, 159308, 579250, 'ALLOWED'),
-(5250, 21, 21, '2026-08-14 14:09:37', '10.20.2.41', '10.20.30.15', 443, 261532, 74824, 'ALLOWED'),
+(5250, 21, 21, '2026-08-14 14:09:37', '10.20.2.41', '10.20.30.15', 443, 261532, 74824, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (5251, 21, 21, '2026-08-14 13:41:55', '10.20.2.41', '10.20.30.15', 443, 189118, 219479, 'ALLOWED'),
 (5252, 21, 21, '2026-08-14 08:06:30', '10.20.2.41', '198.51.100.20', 443, 288659, 89770, 'ALLOWED'),
 (5253, 21, 21, '2026-08-14 09:27:01', '10.20.2.41', '10.20.10.12', 443, 244812, 278995, 'ALLOWED'),
@@ -14663,7 +14788,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (5497, 28, 28, '2026-08-14 09:18:17', '10.20.2.48', '10.20.30.15', 443, 122495, 37523, 'ALLOWED'),
 (5498, 28, 28, '2026-08-14 13:03:39', '10.20.2.48', '10.20.10.20', 443, 28370, 226587, 'ALLOWED'),
 (5499, 28, 28, '2026-08-14 08:38:10', '10.20.2.48', '198.51.100.20', 443, 39974, 672103, 'ALLOWED'),
-(5500, 28, 28, '2026-08-14 15:44:21', '10.20.2.48', '10.20.10.12', 443, 16929, 893887, 'ALLOWED'),
+(5500, 28, 28, '2026-08-14 15:44:21', '10.20.2.48', '10.20.10.12', 443, 16929, 893887, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (5501, 28, 28, '2026-08-14 11:37:25', '10.20.2.48', '10.20.10.20', 443, 286098, 861261, 'ALLOWED'),
 (5502, 28, 28, '2026-08-14 12:16:49', '10.20.2.48', '10.20.10.20', 443, 61884, 185072, 'ALLOWED'),
 (5503, 28, 28, '2026-08-14 10:22:58', '10.20.2.48', '198.51.100.20', 443, 138639, 625885, 'ALLOWED'),
@@ -14913,7 +15040,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (5747, 31, 7, '2026-08-16 12:34:11', '10.20.10.11', '10.20.30.15', 443, 216417, 25907, 'ALLOWED'),
 (5748, 31, 7, '2026-08-16 02:45:00', '10.20.10.11', '10.20.10.12', 443, 155814, 255481, 'ALLOWED'),
 (5749, 31, 7, '2026-08-16 08:44:58', '10.20.10.11', '198.51.100.20', 443, 320213, 501203, 'ALLOWED'),
-(5750, 31, 7, '2026-08-16 00:53:30', '10.20.10.11', '10.20.10.20', 443, 314027, 120759, 'ALLOWED'),
+(5750, 31, 7, '2026-08-16 00:53:30', '10.20.10.11', '10.20.10.20', 443, 314027, 120759, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (5751, 31, 7, '2026-08-16 22:52:24', '10.20.10.11', '10.20.30.15', 443, 74534, 44938, 'ALLOWED'),
 (5752, 31, 7, '2026-08-16 03:23:29', '10.20.10.11', '10.20.10.20', 443, 309000, 743914, 'ALLOWED'),
 (5753, 31, 7, '2026-08-16 20:05:14', '10.20.10.11', '198.51.100.20', 443, 90917, 855753, 'ALLOWED'),
@@ -15163,7 +15292,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (5997, 5, 5, '2026-08-17 14:28:09', '10.20.1.25', '198.51.100.20', 443, 28266, 330997, 'ALLOWED'),
 (5998, 5, 5, '2026-08-17 14:35:04', '10.20.1.25', '10.20.30.15', 443, 282746, 821650, 'ALLOWED'),
 (5999, 5, 5, '2026-08-17 11:04:11', '10.20.1.25', '10.20.10.20', 443, 176558, 358045, 'ALLOWED'),
-(6000, 5, 5, '2026-08-17 17:32:29', '10.20.1.25', '10.20.30.15', 443, 157552, 638684, 'ALLOWED'),
+(6000, 5, 5, '2026-08-17 17:32:29', '10.20.1.25', '10.20.30.15', 443, 157552, 638684, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (6001, 5, 5, '2026-08-17 10:41:34', '10.20.1.25', '10.20.30.15', 443, 91099, 226624, 'ALLOWED'),
 (6002, 5, 5, '2026-08-17 09:24:41', '10.20.1.25', '10.20.10.12', 443, 303251, 415303, 'ALLOWED'),
 (6003, 5, 5, '2026-08-17 11:48:31', '10.20.1.25', '10.20.30.15', 443, 222435, 800604, 'ALLOWED'),
@@ -15413,7 +15544,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (6247, 13, 13, '2026-08-17 10:08:23', '10.20.1.33', '198.51.100.20', 443, 211752, 339434, 'ALLOWED'),
 (6248, 13, 13, '2026-08-17 15:29:03', '10.20.1.33', '198.51.100.20', 443, 59649, 149172, 'ALLOWED'),
 (6249, 13, 13, '2026-08-17 14:28:00', '10.20.1.33', '198.51.100.20', 443, 133233, 556234, 'ALLOWED'),
-(6250, 13, 13, '2026-08-17 15:26:36', '10.20.1.33', '198.51.100.20', 443, 47799, 114177, 'ALLOWED'),
+(6250, 13, 13, '2026-08-17 15:26:36', '10.20.1.33', '198.51.100.20', 443, 47799, 114177, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (6251, 13, 13, '2026-08-17 13:34:08', '10.20.1.33', '10.20.10.12', 443, 232278, 588038, 'ALLOWED'),
 (6252, 13, 13, '2026-08-17 15:55:42', '10.20.1.33', '10.20.10.12', 443, 99904, 556412, 'ALLOWED'),
 (6253, 13, 13, '2026-08-17 17:23:25', '10.20.1.33', '10.20.10.20', 443, 7637, 834748, 'ALLOWED'),
@@ -15663,7 +15796,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (6497, 20, 20, '2026-08-17 13:37:21', '10.20.1.40', '10.20.10.20', 443, 244756, 556200, 'ALLOWED'),
 (6498, 20, 20, '2026-08-17 11:54:20', '10.20.1.40', '10.20.10.12', 443, 349065, 248190, 'ALLOWED'),
 (6499, 20, 20, '2026-08-17 13:45:41', '10.20.1.40', '198.51.100.20', 443, 64021, 209282, 'ALLOWED'),
-(6500, 20, 20, '2026-08-17 15:19:24', '10.20.1.40', '198.51.100.20', 443, 115641, 552464, 'ALLOWED'),
+(6500, 20, 20, '2026-08-17 15:19:24', '10.20.1.40', '198.51.100.20', 443, 115641, 552464, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (6501, 20, 20, '2026-08-17 11:48:26', '10.20.1.40', '10.20.10.20', 443, 297644, 591898, 'ALLOWED'),
 (6502, 20, 20, '2026-08-17 09:27:05', '10.20.1.40', '10.20.10.12', 443, 353027, 516516, 'ALLOWED'),
 (6503, 20, 20, '2026-08-17 15:36:54', '10.20.1.40', '198.51.100.20', 443, 130613, 774751, 'ALLOWED'),
@@ -15913,7 +16048,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (6747, 26, 26, '2026-08-17 16:11:08', '10.20.2.46', '198.51.100.20', 443, 99344, 905945, 'ALLOWED'),
 (6748, 26, 26, '2026-08-17 15:43:59', '10.20.2.46', '198.51.100.20', 443, 14172, 359696, 'ALLOWED'),
 (6749, 27, 27, '2026-08-17 16:28:16', '10.20.2.47', '10.20.10.12', 443, 142364, 135629, 'ALLOWED'),
-(6750, 27, 27, '2026-08-17 16:23:26', '10.20.2.47', '198.51.100.20', 443, 233413, 11708, 'ALLOWED'),
+(6750, 27, 27, '2026-08-17 16:23:26', '10.20.2.47', '198.51.100.20', 443, 233413, 11708, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (6751, 27, 27, '2026-08-17 10:45:51', '10.20.2.47', '10.20.30.15', 443, 66021, 187565, 'ALLOWED'),
 (6752, 27, 27, '2026-08-17 13:00:21', '10.20.2.47', '10.20.30.15', 443, 164349, 214373, 'ALLOWED'),
 (6753, 27, 27, '2026-08-17 13:40:02', '10.20.2.47', '198.51.100.20', 443, 164881, 639276, 'ALLOWED'),
@@ -16163,7 +16300,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (6997, 3, 3, '2026-08-18 11:28:18', '10.20.1.23', '10.20.30.15', 443, 140006, 335434, 'ALLOWED'),
 (6998, 3, 3, '2026-08-18 15:36:41', '10.20.1.23', '198.51.100.20', 443, 119729, 546918, 'ALLOWED'),
 (6999, 3, 3, '2026-08-18 13:36:54', '10.20.1.23', '10.20.10.20', 443, 143707, 524706, 'ALLOWED'),
-(7000, 3, 3, '2026-08-18 14:46:44', '10.20.1.23', '10.20.10.20', 443, 57501, 321793, 'ALLOWED'),
+(7000, 3, 3, '2026-08-18 14:46:44', '10.20.1.23', '10.20.10.20', 443, 57501, 321793, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (7001, 4, 4, '2026-08-18 17:09:21', '10.20.1.24', '10.20.30.15', 443, 212863, 318666, 'ALLOWED'),
 (7002, 4, 4, '2026-08-18 09:34:52', '10.20.1.24', '10.20.10.12', 443, 45256, 583854, 'ALLOWED'),
 (7003, 4, 4, '2026-08-18 11:44:38', '10.20.1.24', '10.20.10.20', 443, 43664, 791311, 'ALLOWED'),
@@ -16413,7 +16552,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (7247, 11, 11, '2026-08-18 09:56:36', '10.20.1.31', '10.20.30.15', 443, 320403, 239345, 'ALLOWED'),
 (7248, 11, 11, '2026-08-18 11:07:21', '10.20.1.31', '10.20.10.12', 443, 156663, 138956, 'ALLOWED'),
 (7249, 11, 11, '2026-08-18 10:12:24', '10.20.1.31', '198.51.100.20', 443, 185797, 682561, 'ALLOWED'),
-(7250, 11, 11, '2026-08-18 10:31:40', '10.20.1.31', '10.20.10.12', 443, 99965, 652685, 'ALLOWED'),
+(7250, 11, 11, '2026-08-18 10:31:40', '10.20.1.31', '10.20.10.12', 443, 99965, 652685, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (7251, 11, 11, '2026-08-18 15:11:10', '10.20.1.31', '10.20.10.12', 443, 281206, 552815, 'ALLOWED'),
 (7252, 11, 11, '2026-08-18 10:55:19', '10.20.1.31', '10.20.10.12', 443, 313073, 396672, 'ALLOWED'),
 (7253, 11, 11, '2026-08-18 08:32:48', '10.20.1.31', '10.20.10.12', 443, 344276, 749547, 'ALLOWED'),
@@ -16663,7 +16804,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (7497, 18, 18, '2026-08-18 11:42:58', '10.20.1.38', '198.51.100.20', 443, 202525, 770355, 'ALLOWED'),
 (7498, 18, 18, '2026-08-18 13:28:17', '10.20.1.38', '10.20.30.15', 443, 35033, 618909, 'ALLOWED'),
 (7499, 18, 18, '2026-08-18 15:07:11', '10.20.1.38', '10.20.10.20', 443, 157548, 816084, 'ALLOWED'),
-(7500, 18, 18, '2026-08-18 14:43:38', '10.20.1.38', '10.20.10.20', 443, 212165, 554078, 'ALLOWED'),
+(7500, 18, 18, '2026-08-18 14:43:38', '10.20.1.38', '10.20.10.20', 443, 212165, 554078, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (7501, 18, 18, '2026-08-18 11:33:31', '10.20.1.38', '10.20.10.12', 443, 247814, 737911, 'ALLOWED'),
 (7502, 18, 18, '2026-08-18 09:28:31', '10.20.1.38', '10.20.30.15', 443, 172970, 295780, 'ALLOWED'),
 (7503, 18, 18, '2026-08-18 10:44:48', '10.20.1.38', '10.20.10.20', 443, 161021, 420658, 'ALLOWED'),
@@ -16913,7 +17056,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (7747, 25, 25, '2026-08-18 15:20:23', '10.20.2.45', '10.20.30.15', 443, 169892, 881874, 'ALLOWED'),
 (7748, 25, 25, '2026-08-18 10:27:11', '10.20.2.45', '10.20.10.12', 443, 175305, 309234, 'ALLOWED'),
 (7749, 25, 25, '2026-08-18 15:03:47', '10.20.2.45', '10.20.10.12', 443, 123118, 233113, 'ALLOWED'),
-(7750, 25, 25, '2026-08-18 14:55:33', '10.20.2.45', '10.20.10.12', 443, 233189, 514384, 'ALLOWED'),
+(7750, 25, 25, '2026-08-18 14:55:33', '10.20.2.45', '10.20.10.12', 443, 233189, 514384, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (7751, 25, 25, '2026-08-18 09:16:33', '10.20.2.45', '198.51.100.20', 443, 5889502, 65200, 'ALLOWED'),
 (7752, 25, 25, '2026-08-18 10:27:01', '10.20.2.45', '10.20.10.12', 443, 163569, 334395, 'ALLOWED'),
 (7753, 25, 25, '2026-08-18 10:54:23', '10.20.2.45', '10.20.30.15', 443, 74314, 251785, 'ALLOWED'),
@@ -17163,7 +17308,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (7997, 2, 2, '2026-08-19 08:41:22', '10.20.1.22', '10.20.10.12', 443, 258236, 327404, 'ALLOWED'),
 (7998, 2, 2, '2026-08-19 09:39:12', '10.20.1.22', '10.20.30.15', 443, 316303, 262688, 'ALLOWED'),
 (7999, 2, 2, '2026-08-19 10:18:56', '10.20.1.22', '10.20.30.15', 443, 21821, 679086, 'ALLOWED'),
-(8000, 2, 2, '2026-08-19 14:38:09', '10.20.1.22', '10.20.10.12', 443, 300819, 536666, 'ALLOWED'),
+(8000, 2, 2, '2026-08-19 14:38:09', '10.20.1.22', '10.20.10.12', 443, 300819, 536666, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (8001, 2, 2, '2026-08-19 08:13:10', '10.20.1.22', '198.51.100.20', 443, 256033, 579706, 'ALLOWED'),
 (8002, 2, 2, '2026-08-19 10:26:38', '10.20.1.22', '10.20.10.20', 443, 105393, 180331, 'ALLOWED'),
 (8003, 2, 2, '2026-08-19 14:02:09', '10.20.1.22', '10.20.10.12', 443, 49228, 386799, 'ALLOWED'),
@@ -17413,7 +17560,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (8247, 9, 9, '2026-08-19 10:31:37', '10.20.1.29', '10.20.30.15', 443, 163467, 581801, 'ALLOWED'),
 (8248, 9, 9, '2026-08-19 14:33:49', '10.20.1.29', '198.51.100.20', 443, 250884, 736680, 'ALLOWED'),
 (8249, 9, 9, '2026-08-19 17:50:39', '10.20.1.29', '198.51.100.20', 443, 178158, 67872, 'ALLOWED'),
-(8250, 9, 9, '2026-08-19 08:20:55', '10.20.1.29', '198.51.100.20', 443, 70444, 182238, 'ALLOWED'),
+(8250, 9, 9, '2026-08-19 08:20:55', '10.20.1.29', '198.51.100.20', 443, 70444, 182238, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (8251, 9, 9, '2026-08-19 10:22:51', '10.20.1.29', '10.20.10.12', 443, 352302, 734716, 'ALLOWED'),
 (8252, 9, 9, '2026-08-19 09:17:33', '10.20.1.29', '10.20.10.12', 443, 195487, 18242, 'ALLOWED'),
 (8253, 9, 9, '2026-08-19 14:45:00', '10.20.1.29', '198.51.100.20', 443, 210315, 400294, 'ALLOWED'),
@@ -17663,7 +17812,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (8497, 16, 16, '2026-08-19 13:02:59', '10.20.1.36', '198.51.100.20', 443, 269223, 288019, 'ALLOWED'),
 (8498, 16, 16, '2026-08-19 16:03:32', '10.20.1.36', '10.20.30.15', 443, 197204, 267061, 'ALLOWED'),
 (8499, 16, 16, '2026-08-19 09:16:20', '10.20.1.36', '10.20.30.15', 443, 51275, 658397, 'ALLOWED'),
-(8500, 16, 16, '2026-08-19 17:20:49', '10.20.1.36', '10.20.30.15', 443, 344348, 708900, 'ALLOWED'),
+(8500, 16, 16, '2026-08-19 17:20:49', '10.20.1.36', '10.20.30.15', 443, 344348, 708900, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (8501, 16, 16, '2026-08-19 14:52:48', '10.20.1.36', '10.20.10.12', 443, 103187, 877952, 'ALLOWED'),
 (8502, 16, 16, '2026-08-19 14:51:55', '10.20.1.36', '10.20.10.20', 443, 329734, 237635, 'ALLOWED'),
 (8503, 16, 16, '2026-08-19 11:05:20', '10.20.1.36', '10.20.30.15', 443, 6874, 679180, 'ALLOWED'),
@@ -17913,7 +18064,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (8747, 23, 23, '2026-08-19 11:57:54', '10.20.2.43', '10.20.10.20', 443, 64994, 241690, 'ALLOWED'),
 (8748, 23, 23, '2026-08-19 14:21:26', '10.20.2.43', '10.20.30.15', 443, 232851, 19312, 'ALLOWED'),
 (8749, 23, 23, '2026-08-19 10:43:00', '10.20.2.43', '10.20.10.20', 443, 204111, 558576, 'ALLOWED'),
-(8750, 23, 23, '2026-08-19 10:54:18', '10.20.2.43', '10.20.10.20', 443, 311732, 219911, 'ALLOWED'),
+(8750, 23, 23, '2026-08-19 10:54:18', '10.20.2.43', '10.20.10.20', 443, 311732, 219911, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (8751, 23, 23, '2026-08-19 14:14:45', '10.20.2.43', '10.20.10.12', 443, 212019, 809993, 'ALLOWED'),
 (8752, 23, 23, '2026-08-19 13:17:36', '10.20.2.43', '198.51.100.20', 443, 331793, 644504, 'ALLOWED'),
 (8753, 23, 23, '2026-08-19 16:45:27', '10.20.2.43', '10.20.10.20', 443, 278451, 818752, 'ALLOWED'),
@@ -18163,7 +18316,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (8997, 30, 30, '2026-08-19 13:44:09', '10.20.2.50', '198.51.100.20', 443, 33860, 261542, 'ALLOWED'),
 (8998, 30, 30, '2026-08-19 12:21:22', '10.20.2.50', '198.51.100.20', 443, 170464, 111329, 'ALLOWED'),
 (8999, 30, 30, '2026-08-19 14:27:57', '10.20.2.50', '10.20.30.15', 443, 214190, 661521, 'ALLOWED'),
-(9000, 30, 30, '2026-08-19 10:39:07', '10.20.2.50', '10.20.10.12', 443, 221156, 407512, 'ALLOWED'),
+(9000, 30, 30, '2026-08-19 10:39:07', '10.20.2.50', '10.20.10.12', 443, 221156, 407512, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (9001, 30, 30, '2026-08-19 13:39:39', '10.20.2.50', '10.20.10.20', 443, 58549, 84014, 'ALLOWED'),
 (9002, 30, 30, '2026-08-19 15:58:54', '10.20.2.50', '10.20.10.12', 443, 289641, 649038, 'ALLOWED'),
 (9003, 30, 30, '2026-08-19 09:17:03', '10.20.2.50', '198.51.100.20', 443, 121222, 713963, 'ALLOWED'),
@@ -18413,7 +18568,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (9247, 31, 7, '2026-08-20 21:42:19', '10.20.10.11', '10.20.10.12', 443, 145470, 29811, 'ALLOWED'),
 (9248, 31, 7, '2026-08-20 16:14:32', '10.20.10.11', '10.20.10.12', 443, 343995, 850261, 'ALLOWED'),
 (9249, 31, 7, '2026-08-20 23:32:57', '10.20.10.11', '10.20.10.20', 443, 52098, 837309, 'ALLOWED'),
-(9250, 31, 7, '2026-08-20 11:55:46', '10.20.10.11', '10.20.30.15', 443, 142458, 213143, 'ALLOWED'),
+(9250, 31, 7, '2026-08-20 11:55:46', '10.20.10.11', '10.20.30.15', 443, 142458, 213143, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (9251, 8, 8, '2026-08-20 15:05:40', '10.20.1.28', '10.20.10.12', 443, 232272, 122416, 'ALLOWED'),
 (9252, 8, 8, '2026-08-20 16:16:40', '10.20.1.28', '10.20.30.15', 443, 157763, 651194, 'ALLOWED'),
 (9253, 8, 8, '2026-08-20 09:22:50', '10.20.1.28', '10.20.30.15', 443, 333070, 252151, 'ALLOWED'),
@@ -18663,7 +18820,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (9497, 14, 14, '2026-08-20 08:38:46', '10.20.1.34', '10.20.10.12', 443, 124786, 383631, 'ALLOWED'),
 (9498, 14, 14, '2026-08-20 11:38:13', '10.20.1.34', '10.20.10.12', 443, 249429, 165974, 'ALLOWED'),
 (9499, 14, 14, '2026-08-20 14:26:58', '10.20.1.34', '10.20.10.20', 443, 234786, 565305, 'ALLOWED'),
-(9500, 14, 14, '2026-08-20 16:56:11', '10.20.1.34', '198.51.100.20', 443, 32934, 16893, 'ALLOWED'),
+(9500, 14, 14, '2026-08-20 16:56:11', '10.20.1.34', '198.51.100.20', 443, 32934, 16893, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (9501, 14, 14, '2026-08-20 10:29:01', '10.20.1.34', '198.51.100.20', 443, 92397, 409717, 'ALLOWED'),
 (9502, 14, 14, '2026-08-20 11:16:55', '10.20.1.34', '198.51.100.20', 443, 8941, 38403, 'ALLOWED'),
 (9503, 15, 15, '2026-08-20 11:54:40', '10.20.1.35', '198.51.100.20', 443, 116178, 239545, 'ALLOWED'),
@@ -18913,7 +19072,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (9747, 21, 21, '2026-08-20 09:02:32', '10.20.2.41', '10.20.10.12', 443, 322217, 272723, 'ALLOWED'),
 (9748, 21, 21, '2026-08-20 14:35:51', '10.20.2.41', '10.20.10.20', 443, 184059, 313530, 'ALLOWED'),
 (9749, 21, 21, '2026-08-20 10:01:22', '10.20.2.41', '10.20.10.12', 443, 18859, 581838, 'ALLOWED'),
-(9750, 21, 21, '2026-08-20 17:56:03', '10.20.2.41', '198.51.100.20', 443, 269686, 690659, 'ALLOWED'),
+(9750, 21, 21, '2026-08-20 17:56:03', '10.20.2.41', '198.51.100.20', 443, 269686, 690659, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (9751, 21, 21, '2026-08-20 16:11:51', '10.20.2.41', '10.20.10.12', 443, 291672, 13253, 'ALLOWED'),
 (9752, 21, 21, '2026-08-20 09:39:16', '10.20.2.41', '10.20.10.20', 443, 290749, 831763, 'ALLOWED'),
 (9753, 21, 21, '2026-08-20 09:41:43', '10.20.2.41', '10.20.10.20', 443, 73721, 548699, 'ALLOWED'),
@@ -19163,7 +19324,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (9997, 28, 28, '2026-08-20 13:49:13', '10.20.2.48', '10.20.30.15', 443, 119989, 650658, 'ALLOWED'),
 (9998, 28, 28, '2026-08-20 14:02:19', '10.20.2.48', '10.20.10.20', 443, 186210, 553958, 'ALLOWED'),
 (9999, 28, 28, '2026-08-20 08:54:17', '10.20.2.48', '198.51.100.20', 443, 236325, 146690, 'ALLOWED'),
-(10000, 28, 28, '2026-08-20 17:46:11', '10.20.2.48', '10.20.10.12', 443, 298668, 328728, 'ALLOWED'),
+(10000, 28, 28, '2026-08-20 17:46:11', '10.20.2.48', '10.20.10.12', 443, 298668, 328728, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (10001, 28, 28, '2026-08-20 14:24:51', '10.20.2.48', '10.20.10.12', 443, 186889, 235615, 'ALLOWED'),
 (10002, 28, 28, '2026-08-20 10:56:36', '10.20.2.48', '10.20.10.20', 443, 299498, 150387, 'ALLOWED'),
 (10003, 28, 28, '2026-08-20 11:22:49', '10.20.2.48', '198.51.100.20', 443, 309721, 730339, 'ALLOWED'),
@@ -19413,7 +19576,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (10247, 5, 5, '2026-08-21 13:57:11', '10.20.1.25', '10.20.10.12', 443, 196604, 527329, 'ALLOWED'),
 (10248, 5, 5, '2026-08-21 13:29:20', '10.20.1.25', '10.20.30.15', 443, 211675, 358513, 'ALLOWED'),
 (10249, 5, 5, '2026-08-21 14:32:04', '10.20.1.25', '198.51.100.20', 443, 33157, 751279, 'ALLOWED'),
-(10250, 5, 5, '2026-08-21 15:17:47', '10.20.1.25', '198.51.100.20', 443, 313410, 677681, 'ALLOWED'),
+(10250, 5, 5, '2026-08-21 15:17:47', '10.20.1.25', '198.51.100.20', 443, 313410, 677681, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (10251, 5, 5, '2026-08-21 10:17:01', '10.20.1.25', '10.20.30.15', 443, 335314, 457111, 'ALLOWED'),
 (10252, 5, 5, '2026-08-21 11:16:28', '10.20.1.25', '10.20.10.12', 443, 26156, 159586, 'ALLOWED'),
 (10253, 5, 5, '2026-08-21 12:20:44', '10.20.1.25', '198.51.100.20', 443, 183648, 534858, 'ALLOWED'),
@@ -19663,7 +19828,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (10497, 13, 13, '2026-08-21 14:35:45', '10.20.1.33', '10.20.10.12', 443, 14083, 18857, 'ALLOWED'),
 (10498, 13, 13, '2026-08-21 14:17:23', '10.20.1.33', '10.20.10.20', 443, 159706, 523123, 'ALLOWED'),
 (10499, 13, 13, '2026-08-21 12:00:19', '10.20.1.33', '10.20.30.15', 443, 1366617, 175646, 'ALLOWED'),
-(10500, 13, 13, '2026-08-21 13:16:37', '10.20.1.33', '10.20.30.15', 443, 6726700, 496029, 'ALLOWED'),
+(10500, 13, 13, '2026-08-21 13:16:37', '10.20.1.33', '10.20.30.15', 443, 6726700, 496029, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (10501, 13, 13, '2026-08-21 14:47:24', '10.20.1.33', '10.20.10.12', 443, 255794, 443676, 'ALLOWED'),
 (10502, 13, 13, '2026-08-21 09:44:01', '10.20.1.33', '10.20.30.15', 443, 205942, 891425, 'ALLOWED'),
 (10503, 13, 13, '2026-08-21 09:12:27', '10.20.1.33', '198.51.100.20', 443, 297729, 807061, 'ALLOWED'),
@@ -19913,7 +20080,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (10747, 20, 20, '2026-08-21 13:21:36', '10.20.1.40', '10.20.30.15', 443, 96898, 555211, 'ALLOWED'),
 (10748, 20, 20, '2026-08-21 12:40:05', '10.20.1.40', '10.20.10.12', 443, 21758, 470770, 'ALLOWED'),
 (10749, 20, 20, '2026-08-21 13:54:16', '10.20.1.40', '10.20.30.15', 443, 179158, 330245, 'ALLOWED'),
-(10750, 20, 20, '2026-08-21 09:24:16', '10.20.1.40', '198.51.100.20', 443, 344549, 763118, 'ALLOWED'),
+(10750, 20, 20, '2026-08-21 09:24:16', '10.20.1.40', '198.51.100.20', 443, 344549, 763118, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (10751, 20, 20, '2026-08-21 10:13:29', '10.20.1.40', '10.20.10.20', 443, 63901, 324553, 'ALLOWED'),
 (10752, 20, 20, '2026-08-21 13:27:59', '10.20.1.40', '198.51.100.20', 443, 17606, 492980, 'ALLOWED'),
 (10753, 20, 20, '2026-08-21 09:17:48', '10.20.1.40', '10.20.10.20', 443, 278415, 483979, 'ALLOWED'),
@@ -20163,7 +20332,9 @@ INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_
 (10997, 27, 27, '2026-08-21 14:51:11', '10.20.2.47', '10.20.30.15', 443, 175334, 809566, 'ALLOWED'),
 (10998, 27, 27, '2026-08-21 10:51:49', '10.20.2.47', '10.20.30.15', 443, 179380, 412249, 'ALLOWED'),
 (10999, 27, 27, '2026-08-21 10:08:02', '10.20.2.47', '10.20.10.12', 443, 65145, 275768, 'ALLOWED'),
-(11000, 27, 27, '2026-08-21 13:28:52', '10.20.2.47', '10.20.10.12', 443, 19304, 45670, 'ALLOWED'),
+(11000, 27, 27, '2026-08-21 13:28:52', '10.20.2.47', '10.20.10.12', 443, 19304, 45670, 'ALLOWED');
+
+INSERT INTO network_traffic (traffic_id, asset_id, user_id, captured_at, source_ip, destination_ip, destination_port, bytes_sent, bytes_received, action) VALUES
 (11001, 27, 27, '2026-08-21 13:36:36', '10.20.2.47', '10.20.10.12', 443, 295887, 287554, 'ALLOWED'),
 (11002, 27, 27, '2026-08-21 09:58:28', '10.20.2.47', '10.20.30.15', 443, 221651, 428670, 'ALLOWED'),
 (11003, 27, 27, '2026-08-21 09:00:29', '10.20.2.47', '10.20.30.15', 443, 23326, 130771, 'ALLOWED'),
@@ -20314,3 +20485,8 @@ INSERT INTO incident_reports (report_id, related_login_id, reported_by_user_id, 
 (3, 800001, 1, '2026-08-20 22:55:00', 'EMERGENCY_MAINTENANCE', 'LOW', 'DBA requested emergency validation after the finance batch failed. Work window approved until midnight.', 'CLOSED', 'Activity matched change reference CHG-2026-0820.'),
 (4, 900001, 30, '2026-08-20 22:48:00', 'DATA_TRANSFER_ALERT', 'HIGH', 'SOC observed an unusual outbound transfer from the database network to 203.0.113.88.', 'OPEN', NULL),
 (5, 900001, 5, '2026-08-21 08:12:00', 'USER_COMPLAINT', 'MEDIUM', 'Finance manager reported that Nina''s account showed activity while Nina stated she was already offline.', 'OPEN', NULL);
+
+/*!40014 SET UNIQUE_CHECKS=IF(@OLD_UNIQUE_CHECKS IS NULL, 1, @OLD_UNIQUE_CHECKS) */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
