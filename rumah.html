@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Rumah Kelapa Dua 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: satu kanvas 3D lebar penuh, kontrol di atas, catatan tahap di bawah */
+:root{
+  --bg:#f3f4f2; --fg:#1f2a2e; --muted:#5d6a6e; --line:#d5dad8; --card:#ffffff;
+  --accent:#2f6f73; --accent-fg:#ffffff; --t1:#d98a3a;
+  --display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body:"Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a1c; --fg:#e7ecea; --muted:#9aa7a8; --line:#2c3638; --card:#1c2427;
+  --accent:#5fb3b5; --accent-fg:#0f1517; --t1:#e8a15a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a1c; --fg:#e7ecea; --muted:#9aa7a8; --line:#2c3638; --card:#1c2427;
+  --accent:#5fb3b5; --accent-fg:#0f1517; --t1:#e8a15a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-size:clamp(1.5rem,3vw,2.1rem);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:2px 0 0}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{font:600 13px var(--body);color:var(--fg);background:transparent;border:0;padding:8px 14px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.seg button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lbl{font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.time{display:flex;align-items:center;gap:8px}
+.time output{font-variant-numeric:tabular-nums;min-width:3.2em}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-height:78vh;min-height:320px;border-radius:10px;overflow:hidden;background:#9cc3de}
+.stage canvas{display:block;width:100%;height:100%}
+.tag{position:absolute;left:12px;top:12px;background:rgba(20,28,30,.72);color:#fff;font:600 12px var(--body);padding:6px 10px;border-radius:6px;letter-spacing:.02em}
+.hint{position:absolute;right:12px;bottom:10px;color:#fff;font:12px var(--body);text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.note h2{font-family:var(--display);font-size:1.05rem;margin:0 0 6px}
+.note ul{margin:0;padding-left:18px;color:var(--fg)}
+.note li{margin:2px 0}
+.note.on{border-color:var(--accent)}
+.foot{color:var(--muted);font-size:13px;max-width:75ch}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;overflow-y:hidden}
+.tabs button{font:600 14px var(--body);color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tab{display:flex;flex-direction:column;gap:16px}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.plan-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:0;min-width:0}
+.plan-card figcaption{font-size:13px;color:var(--muted);margin-bottom:6px}
+.plan-card figcaption b{color:var(--fg)}
+svg.plan{width:100%;height:auto;display:block}
+.int{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:820px){.int{grid-template-columns:1fr}}
+.istage{aspect-ratio:4/3;max-height:80vh;touch-action:none}
+.pad{position:absolute;left:12px;bottom:12px;display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,40px);gap:4px}
+.pad button{background:rgba(20,28,30,.55);color:#fff;border:0;border-radius:6px;font-size:14px;cursor:pointer;touch-action:none;user-select:none}
+.pad button:active{background:rgba(20,28,30,.85)}
+.pad button[data-k="KeyW"]{grid-column:2;grid-row:1}
+.pad button[data-k="KeyA"]{grid-column:1;grid-row:2}
+.pad button[data-k="KeyS"]{grid-column:2;grid-row:2}
+.pad button[data-k="KeyD"]{grid-column:3;grid-row:2}
+@media (hover:hover) and (pointer:fine){.pad{opacity:.75}}
+/* warna denah */
+:root{--p-wall:#26343a;--p-room:#f7f3ea;--p-out:#e8ebe5;--p-wet:#e2edf1;--p-furn:#b49c7c;--p-win:#3d8fb0;--p-hl:#2f6f73}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--p-wall:#d4dcda;--p-room:#232b2e;--p-out:#1a2123;--p-wet:#1e2b30;--p-furn:#7d6c55;--p-win:#6cc0de;--p-hl:#5fb3b5}}
+:root[data-theme="dark"]{--p-wall:#d4dcda;--p-room:#232b2e;--p-out:#1a2123;--p-wet:#1e2b30;--p-furn:#7d6c55;--p-win:#6cc0de;--p-hl:#5fb3b5}
+.plan .rm{fill:var(--p-room)} .plan .rm.out{fill:var(--p-out)} .plan .rm.wet{fill:var(--p-wet)}
+.plan .wl{fill:var(--p-wall)} .plan .wl2{fill:none;stroke:var(--p-wall);stroke-width:4}
+.plan .fu{fill:none;stroke:var(--p-furn);stroke-width:2.2}
+.plan .wn{stroke:var(--p-win);stroke-width:3;fill:none}
+.plan .dr{fill:none;stroke:var(--muted);stroke-width:1.6}
+.plan .ln{fill:none;stroke:var(--muted);stroke-width:1.4}
+.plan .gt{fill:none;stroke:var(--p-wall);stroke-width:3;stroke-dasharray:10 6}
+.plan .rn{font:600 22px var(--body);fill:var(--fg);text-anchor:middle}
+.plan .rd{font:17px var(--body);fill:var(--muted);text-anchor:middle}
+.plan .dm{font:18px var(--body);fill:var(--muted);text-anchor:middle}
+.plan .hit{cursor:pointer;outline:none}
+.plan .hit .hl{fill:var(--p-hl);opacity:0;transition:opacity .15s}
+.plan .hit:hover .hl,.plan .hit:focus-visible .hl{opacity:.18}
+.plan .hit.sel .hl{opacity:.32}
+.plan .hit:focus-visible .hl{stroke:var(--p-hl);stroke-width:4}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Rumah 9 × 12 m, Kelapa Dua</h1>
+    <p class="sub">Rumah sudut: jalan perumahan ± 3,5 m di depan dan kiri, tetangga di kanan dan belakang.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Tampilan">
+    <button role="tab" id="t-denah" aria-controls="tab-denah" aria-selected="false" data-tab="denah">Denah</button>
+    <button role="tab" id="t-eksterior" aria-controls="tab-eksterior" aria-selected="true" data-tab="eksterior">Eksterior</button>
+    <button role="tab" id="t-interior" aria-controls="tab-interior" aria-selected="false" data-tab="interior">Interior</button>
+  </nav>
+
+  <section class="tab" id="tab-denah" role="tabpanel" aria-labelledby="t-denah" hidden>
+    <div class="plans">
+      <figure class="plan-card"><figcaption><b>Lantai 1</b> · ruang bersama dan servis</figcaption><svg class="plan" id="planL1" role="img" aria-label="Denah lantai 1"></svg></figure>
+      <figure class="plan-card"><figcaption><b>Lantai 2</b> · kamar dan ruang kerja</figcaption><svg class="plan" id="planL2" role="img" aria-label="Denah lantai 2"></svg></figure>
+    </div>
+    <div class="note">
+      <h2>Perubahan dari denah awal</h2>
+      <ul>
+        <li>Dinding depan bagian tangga mundur 0,40 m. Carport kanan jadi 5,40 m, lajur tangga 2 × 0,80 m.</li>
+        <li>Pintu utama diagonal ± 1,45 m (daun pivot ± 1,3 m) menyambung dinding kiri dan dinding tangga. Kaca depan jadi 1,25 m.</li>
+        <li>Gerbang geser teleskopik 2 daun; saat terbuka bertumpuk di balik pagar tetap depan parkir motor.</li>
+        <li>Sisi jalan samping: blok sudut, bak sampah cor (selalu terbuka ke jalan, sela dari dalam), kolom struktur, pintu orang 0,9 m.</li>
+        <li>Kanopi polikarbonat di depan carport; toren 1.050 L di loteng di atas kamar utama.</li>
+        <li>Isolasi lantai 1: bukaan dapur–servis dan dapur–teras diberi pintu geser kaca dengan kasa nyamuk dan teralis di sisi luar; ujung koridor ke servis diberi pintu besi berkasa. Saat semua terkunci, ruang utama, koridor, KM tamu, dan kamar ART tertutup dari luar.</li>
+        <li>Teras, bangku cor, dan bak tanam memanjang di tembok belakang (tanpa pohon).</li>
+        <li>Kamar ART dilebarkan ke depan (2,00 × 2,85) dan pintunya digeser ke dalam koridor, berakhir tepat di garis pintu besi; KM tamu menyusut jadi 2,00 × 1,45.</li>
+        <li>Kamar utama: lemari tanam pindah ke dinding sisi ruang kerja; pintu geser ruang kerja di pinggir dekat hall.</li>
+        <li>Lebih banyak bukaan: jendela ruang kerja, kamar anak laki-laki, kamar anak perempuan dan dinding belakang lantai 2 jadi kaca penuh lantai–plafon; kaca depan ruang serbaguna dan pintu kaca ke teras/servis setinggi plafon.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-interior" role="tabpanel" aria-labelledby="t-interior" hidden>
+    <div class="int">
+      <div class="plan-card">
+        <div class="bar" style="margin-bottom:8px"><span class="lbl">Lantai</span>
+          <span class="seg" id="floorSeg">
+            <button data-f="1" aria-pressed="true">Lantai 1</button>
+            <button data-f="2" aria-pressed="false">Lantai 2</button>
+          </span></div>
+        <svg class="plan" id="iplan" role="group" aria-label="Pilih ruangan"></svg>
+        <p class="foot" style="margin:6px 0 0">Klik ruangan pada denah untuk masuk ke dalamnya, lalu jalan dengan W A S D. Tangga bisa dinaiki untuk pindah lantai; panah biru menunjukkan posisi dan arah pandang.</p>
+      </div>
+      <div class="stage istage" id="istage">
+        <div class="tag" id="itag">Pilih ruangan di denah</div>
+        <div class="hint">W A S D / panah untuk berjalan · Shift untuk lari · seret untuk melihat</div>
+        <div class="pad" id="pad" aria-label="Tombol jalan">
+          <button data-k="KeyW" aria-label="Maju">▲</button>
+          <button data-k="KeyA" aria-label="Geser kiri">◀</button>
+          <button data-k="KeyS" aria-label="Mundur">▼</button>
+          <button data-k="KeyD" aria-label="Geser kanan">▶</button>
+        </div>
+      </div>
+    </div>
+    <p class="foot">Interior menampilkan kondisi setelah tahap 2. Furnitur adalah contoh penataan sesuai denah.</p>
+  </section>
+
+  <section class="tab" id="tab-eksterior" role="tabpanel" aria-labelledby="t-eksterior">
+  <div class="bar">
+    <div><span class="lbl">Tahap</span>
+      <span class="seg" id="phaseSeg">
+        <button id="p1" aria-pressed="true" data-p="1">Tahap 1</button>
+        <button id="p2" aria-pressed="false" data-p="2">Tahap 2</button>
+      </span></div>
+    <div><span class="lbl">Sudut pandang</span>
+      <span class="seg" id="viewSeg">
+        <button data-v="sudut" aria-pressed="true">Sudut jalan</button>
+        <button data-v="depan" aria-pressed="false">Depan</button>
+        <button data-v="kiri" aria-pressed="false">Samping kiri</button>
+        <button data-v="atas" aria-pressed="false">Udara</button>
+      </span></div>
+    <div><span class="lbl">Mekanik</span>
+      <span class="seg">
+        <button id="gateBtn" aria-pressed="false">Buka pagar</button>
+        <button id="doorBtn" aria-pressed="false">Buka pintu samping</button>
+        <button id="atticBtn" aria-pressed="false">Lihat loteng</button>      </span></div>
+    <div class="time"><label class="lbl" for="hour">Jam</label>
+      <input id="hour" type="range" min="7" max="17.5" step="0.25" value="9.5">
+      <output id="hourOut">09:30</output></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="tag" id="tag">TAHAP 1 · Lantai 1 dihuni, dak beton jadi atap</div>
+    <div class="hint">Seret untuk memutar · scroll / cubit untuk zoom</div>
+  </div>
+
+  <div class="notes">
+    <div class="note on" id="n1">
+      <h2>Tahap 1</h2>
+      <ul>
+        <li>Lantai 1 lengkap; bangunan ditutup dak beton yang dilapisi waterproofing.</li>
+        <li>Besi stek kolom menonjol di atas dak, dibungkus (titik hitam di atap).</li>
+        <li>Bukaan tangga ditutup panel sementara (petak lebih gelap di atap).</li>
+        <li>Carport dan parkir motor sudah beratap dak sejak garis 1,5 m dari pagar.</li>
+        <li>Kanopi polikarbonat di halaman servis belakang.</li>
+      </ul>
+    </div>
+    <div class="note" id="n2">
+      <h2>Tahap 2</h2>
+      <ul>
+        <li>Gaya modern dengan atap genteng flat beton abu tua, model miring satu arah: tinggi di depan, turun ke belakang (± 13°).</li>
+        <li>Kamar utama berdinding kaca penuh dalam bingkai kotak abu gelap yang menjorok, sebagian ditutup kisi kayu vertikal untuk privasi.</li>
+        <li>Ruang kerja dengan dinding abu gelap dan atap tipis menjorok; kamar anak laki-laki memakai jendela memanjang dengan sirip peneduh.</li>
+        <li>Dinding kanan masif karena menempel tetangga.</li>
+        <li>Loteng: toren 1.050 L (biru) di bagian atap yang tinggi (depan) di atas dudukan beton, dengan pompa booster kecil dan pipa ke KM. Tersembunyi di bawah genteng; tekan "Lihat loteng" untuk mengangkat atapnya.</li>
+        <li>Dinding depan bagian tangga dimundurkan 0,40 m: carport kanan sedalam 5,40 m (ruang bersih ± 5,15 m untuk CR-V), lajur tangga 0,80 m. Pintu utama dipasang diagonal menyambung dinding kiri dan kanan.</li>
+        <li>Kanopi polikarbonat gelap di depan carport (tahap 1 &amp; 2) menutup celah 1,3 m sampai pagar.</li>
+        <li>Pagar komposisi: blok sudut beton ekspos 2,2 m, pilar putih dengan nomor rumah dan lampu, pintu motor kisi kayu vertikal, gerbang mobil bilah kayu horizontal, dan dinding roster di jalan samping.</li>
+        <li>Gerbang geser teleskopik: 2 daun kaku di 2 rel sejajar, digerakkan motor dengan remote. Saat terbuka keduanya bertumpuk di balik pagar tetap depan area motor, jadi bukaan carport ± 5,3 m bersih untuk 2 mobil. Mode buka sebagian ± 1,2 m untuk motor.</li>
+        <li>Pintu orang di jalan samping untuk keluar-masuk harian tanpa membuka gerbang.</li>
+        <li>Bak sampah cor 0,95 × 0,8 m di jalan samping, seluruhnya di dalam lahan. Sisi luar selalu terbuka dengan bidang landai ke arah jalan; di atasnya pagar besi agar tidak bisa dilompati. Dari dalam ada sela 0,55 × 0,35 m dengan talang miring untuk membuang sampah tanpa keluar rumah.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">Model massa konseptual, bukan render arsitek. Ukuran mengikuti denah 9 × 12 m. Warna, material fasad dan bentuk atap adalah usulan dan bisa diubah. Rumah tetangga digambar sederhana sebagai konteks.</p>
+  </section>
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { Sky } from "three/addons/objects/Sky.js";
+
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.55;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 16 / 9, 0.1, 600);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.495;
+controls.minDistance = 6; controls.maxDistance = 70;
+
+/* ---------- procedural textures ---------- */
+function canvasTex(w, h, draw, rx = 1, ry = 1, srgb = true) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const g = c.getContext("2d"); draw(g, w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry);
+  t.anisotropy = 8; if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+function noise(g, w, h, base, amp, n = 9000, size = 2) {
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < n; i++) {
+    const v = (Math.random() - 0.5) * amp;
+    g.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`;
+    g.fillRect(Math.random() * w, Math.random() * h, size, size);
+  }
+}
+const texPlaster = canvasTex(256, 256, (g, w, h) => noise(g, w, h, "#ebe1cd", 0.08, 14000, 2), 1, 1);   // broken white
+const texPlasterGrey = canvasTex(256, 256, (g, w, h) => noise(g, w, h, "#7d8384", 0.12, 14000, 2), 1, 1);
+const texAsphalt = canvasTex(256, 256, (g, w, h) => noise(g, w, h, "#4a4c4d", 0.35, 26000, 2), 12, 12);
+const texGrass = canvasTex(256, 256, (g, w, h) => {
+  noise(g, w, h, "#5d7f3a", 0.3, 20000, 2);
+  for (let i = 0; i < 3000; i++) { g.strokeStyle = `rgba(${40 + Math.random() * 60},${90 + Math.random() * 60},30,.6)`;
+    const x = Math.random() * w, y = Math.random() * h; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.random() * 2 - 1, y - 4); g.stroke(); }
+}, 30, 30);
+const texPaving = canvasTex(256, 256, (g, w, h) => {
+  noise(g, w, h, "#a9a69f", 0.18, 10000, 2);
+  g.strokeStyle = "rgba(60,60,60,.45)"; g.lineWidth = 2;
+  for (let i = 0; i <= 4; i++) { g.beginPath(); g.moveTo(i * 64, 0); g.lineTo(i * 64, h); g.stroke(); g.beginPath(); g.moveTo(0, i * 64); g.lineTo(w, i * 64); g.stroke(); }
+}, 3, 3);
+const texWood = canvasTex(512, 128, (g, w, h) => {
+  g.fillStyle = "#8a5a35"; g.fillRect(0, 0, w, h);
+  for (let y = 0; y < h; y += 16) {
+    g.fillStyle = `hsl(25,${38 + Math.random() * 12}%,${28 + Math.random() * 10}%)`; g.fillRect(0, y, w, 15);
+    for (let k = 0; k < 40; k++) { g.strokeStyle = "rgba(40,20,5,.25)"; g.beginPath(); const yy = y + Math.random() * 15; g.moveTo(0, yy); g.bezierCurveTo(w * .3, yy + 2, w * .6, yy - 2, w, yy + 1); g.stroke(); }
+    g.fillStyle = "rgba(20,10,0,.6)"; g.fillRect(0, y + 15, w, 1);
+  }
+}, 1, 1);
+const texRoof = canvasTex(256, 256, (g, w, h) => {
+  g.fillStyle = "#3b3f42"; g.fillRect(0, 0, w, h);
+  for (let x = 0; x < w; x += 32) { const gr = g.createLinearGradient(x, 0, x + 32, 0);
+    gr.addColorStop(0, "#2c2f31"); gr.addColorStop(.5, "#4b5054"); gr.addColorStop(1, "#2c2f31"); g.fillStyle = gr; g.fillRect(x, 0, 32, h); }
+  for (let y = 0; y < h; y += 64) { g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(0, y, w, 3); }
+}, 10, 6);
+const texWP = canvasTex(256, 256, (g, w, h) => noise(g, w, h, "#8f9a96", 0.22, 16000, 3), 4, 4);
+
+const M = {
+  plaster: new THREE.MeshStandardMaterial({ map: texPlaster, roughness: 0.92 }),
+  plasterGrey: new THREE.MeshStandardMaterial({ map: texPlasterGrey, roughness: 0.9 }),
+  concrete: new THREE.MeshStandardMaterial({ color: 0xb9b8b2, roughness: 0.95 }),
+  wp: new THREE.MeshStandardMaterial({ map: texWP, roughness: 0.8 }),
+  panel: new THREE.MeshStandardMaterial({ color: 0x6f6a5f, roughness: 0.7 }),
+  wood: new THREE.MeshStandardMaterial({ map: texWood, roughness: 0.6 }),
+  alu: new THREE.MeshStandardMaterial({ color: 0x2b2f31, roughness: 0.4, metalness: 0.6 }),
+  glass: new THREE.MeshPhysicalMaterial({ color: 0x1e2a30, roughness: 0.04, metalness: 0.5, clearcoat: 1, envMapIntensity: 1.4 }),
+  roof: new THREE.MeshStandardMaterial({ map: texRoof, roughness: 0.45, metalness: 0.5 }),
+  asphalt: new THREE.MeshStandardMaterial({ map: texAsphalt, roughness: 0.95 }),
+  grass: new THREE.MeshStandardMaterial({ map: texGrass, roughness: 1 }),
+  paving: new THREE.MeshStandardMaterial({ map: texPaving, roughness: 0.9 }),
+  gutter: new THREE.MeshStandardMaterial({ color: 0x2b2d2c, roughness: 1 }),
+  black: new THREE.MeshStandardMaterial({ color: 0x151718, roughness: 0.5, metalness: 0.3 }),
+  charcoal: new THREE.MeshStandardMaterial({ color: 0x33373a, roughness: 0.75 }),
+  wallIn: new THREE.MeshStandardMaterial({ color: 0x969b99, roughness: 0.92 }),   // cat dinding interior abu-abu muda
+  genteng: new THREE.MeshStandardMaterial({ roughness: 0.75, map: canvasTex(256, 256, (g, w, h) => {
+    noise(g, w, h, "#3a3d40", 0.18, 9000, 2);
+    for (let r = 0; r < 8; r++) {               // baris genteng flat, sambungan berselang
+      g.fillStyle = "rgba(0,0,0,.45)"; g.fillRect(0, r * 32 + 28, w, 4);
+      g.fillStyle = "rgba(255,255,255,.06)"; g.fillRect(0, r * 32, w, 3);
+      for (let c = 0; c < 4; c++) g.fillRect((c * 64 + (r % 2) * 32) % w, r * 32, 2, 28);
+    }
+  }, 9, 14) }),
+  polyCar: new THREE.MeshPhysicalMaterial({ color: 0x3b4247, roughness: 0.3, transmission: 0.35, transparent: true, opacity: 0.85 }),
+  stek: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 }),
+  poly: new THREE.MeshPhysicalMaterial({ color: 0xdfeef2, roughness: 0.2, transmission: 0.6, transparent: true, opacity: 0.55 }),
+  leaf: new THREE.MeshStandardMaterial({ color: 0x3f6b2c, roughness: 0.85 }),
+  leaf2: new THREE.MeshStandardMaterial({ color: 0x56853a, roughness: 0.85 }),
+  trunk: new THREE.MeshStandardMaterial({ color: 0x5a4632, roughness: 0.9 }),
+  pot: new THREE.MeshStandardMaterial({ color: 0x9c5b3c, roughness: 0.8 }),
+  carBody: new THREE.MeshPhysicalMaterial({ color: 0xe9e9e6, roughness: 0.25, metalness: 0.4, clearcoat: 1 }),
+  tyre: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 }),
+  nb1: new THREE.MeshStandardMaterial({ color: 0xd9cdb6, roughness: 0.92 }),
+  nb2: new THREE.MeshStandardMaterial({ color: 0xc9d2cf, roughness: 0.92 }),
+  nbRoof: new THREE.MeshStandardMaterial({ color: 0x8a4b38, roughness: 0.8 }),
+  nbRoof2: new THREE.MeshStandardMaterial({ color: 0x4b4f52, roughness: 0.7 }),
+};
+
+/* ---------- helpers (plan coords: x right, y toward back; three z = -y) ---------- */
+function box(g, x0, x1, y0, y1, z0, z1, mat) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, z1 - z0, y1 - y0), mat);
+  m.position.set((x0 + x1) / 2, (z0 + z1) / 2, -(y0 + y1) / 2);
+  m.castShadow = m.receiveShadow = true; g.add(m); return m;
+}
+function windowFill(g, axis, f, o, t) {
+  if (o.kind === "open") return;
+  const fr = 0.05;
+  const B = (s0, s1, z0, z1, d, mat) => axis === "x" ? box(g, s0, s1, f - d / 2, f + d / 2, z0, z1, mat) : box(g, f - d / 2, f + d / 2, s0, s1, z0, z1, mat);
+  if (o.kind === "door") { B(o.s0, o.s1, o.h0, o.h1, 0.05, M.wood); }
+  else if (o.kind === "roster") {
+    for (let s = o.s0 + 0.02; s < o.s1 - 0.05; s += 0.16) for (let h = o.h0 + 0.02; h < o.h1 - 0.05; h += 0.16) B(s, s + 0.12, h, h + 0.12, t * 0.6, M.concrete);
+    B(o.s0, o.s1, o.h0, o.h1, 0.01, M.black);
+    return;
+  } else {
+    B(o.s0, o.s1, o.h0, o.h1, 0.02, M.glass);
+    const n = Math.max(1, Math.round((o.s1 - o.s0) / 0.8));
+    for (let i = 1; i < n; i++) { const s = o.s0 + (o.s1 - o.s0) * i / n; B(s - 0.025, s + 0.025, o.h0, o.h1, 0.07, M.alu); }
+  }
+  B(o.s0, o.s1, o.h0, o.h0 + fr, 0.08, M.alu); B(o.s0, o.s1, o.h1 - fr, o.h1, 0.08, M.alu);
+  B(o.s0, o.s0 + fr, o.h0, o.h1, 0.08, M.alu); B(o.s1 - fr, o.s1, o.h0, o.h1, 0.08, M.alu);
+}
+function wall(g, axis, f, a0, a1, h0, h1, ops = [], mat = M.plaster, t = 0.15) {
+  const seg = (s0, s1, z0, z1) => { if (s1 - s0 < 0.001 || z1 - z0 < 0.001) return;
+    axis === "x" ? box(g, s0, s1, f - t / 2, f + t / 2, z0, z1, mat) : box(g, f - t / 2, f + t / 2, s0, s1, z0, z1, mat); };
+  let cur = a0;
+  for (const o of [...ops].sort((a, b) => a.s0 - b.s0)) {
+    seg(cur, o.s0, h0, h1); seg(o.s0, o.s1, h0, o.h0); seg(o.s0, o.s1, o.h1, h1);
+    windowFill(g, axis, f, o, t); cur = o.s1;
+  }
+  seg(cur, a1, h0, h1);
+}
+function tri(g, a, b, c, mat) {
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute([...a, ...b, ...c], 3));
+  geo.computeVertexNormals();
+  const m = new THREE.Mesh(geo, mat.clone()); m.material.side = THREE.DoubleSide;
+  m.castShadow = m.receiveShadow = true; g.add(m);
+}
+function gableRoof(g, { x0, x1, y0, y1, base, pitch = 25, oh = 0.6, along = "x", rx = [x0, x1], ry = [y0, y1], mat = M.roof, gmat = M.plaster }) {
+  const a = THREE.MathUtils.degToRad(pitch), tn = Math.tan(a);
+  if (along === "x") {
+    const half = (y1 - y0) / 2, hr = base + half * tn, he = base - oh * tn, L = (half + oh) / Math.cos(a);
+    const len = rx[1] - rx[0], xc = (rx[0] + rx[1]) / 2;
+    const f = new THREE.Mesh(new THREE.BoxGeometry(len, 0.06, L), mat);
+    f.position.set(xc, (he + hr) / 2, -((y0 - oh) + (y0 + half)) / 2); f.rotation.x = a;
+    const b = new THREE.Mesh(new THREE.BoxGeometry(len, 0.06, L), mat);
+    b.position.set(xc, (he + hr) / 2, -((y0 + half) + (y1 + oh)) / 2); b.rotation.x = -a;
+    [f, b].forEach(m => { m.castShadow = m.receiveShadow = true; g.add(m); });
+    for (const x of [x0, x1]) tri(g, [x, base, -y0], [x, base, -y1], [x, hr - 0.05, -(y0 + y1) / 2], gmat);
+    return hr;
+  } else {
+    const half = (x1 - x0) / 2, hr = base + half * tn, he = base - oh * tn, L = (half + oh) / Math.cos(a);
+    const len = ry[1] - ry[0], yc = (ry[0] + ry[1]) / 2;
+    const l = new THREE.Mesh(new THREE.BoxGeometry(L, 0.06, len), mat);
+    l.position.set(((x0 - oh) + (x0 + half)) / 2, (he + hr) / 2, -yc); l.rotation.z = a;
+    const r = new THREE.Mesh(new THREE.BoxGeometry(L, 0.06, len), mat);
+    r.position.set(((x0 + half) + (x1 + oh)) / 2, (he + hr) / 2, -yc); r.rotation.z = -a;
+    [l, r].forEach(m => { m.castShadow = m.receiveShadow = true; g.add(m); });
+    for (const y of [y0, y1]) tri(g, [x0, base, -y], [x1, base, -y], [(x0 + x1) / 2, hr - 0.05, -y], gmat);
+    return hr;
+  }
+}
+function tree(g, x, y, h = 5, r = 1.8, mat = M.leaf) {
+  const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, h * 0.6, 8), M.trunk);
+  tr.position.set(x, h * 0.3, -y); tr.castShadow = true; g.add(tr);
+  for (let i = 0; i < 7; i++) {
+    const s = new THREE.Mesh(new THREE.IcosahedronGeometry(r * (0.45 + Math.random() * 0.3), 1), Math.random() > .5 ? mat : M.leaf2);
+    s.position.set(x + (Math.random() - .5) * r, h * 0.62 + Math.random() * r * 0.7, -y + (Math.random() - .5) * r);
+    s.castShadow = true; s.receiveShadow = true; g.add(s);
+  }
+}
+function slats(g, axis, f, a0, a1, z0, z1, mat = M.wood, gap = 0.11, w = 0.045, d = 0.07) {
+  for (let s = a0; s + w <= a1 + 0.001; s += gap)
+    axis === "x" ? box(g, s, s + w, f - d / 2, f + d / 2, z0, z1, mat) : box(g, f - d / 2, f + d / 2, s, s + w, z0, z1, mat);
+}
+function plant(g, x, y, s = 0.5) {
+  const p = new THREE.Mesh(new THREE.CylinderGeometry(s * 0.45, s * 0.35, s * 0.7, 12), M.pot);
+  p.position.set(x, 0.3 + s * 0.35, -y); p.castShadow = true; g.add(p);
+  for (let i = 0; i < 4; i++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(s * (0.35 + Math.random() * 0.2), 1), i % 2 ? M.leaf : M.leaf2);
+    b.position.set(x + (Math.random() - .5) * s * .6, 0.3 + s * 0.85 + Math.random() * s * .5, -y + (Math.random() - .5) * s * .6); b.castShadow = true; g.add(b); }
+}
+/* SUV kompak hitam dengan dimensi setara CR-V gen 4: P 4,53 × L 1,82 × T 1,68 m, wheelbase 2,62 m */
+function car(g, x, y) {
+  const c = new THREE.Group();
+  const L = 4.53, W = 1.82, hl = L / 2;
+  const paint = new THREE.MeshPhysicalMaterial({ color: 0x0b0c0e, metalness: 0.6, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.05 });
+  const chrome = new THREE.MeshStandardMaterial({ color: 0xcfd3d6, metalness: 1, roughness: 0.15 });
+  const trim = new THREE.MeshStandardMaterial({ color: 0x1a1b1c, roughness: 0.8 });
+  const prof = (pts, depth, mat, zoff = 0) => {
+    const s = new THREE.Shape(); s.moveTo(...pts[0]); pts.slice(1).forEach(p => s.lineTo(...p)); s.closePath();
+    const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 3, curveSegments: 8 });
+    geo.translate(0, 0, -depth / 2 + zoff);
+    const m = new THREE.Mesh(geo, mat); c.add(m); return m;
+  };
+  // badan (siluet samping): depan di +x
+  prof([[-hl, 0.2], [hl, 0.2], [hl, 0.72], [hl - 0.08, 0.92], [hl - 0.55, 1.0], [1.05, 1.06], [0.28, 1.6], [-1.45, 1.64], [-2.05, 1.5], [-hl + 0.02, 1.12], [-hl, 0.72]], W - 0.08, paint);
+  // kaca (sedikit lebih lebar dari badan agar tampak di samping)
+  prof([[1.0, 1.08], [0.32, 1.56], [-1.42, 1.6], [-2.0, 1.47], [-2.12, 1.1]], W - 0.05, M.glass);
+  // pilar B & C
+  for (const px of [-0.35, -1.3]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.48, W - 0.02), paint); p.position.set(px, 1.33, 0); c.add(p); }
+  // cladding bawah, grille, lampu
+  const clad = new THREE.Mesh(new THREE.BoxGeometry(L + 0.04, 0.16, W - 0.02), trim); clad.position.y = 0.3; c.add(clad);
+  const gr = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.95), chrome); gr.position.set(hl + 0.03, 0.82, 0); c.add(gr);
+  const hlm = new THREE.MeshStandardMaterial({ color: 0xeef6ff, emissive: 0x9fb8d0, emissiveIntensity: 0.4, metalness: 0.5, roughness: 0.1 });
+  const tlm = new THREE.MeshStandardMaterial({ color: 0x7a0b0b, emissive: 0x550000, emissiveIntensity: 0.6, roughness: 0.3 });
+  for (const s of [-1, 1]) {
+    const h = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.1, 0.42), hlm); h.position.set(hl - 0.02, 0.86, s * 0.66); c.add(h);
+    const t = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 0.14), tlm); t.position.set(-hl + 0.04, 1.08, s * 0.84); c.add(t);
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.04, 0.04), trim); rail.position.set(-0.55, 1.68, s * 0.62); c.add(rail);
+    const mir = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.16), paint); mir.position.set(0.85, 1.12, s * (W / 2 + 0.06)); c.add(mir);
+  }
+  // roda 17", velg perak
+  for (const [wx, s] of [[1.31, 1], [1.31, -1], [-1.31, 1], [-1.31, -1]]) {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.23, 28), M.tyre);
+    t.rotation.x = Math.PI / 2; t.position.set(wx, 0.35 - 0.15, s * 0.79); c.add(t);
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.235, 10), chrome);
+    r.rotation.x = Math.PI / 2; r.position.copy(t.position); c.add(r);
+  }
+  c.traverse(m => { if (m.isMesh) { m.castShadow = m.receiveShadow = true; } });
+  c.rotation.y = Math.PI / 2;           // panjang mobil searah kedalaman lahan, moncong menghadap rumah
+  c.position.set(x, 0.15, -y); g.add(c);
+}
+function neighbor(g, x0, x1, y0, y1, mat, roofMat, along, wins = []) {
+  box(g, x0, x1, y0, y1, 0, 6.6, mat);
+  for (const w of wins) box(g, w[0], w[1], w[2], w[3], w[4], w[5], M.glass);
+  gableRoof(g, { x0, x1, y0, y1, base: 6.6, pitch: 28, oh: 0.5, along, mat: roofMat, gmat: mat });
+}
+
+/* ---------- static context ---------- */
+const ctx = new THREE.Group(); scene.add(ctx);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), M.grass);
+ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; ctx.add(ground);
+box(ctx, -60, 60, -3.5, -0.4, -0.02, 0.02, M.asphalt);      // jalan depan
+box(ctx, -3.5, -0.4, -60, 60, -0.02, 0.021, M.asphalt);     // jalan kiri
+box(ctx, -0.4, 60, -0.4, 0, -0.02, 0.03, M.gutter);         // selokan depan
+box(ctx, -0.4, 0, -0.4, 60, -0.02, 0.031, M.gutter);         // selokan kiri
+box(ctx, -60, -3.5, -4.0, -3.5, -0.02, 0.03, M.gutter);
+box(ctx, -4.0, -3.5, -60, -4.0, -0.02, 0.03, M.gutter);
+
+// tetangga kanan & belakang
+neighbor(ctx, 9.05, 17, 1, 12, M.nb1, M.nbRoof, "y", [[10, 12, 0.98, 1.0, 1, 2.4], [13.5, 16, 0.98, 1.0, 4.2, 5.6]]);
+box(ctx, 9.05, 17, 0, 1, 0, 0.15, M.paving);
+neighbor(ctx, 0, 9, 12.05, 22, M.nb2, M.nbRoof2, "x", [[-0.02, 0.0, 14, 16, 4, 5.6]]);
+// rumah seberang jalan & pohon jalan dihilangkan agar tidak menghalangi pandangan
+
+/* ---------- house: common lantai 1 ---------- */
+const H1 = 3.6, DAK = 3.75, L2T = 7.05;
+const common = new THREE.Group(); scene.add(common);
+// lantai & perkerasan
+box(common, 3.2, 9, 0, 5, 0, 0.15, M.paving);
+box(common, 0, 3.2, 0, 3, 0, 0.15, M.paving);
+box(common, 0, 4.85, 5, 10, 0, 0.3, M.concrete);
+box(common, 4.85, 6.25, 5.2, 10, 0, 0.3, M.concrete);
+box(common, 6.25, 9, 5.4, 10, 0, 0.3, M.concrete);
+box(common, 6.25, 9, 5, 5.4, 0, 0.15, M.paving);   // tambahan kedalaman carport di depan tangga (0,40 m)
+box(common, 4.85, 6.25, 5, 5.2, 0, 0.15, M.paving);
+box(common, 0, 3.2, 3, 5, 0, 0.3, M.concrete);
+box(common, 0, 3.6, 10, 12, 0, 0.3, M.wood);       // teras
+box(common, 3.6, 9, 10, 12, 0, 0.25, M.paving);   // servis
+// dinding L1
+wall(common, "y", 0.075, 3, 10, 0.3, H1, [{ s0: 7.6, s1: 9.4, h0: 2.5, h1: 3.2, kind: "roster" }]); // kiri, ke jalan
+wall(common, "x", 3.075, 0, 3.2, 0.3, H1, [{ s0: 0.4, s1: 2.8, h0: 0.4, h1: 3.3, kind: "win" }]);   // depan musala (kaca tinggi)
+wall(common, "x", 5.075, 3.2, 4.85, 0.3, H1, [{ s0: 3.4, s1: 4.65, h0: 0.3, h1: 3.3, kind: "win" }]); // depan: kaca tinggi (posisi tetap)
+// dinding depan tangga dimundurkan 0,40 m (lajur tangga 2 × 0,80 m) → carport kanan sedalam 5,40 m
+wall(common, "x", 5.475, 6.25, 9, 0, H1);
+slats(common, "x", 5.36, 6.45, 8.85, 0.15, H1, M.wood); // kisi kayu vertikal dinding carport
+// pintu utama DIAGONAL lebar ± 1,3 m menyambung ujung dinding kiri (4,85; 5,00) ke ujung dinding kanan (6,25; 5,40)
+{
+  const ax = 4.85, ay = 5.075, bx = 6.25, by = 5.475;
+  const len = Math.hypot(bx - ax, by - ay);
+  const d = new THREE.Group(); d.position.set(ax, 0, -ay); d.rotation.y = Math.atan2(by - ay, bx - ax); common.add(d);
+  box(d, 0, 0.08, -0.075, 0.075, 0.3, H1, M.charcoal);               // kusen kiri
+  box(d, len - 0.08, len, -0.075, 0.075, 0.3, H1, M.charcoal);       // kusen kanan
+  box(d, 0.08, len - 0.08, -0.075, 0.075, 3.3, H1, M.plaster);       // dinding atas pintu
+  box(d, 0.08, len - 0.08, -0.03, 0.03, 0.3, 3.3, M.wood);           // daun pintu pivot kayu (satu daun lebar)
+  for (const s of [0.45, 0.9]) box(d, s, s + 0.012, -0.036, -0.03, 0.4, 3.2, M.charcoal); // alur dekoratif vertikal
+  box(d, len - 0.32, len - 0.27, -0.1, -0.03, 0.8, 2.6, M.alu);       // gagang tarik vertikal panjang
+}
+box(common, 4.6, 6.5, 4.2, 5.0, 3.3, 3.36, M.charcoal); // kanopi tipis pintu
+wall(common, "y", 8.925, 5, 12, 0, H1);           // kanan
+wall(common, "x", 11.925, 0, 9, 0, 3.2, [], M.plasterGrey); // belakang (batas)
+wall(common, "y", 0.075, 10, 12, 0.3, 2.4, [{ s0: 10.4, s1: 11.6, h0: 1.4, h1: 2.2, kind: "roster" }]); // pagar teras ke jalan
+// kamar ART + atap
+wall(common, "y", 6.9, 10.65, 12, 0.25, 3.2);
+box(common, 6.8, 9, 10.65, 12, 3.2, 3.35, M.concrete);
+// kanopi servis
+box(common, 3.6, 6.85, 10.65, 12, 2.85, 2.9, M.poly);
+box(common, 3.6, 3.66, 10.65, 10.71, 0.25, 2.85, M.alu);
+// kolom depan carport
+for (const x of [0.12, 3.2, 8.88]) box(common, x - 0.12, x + 0.12, 1.55, 1.8, 0.15, H1, M.charcoal);
+// kanopi carport & parkir motor: menutup sisa 1,3 m antara dak lantai 2 dan pagar
+box(common, 0, 9, 0.25, 1.55, 3.3, 3.34, M.polyCar);                 // polikarbonat solid gelap
+for (const y of [0.3, 0.8, 1.3]) box(common, 0, 9, y - 0.03, y + 0.03, 3.34, 3.42, M.charcoal); // rangka hollow
+box(common, -0.05, 9, 0.05, 0.3, 3.2, 3.45, M.charcoal);             // lisplang depan kanopi
+for (const x of [0.04, 8.96]) box(common, x - 0.04, x + 0.04, 0.0, 0.08, 0.25, 3.45, M.charcoal); // tiang tipis, di garis pagar
+box(common, 0, 0.06, 0.3, 1.55, 1.9, 3.3, M.polyCar);                // tirai samping kiri parkir motor (debu & tempias)
+box(common, -0.02, 0.02, 3.1, 10, 0.3, H1, M.plasterGrey); // panel abu sisi jalan kiri
+box(common, -0.04, 0.0, 7.6, 9.4, 2.5, 3.2, M.black);
+// pagar depan & kiri (bilah horizontal hitam)
+function slatFence(axis, f, a0, a1, h = 1.5) {
+  for (let z = 0.25; z < h; z += 0.14) axis === "x" ? box(common, a0, a1, f - 0.02, f + 0.02, z, z + 0.08, M.black) : box(common, f - 0.02, f + 0.02, a0, a1, z, z + 0.08, M.black);
+  for (let s = a0; s <= a1 + 0.01; s += (a1 - a0) / Math.max(1, Math.round((a1 - a0) / 2)))
+    axis === "x" ? box(common, s - 0.04, s + 0.04, f - 0.04, f + 0.04, 0, h + 0.05, M.black) : box(common, f - 0.04, f + 0.04, s - 0.04, s + 0.04, 0, h + 0.05, M.black);
+}
+/* Pagar komposisi: massa cor (beton ekspos & plester putih) + panel kisi kayu + roster,
+   setema dengan fasad (charcoal, putih, kayu). */
+function gatePanel(axis, f, a0, a1, z0, z1, vertical) {
+  const B = (s0, s1, h0, h1, d, m) => axis === "x" ? box(common, s0, s1, f - d / 2, f + d / 2, h0, h1, m) : box(common, f - d / 2, f + d / 2, s0, s1, h0, h1, m);
+  B(a0, a1, z0, z0 + 0.06, 0.06, M.black); B(a0, a1, z1 - 0.06, z1, 0.06, M.black);
+  B(a0, a0 + 0.06, z0, z1, 0.06, M.black); B(a1 - 0.06, a1, z0, z1, 0.06, M.black);
+  if (vertical) slats(common, axis, f, a0 + 0.08, a1 - 0.08, z0 + 0.06, z1 - 0.06, M.wood, 0.1, 0.05, 0.04);
+  else for (let z = z0 + 0.1; z < z1 - 0.1; z += 0.12) B(a0 + 0.06, a1 - 0.06, z, z + 0.08, 0.04, M.wood);
+}
+// sudut kiri: blok beton ekspos berbentuk L, paling tinggi (penanda sudut jalan)
+box(common, 0, 0.45, 0, 0.2, 0, 2.2, M.charcoal);
+box(common, 0, 0.2, 0, 0.55, 0, 2.2, M.charcoal);
+/* GERBANG GESER TELESKOPIK (2 daun di 2 rel sejajar, bisa dipasang motor + remote).
+   Tutup: kedua daun menutup bukaan carport. Buka: keduanya bertumpuk di balik pagar tetap
+   depan area motor, sehingga bukaan carport 5,6 m bersih total — dua mobil bebas keluar-masuk. */
+function leaf(len, z0, z1) {
+  const p = new THREE.Group(), d = 0.05;
+  box(p, 0, len, -d / 2, d / 2, z0, z0 + 0.06, M.black); box(p, 0, len, -d / 2, d / 2, z1 - 0.06, z1, M.black);
+  box(p, 0, 0.06, -d / 2, d / 2, z0, z1, M.black); box(p, len - 0.06, len, -d / 2, d / 2, z0, z1, M.black);
+  box(p, len / 2 - 0.03, len / 2 + 0.03, -d / 2, d / 2, z0, z1, M.black);
+  for (let z = z0 + 0.1; z < z1 - 0.1; z += 0.12) box(p, 0.06, len - 0.06, -0.017, 0.017, z, z + 0.08, M.wood);
+  for (const x of [0.25, len - 0.25]) { const w = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.03, 16), M.alu);
+    w.rotation.x = Math.PI / 2; w.position.set(x, 0.06, 0); p.add(w); }  // roda V-groove
+  common.add(p); return p;
+}
+const LEAF = 2.95;
+const leafA = leaf(LEAF, 0.08, 1.6), leafB = leaf(LEAF, 0.08, 1.6);
+const RAIL_A = 0.12, RAIL_B = 0.22;   // rel dirapatkan ke garis pagar → kedalaman carport efektif ± 4,75 m
+leafA.position.z = -RAIL_A; leafB.position.z = -RAIL_B;
+const gates = [t => {
+  leafA.position.x = THREE.MathUtils.lerp(3.35, 0.5, t);
+  leafB.position.x = THREE.MathUtils.lerp(6.05, 0.47, t);
+}];
+gates[0](0);
+for (const ry of [RAIL_A, RAIL_B]) box(common, 0.4, 9.0, ry - 0.02, ry + 0.02, 0, 0.03, M.alu); // rel V tertanam
+box(common, 0.35, 0.45, 0.22, 0.5, 0, 1.85, M.black);             // tiang pemandu atas
+box(common, 0.35, 3.4, 0.22, 0.5, 1.8, 1.85, M.black);            // balok pemandu atas (tanpa rel atas di bukaan)
+box(common, 1.0, 1.4, 0.55, 0.8, 0, 0.35, M.charcoal);            // rumah motor gerbang (opener)
+box(common, 8.8, 9.0, 0, 0.08, 0, 1.75, M.charcoal);              // tiang penerima di ujung kanan
+// pagar tetap di depan area motor: kisi kayu vertikal, menyembunyikan daun gerbang saat terbuka
+gatePanel("x", 0.035, 0.45, 2.9, 0.08, 1.7, true);
+// pilar tipis plester putih: nomor rumah, lampu, kotak surat (di depan rel, tidak menghalangi daun)
+box(common, 2.9, 3.4, 0, 0.07, 0, 1.95, M.plaster);
+box(common, 2.88, 3.42, 0, 0.08, 1.95, 2.02, M.charcoal);
+box(common, 2.95, 3.35, -0.02, 0, 1.25, 1.65, M.black);           // plat nomor rumah
+box(common, 3.0, 3.3, -0.03, 0, 0.6, 0.85, M.alu);                // kotak surat
+box(common, 3.05, 3.25, -0.03, 0, 1.75, 1.85, new THREE.MeshStandardMaterial({ color: 0xfff1cc, emissive: 0xffd58a, emissiveIntensity: 1.2 }));
+// sisi kiri (jalan samping): dinding plester rendah + roster beton di atasnya, ditutup blok cor
+/* Sisi jalan samping: pintu orang (harian, tanpa buka gerbang besar) + roster + bak sampah cor.
+   Semua di dalam lahan; petugas sampah mengambil dari jalan samping, jauh dari akses mobil. */
+/* Urutan sisi jalan samping (dari depan): blok sudut 0–0,55 · bak sampah 0,55–1,5 ·
+   kolom struktur 1,55–1,8 (dibiarkan bebas) · pintu orang 1,85–2,75 · dinding s.d. musala. */
+// --- bak sampah cor, selalu terbuka ke jalan, di dalam lahan ---
+const BY0 = 0.55, BY1 = 1.5, BD = 0.8;                             // panjang 0,95 m, dalam 0,8 m
+box(common, 0, BD, BY0, BY1, 0, 0.1, M.charcoal);                  // lantai bak (miring ke luar, lubang drainase)
+box(common, 0, BD, BY0, BY0 + 0.08, 0, 1.05, M.charcoal);          // pipi kiri
+box(common, 0, BD, BY1 - 0.08, BY1, 0, 1.05, M.charcoal);          // pipi kanan
+box(common, 0, 0.1, BY0 + 0.08, BY1 - 0.08, 0, 0.45, M.charcoal);  // bibir depan rendah
+{ // muka luar miring: bidang cor landai turun ke arah jalan, tempat buang/ambil sampah
+  const s = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.06, BY1 - BY0 - 0.16), M.charcoal);
+  s.position.set(0.17, 0.52, -(BY0 + BY1) / 2); s.rotation.z = 0.55; s.castShadow = s.receiveShadow = true; common.add(s);
+}
+box(common, 0.12, BD - 0.1, BY0 + 0.12, BY1 - 0.12, 0.1, 0.75, new THREE.MeshStandardMaterial({ color: 0x2f5d3a, roughness: 0.6 })); // isi / tong
+// dinding dalam (sisi rumah) setinggi pagar, dengan sela untuk memasukkan sampah dari dalam
+const inner = (y0, y1, z0, z1) => box(common, BD - 0.1, BD, y0, y1, z0, z1, M.charcoal);
+inner(BY0, BY1, 0, 0.8); inner(BY0, BY1, 1.15, 1.78);
+inner(BY0, BY0 + 0.2, 0.8, 1.15); inner(BY1 - 0.2, BY1, 0.8, 1.15);
+box(common, BD - 0.12, BD + 0.02, BY0 + 0.2, BY1 - 0.2, 0.8, 0.83, M.alu);   // ambang sela (lebar 0,55 × tinggi 0,35 m)
+{ const c = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.03, BY1 - BY0 - 0.42), M.alu);   // talang miring ke dalam bak
+  c.position.set(BD - 0.25, 0.74, -(BY0 + BY1) / 2); c.rotation.z = 0.45; common.add(c); }
+// pagar besi di atas bak (tidak bisa dipanjat masuk), menyatu dengan tinggi pagar samping
+for (let y = BY0 + 0.06; y < BY1 - 0.04; y += 0.11) box(common, 0.02, 0.06, y, y + 0.025, 1.05, 1.78, M.black);
+box(common, 0, 0.1, BY0, BY1, 1.0, 1.06, M.black);
+box(common, -0.02, BD + 0.02, BY0, BY1, 1.78, 1.84, M.charcoal);   // tutup atas pagar
+box(common, 0.06, BD - 0.1, BY0, BY1, 1.74, 1.78, M.black);        // jeruji atap tipis agar tak bisa dilompati dari atas
+// --- kolom struktur di 1,55–1,8 dibiarkan, pagar menyambung di kedua sisinya ---
+box(common, 0, 0.2, BY1, 1.55, 0, 1.84, M.charcoal);
+// --- pintu orang 0,9 m ---
+box(common, 0, 0.2, 1.8, 1.88, 0, 2.1, M.charcoal);                // kusen
+box(common, 0, 0.2, 2.75, 2.83, 0, 2.1, M.charcoal);
+box(common, -0.05, 0.25, 1.8, 2.83, 2.0, 2.1, M.charcoal);
+const sideDoor = new THREE.Group(); sideDoor.position.set(0.1, 0, -1.88); common.add(sideDoor);
+box(sideDoor, -0.02, 0.02, 0, 0.87, 0.05, 1.95, M.black);
+slats(sideDoor, "y", 0, 0.05, 0.82, 0.1, 1.9, M.wood, 0.1, 0.05, 0.05);
+box(sideDoor, 0.02, 0.06, 0.75, 0.79, 0.95, 1.1, M.alu);           // gagang
+const doorUpd = t => { sideDoor.rotation.y = -THREE.MathUtils.degToRad(88) * t; };
+wall(common, "y", 0.1, 2.83, 3.0, 0, 1.7, [], M.plaster, 0.2);
+// isi
+car(common, 7.75, 2.82);   // merapat ke kanan, pintu utama terlihat jelas
+plant(common, 0.6, 3.4, 0.5);
+// taman belakang: bak tanam cor memanjang di kaki tembok belakang (tanpa pohon), tanaman rambat di tembok
+box(common, 0.15, 6.85, 11.5, 11.87, 0.25, 0.75, M.plasterGrey);
+box(common, 0.2, 6.8, 11.55, 11.82, 0.7, 0.74, new THREE.MeshStandardMaterial({ color: 0x4a3a2c, roughness: 1 }));
+for (let x = 0.4; x < 6.7; x += 0.32) {
+  const s = 0.18 + Math.random() * 0.14;
+  const b = new THREE.Mesh(new THREE.IcosahedronGeometry(s, 1), Math.random() > 0.5 ? M.leaf : M.leaf2);
+  b.scale.y = 1.2 + Math.random() * 0.8; b.position.set(x, 0.78 + s, -11.68); b.castShadow = true; common.add(b);
+}
+for (let x = 0.5; x < 6.7; x += 0.9) {   // tanaman rambat menempel di tembok belakang
+  const v = new THREE.Mesh(new THREE.BoxGeometry(0.5 + Math.random() * 0.3, 1.2 + Math.random() * 1.0, 0.06), M.leaf2);
+  v.position.set(x, 1.6 + Math.random() * 0.4, -11.84); v.castShadow = true; common.add(v);
+}
+// bangku cor santai di tembok kiri ujung teras (sandaran = tembok pagar), dudukan kayu
+box(common, 0.15, 0.65, 10.2, 11.45, 0.3, 0.72, M.plasterGrey);
+box(common, 0.13, 0.7, 10.18, 11.47, 0.72, 0.78, M.wood);
+box(common, 0.15, 0.3, 10.2, 11.45, 0.78, 1.15, M.wood);              // sandaran kayu
+for (const y of [10.45, 10.95]) box(common, 0.32, 0.6, y, y + 0.4, 0.78, 0.9, new THREE.MeshStandardMaterial({ color: 0x5f7368, roughness: 1 })); // bantal
+// lampu dinding
+const lampMat = new THREE.MeshStandardMaterial({ color: 0xfff1cc, emissive: 0xffd58a, emissiveIntensity: 1.2 });
+box(common, 4.7, 4.82, 4.95, 5.0, 2.0, 2.6, lampMat);   // lampu dinding vertikal di samping pintu
+
+/* ---------- tahap 1 ---------- */
+const t1 = new THREE.Group(); scene.add(t1);
+box(t1, 0, 9, 1.5, 10.65, H1, DAK, M.concrete);           // dak
+box(t1, 0, 9, 1.5, 10.65, DAK, DAK + 0.03, M.wp);           // waterproofing
+box(t1, 5.6, 9, 5, 7.3, DAK + 0.03, DAK + 0.08, M.panel);   // penutup bukaan tangga
+// parapet rendah
+box(t1, 0, 9, 1.5, 1.62, DAK, DAK + 0.3, M.plaster);
+box(t1, 0, 0.12, 1.5, 10.65, DAK, DAK + 0.3, M.plaster);
+box(t1, 0, 9, 10.53, 10.65, DAK, DAK + 0.3, M.plaster);
+box(t1, 8.88, 9, 1.5, 10.65, DAK, DAK + 0.3, M.plaster);
+// stek kolom
+const COLS = [[0.2, 1.7], [3.2, 1.7], [8.8, 1.7], [0.2, 5], [3.2, 5], [5.3, 5], [8.8, 5], [0.2, 7.4], [5.3, 7.4], [8.8, 7.4], [0.2, 10.4], [3.6, 10.4], [6.9, 10.4], [8.8, 10.4]];
+for (const [x, y] of COLS) {
+  const s = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.75, 10), M.stek);
+  s.position.set(x, DAK + 0.4, -y); s.castShadow = true; t1.add(s);
+}
+// pipa air hujan
+for (const [x, y] of [[0.05, 1.55], [8.9, 1.55]]) box(t1, x, x + 0.09, y, y + 0.09, 0.15, DAK + 0.05, M.alu);
+
+/* ---------- tahap 2 ---------- */
+const t2 = new THREE.Group(); scene.add(t2);
+const PAR = L2T + 0.9; // atap datar + parapet (gaya modern tropis)
+// pelat lantai 2 dengan bukaan tangga (x 6,25–9 · y 5,4–7,4)
+box(t2, 0, 9, 1.5, 5.4, H1, DAK, M.concrete);
+box(t2, 0, 6.25, 5.4, 7.4, H1, DAK, M.concrete);
+box(t2, 0, 9, 7.4, 10.65, H1, DAK, M.concrete);
+box(t2, -0.02, 9, 1.45, 1.55, H1, DAK, M.charcoal);             // garis lantai tipis gelap
+// fasad depan: bagian kamar utama putih dengan kaca penuh, bagian ruang kerja abu gelap
+wall(t2, "x", 1.575, 0, 5.3, DAK, L2T, [
+  { s0: 0.55, s1: 4.85, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" }]);
+wall(t2, "x", 1.575, 5.3, 9, DAK, L2T, [
+  { s0: 6.9, s1: 8.5, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" }], M.charcoal);
+// bingkai kotak menjorok membingkai kaca kamar utama
+box(t2, -0.12, 5.3, 0.85, 1.5, L2T - 0.1, L2T + 0.25, M.charcoal);
+box(t2, -0.12, 5.3, 0.85, 1.5, DAK - 0.1, DAK + 0.12, M.charcoal);
+box(t2, -0.12, 0.3, 0.85, 1.5, DAK - 0.1, L2T + 0.25, M.charcoal);
+box(t2, 4.95, 5.3, 0.85, 1.5, DAK - 0.1, L2T + 0.25, M.charcoal);
+slats(t2, "x", 1.05, 3.1, 4.95, DAK + 0.12, L2T - 0.1, M.wood);   // kisi kayu privasi
+box(t2, 0.3, 4.95, 1.0, 1.5, DAK + 0.12, DAK + 0.16, M.glass);  // lantai balkon kaca tipis (visual)
+// sisi kiri (jalan): kaca jendela samping kamar utama, kisi kayu KM, jendela memanjang kamar anak
+wall(t2, "y", 0.075, 1.5, 10.65, DAK, L2T, [
+  { s0: 2.0, s1: 4.2, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" },
+  { s0: 5.4, s1: 6.8, h0: DAK + 2.0, h1: DAK + 2.7, kind: "win" },
+  { s0: 7.8, s1: 10.2, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" }]);
+slats(t2, "y", -0.06, 5.2, 7.0, DAK + 0.15, L2T - 0.1, M.wood);
+box(t2, -0.4, 0.0, 7.7, 10.3, L2T - 0.12, L2T - 0.04, M.charcoal); // sirip peneduh jendela anak
+wall(t2, "y", 8.925, 1.5, 10.65, DAK, L2T);
+wall(t2, "x", 10.575, 0, 9, DAK, L2T, [
+  { s0: 0.6, s1: 4.0, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" },
+  { s0: 6.0, s1: 8.6, h0: DAK + 0.15, h1: L2T - 0.15, kind: "win" }]);
+// atap genteng flat beton, model miring satu arah (shed) — tinggi di depan, turun ke belakang
+const atticShell = [];
+{
+  const ring = L2T + 0.25, yF = 1.5 - 0.7, yB = 10.65 + 0.5;       // tritisan depan 0,7 m, belakang 0,5 m
+  const hF = ring + 2.2, hB = ring + 0.25;                           // ± 13–14°: aman untuk genteng flat
+  const slope = Math.atan2(hF - hB, yB - yF), L = Math.hypot(hF - hB, yB - yF);
+  const rf = new THREE.Mesh(new THREE.BoxGeometry(9.4, 0.08, L), M.genteng);
+  rf.position.set(4.5 - 0.2, (hF + hB) / 2, -(yF + yB) / 2); rf.rotation.x = -slope;
+  rf.castShadow = rf.receiveShadow = true; t2.add(rf);
+  // dinding atap (sopi-sopi) kiri & kanan, plester putih
+  const hAt = y => hF - (y - yF) * Math.tan(slope);
+  const shellStart = t2.children.length;   // sopi-sopi & dinding atas depan: disembunyikan saat "Lihat loteng"
+  for (const x of [0, 9]) {
+    tri(t2, [x, ring, -1.5], [x, ring, -10.65], [x, hAt(1.5) - 0.06, -1.5], M.plaster);
+    tri(t2, [x, ring, -10.65], [x, hAt(10.65) - 0.06, -10.65], [x, hAt(1.5) - 0.06, -1.5], M.plaster);
+  }
+  // dinding depan di bawah atap (bagian tinggi) + lisplang gelap tipis
+  box(t2, 0, 9, 1.5, 1.65, ring, hAt(1.5) - 0.05, M.plaster);
+  box(t2, 5.3, 9, 1.47, 1.5, L2T, hAt(1.5) - 0.05, M.charcoal);
+  const fas = box(t2, -0.5, 9.0, yF - 0.04, yF, hF - 0.22, hF + 0.06, M.charcoal);
+  // ventilasi kisi di bidang depan atas
+  slats(t2, "x", 1.4, 0.6, 4.7, ring + 0.4, hAt(1.5) - 0.35, M.wood);
+  for (let i = shellStart; i < t2.children.length; i++) atticShell.push(t2.children[i]);
+  atticShell.push(rf);
+
+  /* LOTENG: toren 1.050 L di bagian atap yang tinggi (depan), di atas balok beton */
+  const torenMat = new THREE.MeshStandardMaterial({ color: 0x2f6db0, roughness: 0.55 });
+  box(t2, 0.6, 2.4, 2.2, 3.9, ring, ring + 0.15, M.concrete);                   // dak/balok dudukan toren
+  const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.52, 1.35, 28), torenMat);
+  tr.position.set(1.5, ring + 0.15 + 0.68, -3.05); tr.castShadow = true; t2.add(tr);
+  const trTop = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 10, 0, Math.PI * 2, 0, Math.PI / 2), torenMat);
+  trTop.scale.y = 0.35; trTop.position.set(1.5, ring + 0.15 + 1.35, -3.05); t2.add(trTop);
+  const pipe = (x0, y0, x1, y1, z) => box(t2, Math.min(x0, x1) - 0.02, Math.max(x0, x1) + 0.02, Math.min(y0, y1) - 0.02, Math.max(y0, y1) + 0.02, z, z + 0.04, M.plaster);
+  pipe(1.5, 3.6, 1.5, 6.0, ring + 0.2);                                         // pipa ke shaft KM
+  box(t2, 1.48, 1.56, 5.96, 6.04, L2T - 0.2, ring + 0.24, M.plaster);           // turun ke KM utama & anak
+  // pompa booster kecil di loteng (tekanan toren di loteng rendah untuk shower lt 2)
+  box(t2, 2.0, 2.35, 3.95, 4.25, ring + 0.15, ring + 0.45, new THREE.MeshStandardMaterial({ color: 0x1f5f8b, roughness: 0.4, metalness: 0.4 }));
+  box(t2, 0.15, 8.85, 1.65, 10.5, ring - 0.03, ring, M.concrete);              // lantai loteng / plafon lt 2
+}
+
+/* ================= DATA DENAH (dipakai untuk 3D interior & SVG denah) ================= */
+// dinding: a = arah dinding ("x" sejajar sumbu x di y=at; "y" sejajar sumbu y di x=at), ops [s0, s1, jenis, sisi]
+const WALLS = [
+  // ---- Lantai 1, eksterior (sudah ada di model 3D, hanya untuk gambar denah)
+  { f: 1, a: "y", at: 0, s0: 3, s1: 10, ext: 1, ops: [[7.6, 9.4, "roster"]] },
+  { f: 1, a: "x", at: 3, s0: 0, s1: 3.2, ext: 1, ops: [[0.4, 2.8, "win"]] },
+  { f: 1, a: "x", at: 5, s0: 3.2, s1: 4.85, ext: 1, ops: [[3.4, 4.65, "win"]] },
+  { f: 1, a: "x", at: 5.4, s0: 6.25, s1: 9, ext: 1 },
+  { f: 1, a: "y", at: 9, s0: 5, s1: 12, ext: 1 },
+  { f: 1, a: "x", at: 12, s0: 0, s1: 9, ext: 1, t: 0.12 },
+  { f: 1, a: "y", at: 6.9, s0: 10.65, s1: 12, ext: 1 },
+  { f: 1, a: "y", at: 0, s0: 10, s1: 12, ext: 1, t: 0.12, ops: [[10.4, 11.6, "roster"]] },
+  // ---- Lantai 1, dalam
+  { f: 1, a: "x", at: 5, s0: 0, s1: 3.2, ops: [[0.4, 1.2, "door", 1]] },
+  { f: 1, a: "y", at: 3.2, s0: 3, s1: 5 },
+  { f: 1, a: "y", at: 5.3, s0: 7.45, s1: 10, ops: [[7.55, 9.9, "roster"]] },
+  { f: 1, a: "x", at: 7.4, s0: 6.25, s1: 9 },
+  { f: 1, a: "y", at: 6.9, s0: 7.4, s1: 9.0, ops: [[7.6, 8.4, "slide"]] },
+  { f: 1, a: "x", at: 9.0, s0: 6.9, s1: 9 },
+  // kamar ART dilebarkan ke depan; pintunya berakhir tepat di garis pintu koridor (y = 10)
+  { f: 1, a: "y", at: 6.9, s0: 9.0, s1: 10.65, ops: [[9.1, 10.0, "door", 1]] },
+  { f: 1, a: "x", at: 10, s0: 0, s1: 3.6, ops: [[0.7, 2.9, "gdoor"]] },
+  // isolasi area utama dari halaman servis: pintu geser kaca (dapur) & pintu keamanan (ujung koridor)
+  { f: 1, a: "x", at: 10, s0: 3.6, s1: 5.3, ops: [[3.7, 5.2, "gdoor"]] },
+  { f: 1, a: "x", at: 10, s0: 5.3, s1: 6.9, ops: [[5.65, 6.55, "sdoor", -1]] },
+  // ---- Lantai 2, eksterior
+  { f: 2, a: "x", at: 1.5, s0: 0, s1: 9, ext: 1, ops: [[0.55, 4.85, "win"], [6.9, 8.5, "win"]] },
+  { f: 2, a: "y", at: 0, s0: 1.5, s1: 10.65, ext: 1, ops: [[2.0, 4.2, "win"], [5.4, 6.8, "win"], [7.8, 10.2, "win"]] },
+  { f: 2, a: "y", at: 9, s0: 1.5, s1: 10.65, ext: 1 },
+  { f: 2, a: "x", at: 10.65, s0: 0, s1: 9, ext: 1, ops: [[0.6, 4.0, "win"], [6.0, 8.6, "win"]] },
+  // ---- Lantai 2, dalam
+  { f: 2, a: "y", at: 6.7, s0: 1.5, s1: 5, ops: [[4.1, 4.9, "slide"]] },   // pintu geser ruang kerja di pinggir (dekat hall)
+  { f: 2, a: "x", at: 5, s0: 0, s1: 6.7, ops: [[0.8, 1.6, "door", 1], [4.75, 5.55, "door", -1]] },
+  { f: 2, a: "x", at: 5, s0: 6.7, s1: 9 },
+  { f: 2, a: "y", at: 2.4, s0: 5, s1: 7.3 },
+  { f: 2, a: "y", at: 4.65, s0: 5, s1: 7.3, ops: [[5.8, 6.6, "door", -1]] },
+  { f: 2, a: "x", at: 7.3, s0: 0, s1: 4.65 },
+  { f: 2, a: "x", at: 7.4, s0: 5.7, s1: 9 },
+  { f: 2, a: "y", at: 4.65, s0: 7.3, s1: 10.65, ops: [[7.6, 8.4, "door", -1]] },
+  { f: 2, a: "y", at: 5.7, s0: 7.4, s1: 10.65, ops: [[7.6, 8.4, "door", 1]] },
+  { f: 2, a: "x", at: 9.2, s0: 4.65, s1: 5.7, ops: [[4.8, 5.55, "slide"]] },
+];
+const ROOMS = {
+  1: [
+    { id: "parkir", n: "Parkir motor", d: "2,80 × 3,00", r: [0, 3.2, 0, 3], out: 1, eye: [3.0, 0.5], look: [0.3, 2.7] },
+    { id: "carport", n: "Carport 2 mobil", d: "5,70 × 5,00–5,40", r: [3.2, 9, 0, 5], out: 1, eye: [3.6, 0.6], look: [8.6, 5.2] },
+    { id: "musala", n: "R. serbaguna", d: "2,80 × 1,85", r: [0, 3.2, 3, 5], eye: [2.95, 4.75], look: [0.4, 3.2] },
+    { id: "keluarga", n: "Ruang keluarga", d: "± 4,6 × 2,3", r: [0, 6.25, 5, 7.4], eye: [5.0, 5.55], look: [0.1, 6.8] },
+    { id: "dapur", n: "Dapur + makan", d: "5,10 × 2,60", r: [0, 5.3, 7.4, 10], eye: [4.95, 7.7], look: [0.2, 9.7] },
+    { id: "tangga", n: "Tangga U", d: "lajur 2 × 0,80", r: [6.25, 9, 5.4, 7.4], eye: [5.6, 5.85], look: [8.9, 7.0] },
+    { id: "koridor", n: "Koridor", d: "lebar 1,30", r: [5.3, 6.9, 7.4, 10], eye: [6.1, 7.6], look: [6.1, 11.6] },
+    { id: "kmtamu", n: "KM tamu", d: "2,00 × 1,45", r: [6.9, 9, 7.4, 9.0], wet: 1, eye: [7.2, 7.75], look: [8.8, 8.9] },
+    { id: "art", n: "Kamar ART", d: "2,00 × 2,85", r: [6.9, 9, 9.0, 12], eye: [7.2, 9.3], look: [8.8, 11.8] },
+    { id: "servis", n: "Halaman servis", d: "3,30 × 2,00", r: [3.6, 6.9, 10, 12], out: 1, eye: [3.9, 10.25], look: [6.8, 11.9] },
+    { id: "teras", n: "Teras + taman", d: "3,60 × 2,00", r: [0, 3.6, 10, 12], out: 1, eye: [3.3, 10.3], look: [0.2, 11.8] },
+  ],
+  2: [
+    { id: "kutama", n: "Kamar utama", d: "± 20,5 m²", r: [0, 6.7, 1.5, 5], eye: [5.3, 4.7], look: [0.4, 1.7] },
+    { id: "kerja", n: "Ruang kerja", d: "2,05 × 3,35", r: [6.7, 9, 1.5, 5], eye: [6.95, 4.75], look: [8.8, 1.7] },
+    { id: "kmutama", n: "KM utama", d: "2,15 × 1,90", r: [0, 2.4, 5, 7.3], wet: 1, eye: [2.15, 5.25], look: [0.2, 7.1] },
+    { id: "kmanak", n: "KM anak", d: "2,15 × 1,90", r: [2.4, 4.65, 5, 7.3], wet: 1, eye: [4.45, 5.25], look: [2.5, 7.1] },
+    { id: "hall", n: "Hall", d: "lebar ± 1,0", r: [4.65, 5.7, 5, 9.2], eye: [5.2, 8.95], look: [5.6, 5.1] },
+    { id: "tangga2", n: "Tangga + void", d: "3,10 × 2,00", r: [5.7, 9, 5, 7.4], eye: [5.45, 5.4], look: [8.7, 7.1] },
+    { id: "klaki", n: "Kamar anak laki-laki", d: "4,45 × 3,30", r: [0, 4.65, 7.3, 10.65], eye: [4.35, 7.6], look: [0.3, 10.4] },
+    { id: "kperempuan", n: "Kamar anak perempuan", d: "3,15 × 3,10", r: [5.7, 9, 7.4, 10.65], eye: [6.0, 7.7], look: [8.8, 10.4] },
+    { id: "gudang", n: "Gudang", d: "0,95 × 1,40", r: [4.65, 5.7, 9.2, 10.65], eye: [5.15, 9.0], look: [5.15, 10.6] },
+  ],
+};
+// furnitur: [lantai, x0, x1, y0, y1, z0, z1 (dari muka lantai), material, gambar di denah (1/0)]
+const FURN = [
+  // L1 ruang keluarga & dapur
+  [1, 0.08, 0.45, 5.3, 6.95, 0, 0.45, "wood", 1], [1, 0.1, 0.16, 5.5, 6.8, 0.85, 1.62, "black", 0],
+  [1, 0.08, 0.6, 6.95, 7.4, 0, 1.1, "white", 1], [1, 0.08, 0.75, 7.4, 8.15, 0, 1.85, "alu", 1],
+  [1, 0.08, 0.68, 8.15, 9.8, 0, 0.88, "white", 1], [1, 0.08, 0.7, 8.15, 9.8, 0.88, 0.92, "dark", 0],
+  [1, 0.08, 0.42, 8.15, 9.8, 1.5, 2.2, "wood", 0], [1, 0.2, 0.55, 8.4, 8.9, 0.92, 0.93, "black", 0], [1, 0.15, 0.6, 9.1, 9.6, 0.92, 0.94, "black", 0],
+  [1, 1.9, 3.9, 8.35, 9.2, 0.72, 0.77, "wood", 1],
+  [1, 3.0, 3.2, 5.3, 7.15, 0, 0.85, "fabric", 1], [1, 2.2, 3.0, 5.3, 7.15, 0, 0.42, "fabric", 1], [1, 1.45, 2.2, 5.3, 5.95, 0, 0.42, "fabric", 1],
+  [1, 0.95, 1.55, 6.25, 6.95, 0, 0.4, "wood", 1], [1, 0.65, 3.0, 5.35, 7.2, 0, 0.01, "rug", 0],
+  [1, 2.6, 3.2, 8.7, 8.85, 2.35, 2.42, "lamp", 0],
+  // L1 musala, tangga, KM tamu, ART
+  [1, 0.2, 3.0, 3.12, 3.45, 0, 0.5, "wood", 1], [1, 0.5, 1.1, 3.75, 4.8, 0, 0.01, "rug", 1], [1, 1.4, 2.0, 3.75, 4.8, 0, 0.01, "rug", 1],
+  [1, 6.3, 7.3, 7.02, 7.33, 0, 1.0, "wood", 1],
+  [1, 8.35, 8.85, 8.35, 8.92, 0, 0.42, "white", 1], [1, 6.98, 7.4, 8.4, 8.9, 0.78, 0.9, "white", 1], [1, 8.0, 8.92, 8.2, 8.23, 0, 2.0, "glass", 1],
+  [1, 8.0, 8.9, 9.9, 11.9, 0, 0.45, "sheet", 1], [1, 7.0, 7.55, 11.3, 11.9, 0, 2.0, "wood", 1],
+  // L2 kamar utama & ruang kerja
+  [2, 2.2, 4.0, 2.95, 4.95, 0, 0.5, "sheet", 1], [2, 2.05, 4.15, 4.86, 4.94, 0, 1.25, "wood", 0], [2, 2.35, 3.85, 4.4, 4.8, 0.5, 0.62, "white", 0],
+  [2, 2.2, 4.0, 2.95, 3.5, 0.5, 0.53, "fabric", 0], [2, 1.55, 2.0, 4.5, 4.93, 0, 0.5, "wood", 1], [2, 4.2, 4.65, 4.5, 4.93, 0, 0.5, "wood", 1],
+  [2, 6.04, 6.64, 1.7, 4.0, 0, 2.4, "wood", 1],   // lemari tanam di dinding sisi ruang kerja [2, 4.0, 4.7, 1.8, 2.5, 0, 0.45, "fabric", 1], [2, 1.9, 4.3, 2.5, 4.2, 0, 0.01, "rug", 0],
+  [2, 8.3, 8.9, 2.2, 4.2, 0.72, 0.76, "wood", 1], [2, 7.75, 8.2, 2.95, 3.4, 0, 0.5, "dark", 1], [2, 6.82, 7.15, 1.7, 3.0, 0, 2.0, "wood", 1],
+  [2, 8.6, 8.65, 2.9, 3.5, 0.8, 1.15, "black", 0],
+  // L2 KM
+  [2, 0.08, 0.55, 5.2, 6.0, 0.75, 0.88, "white", 1], [2, 0.08, 0.1, 5.2, 6.0, 1.1, 1.8, "mirror", 0], [2, 1.8, 2.3, 6.6, 7.22, 0, 0.42, "white", 1],
+  [2, 0.08, 1.1, 6.35, 6.38, 0, 2.0, "glass", 1],
+  [2, 2.5, 3.3, 5.08, 5.5, 0.75, 0.88, "white", 1], [2, 2.5, 3.0, 6.6, 7.22, 0, 0.42, "white", 1], [2, 3.6, 4.58, 6.65, 6.68, 0, 2.0, "glass", 1],
+  // L2 kamar anak & gudang
+  [2, 0.25, 1.25, 8.45, 10.45, 0, 0.45, "sheet", 1], [2, 3.45, 4.45, 8.55, 10.55, 0, 0.45, "sheet", 1],
+  [2, 1.6, 3.0, 10.05, 10.55, 0.72, 0.76, "wood", 1], [2, 0.08, 1.5, 7.4, 7.95, 0, 2.2, "wood", 1],
+  [2, 7.85, 8.85, 8.5, 10.5, 0, 0.45, "sheet", 1], [2, 5.8, 6.38, 9.0, 10.55, 0, 2.2, "wood", 1], [2, 6.6, 7.6, 10.05, 10.55, 0.72, 0.76, "wood", 1],
+  [2, 4.72, 5.63, 10.22, 10.58, 0, 2.0, "wood", 1],
+];
+// kursi makan (6) & kaki meja
+for (const x of [2.05, 2.68, 3.31]) {
+  FURN.push([1, x, x + 0.45, 7.95, 8.35, 0.42, 0.47, "fabric", 1], [1, x, x + 0.45, 7.9, 7.95, 0.47, 0.9, "fabric", 0]);
+  FURN.push([1, x, x + 0.45, 9.2, 9.6, 0.42, 0.47, "fabric", 1], [1, x, x + 0.45, 9.6, 9.65, 0.47, 0.9, "fabric", 0]);
+  for (const y of [7.95, 9.6]) for (const dx of [0.02, 0.4]) FURN.push([1, x + dx, x + dx + 0.03, y, y + 0.03, 0, 0.42, "dark", 0], [1, x + dx, x + dx + 0.03, y + 0.37, y + 0.4, 0, 0.42, "dark", 0]);
+}
+for (const [x, y] of [[1.95, 8.4], [3.82, 8.4], [1.95, 9.12], [3.82, 9.12]]) FURN.push([1, x, x + 0.05, y, y + 0.05, 0, 0.72, "dark", 0]);
+for (const [x, y] of [[8.32, 2.25], [8.85, 2.25], [8.32, 4.12], [8.85, 4.12]]) FURN.push([2, x, x + 0.04, y, y + 0.04, 0, 0.72, "dark", 0]);
+
+/* ================= INTERIOR 3D ================= */
+const interior = new THREE.Group(); scene.add(interior);
+const FZ = { 1: 0.31, 2: DAK + 0.01 }, CZ = { 1: H1, 2: L2T };
+const tileTex = canvasTex(256, 256, (g, w, h) => {
+  noise(g, w, h, "#e7e1d6", 0.06, 6000, 2);
+  g.strokeStyle = "rgba(120,110,95,.35)"; g.lineWidth = 2; g.strokeRect(1, 1, w - 2, h - 2);
+}, 1, 1);
+function tile(f, x0, x1, y0, y1, color) {
+  const t = tileTex.clone(); t.needsUpdate = true; t.repeat.set((x1 - x0) / 0.6, (y1 - y0) / 0.6);
+  const m = new THREE.MeshStandardMaterial({ map: t, roughness: 0.35, color: color || 0xffffff });
+  const z = FZ[f]; box(interior, x0, x1, y0, y1, z - 0.012, z, m);
+}
+const MAT = {
+  wood: M.wood, dark: M.charcoal, black: M.black, alu: M.alu, mirror: M.glass,
+  white: new THREE.MeshStandardMaterial({ color: 0xf1efea, roughness: 0.4 }),
+  fabric: new THREE.MeshStandardMaterial({ color: 0x8e918b, roughness: 0.95 }),
+  sheet: new THREE.MeshStandardMaterial({ color: 0xe8e4da, roughness: 0.9 }),
+  rug: new THREE.MeshStandardMaterial({ color: 0xb7a58a, roughness: 1 }),
+  glass: new THREE.MeshPhysicalMaterial({ color: 0xdfeef2, roughness: 0.05, transparent: true, opacity: 0.25 }),
+  lamp: new THREE.MeshStandardMaterial({ color: 0xfff1cc, emissive: 0xffd58a, emissiveIntensity: 2 }),
+};
+// lantai keramik
+tile(1, 0, 3.2, 3, 5); tile(1, 0, 4.85, 5, 10); tile(1, 4.85, 6.25, 5.2, 10); tile(1, 6.25, 6.9, 7.4, 9.35); tile(1, 6.9, 9, 7.4, 9.0, 0xc9ced0); tile(1, 6.9, 9, 9.0, 12);
+tile(2, 0, 9, 1.5, 5); tile(2, 0, 5.7, 5, 10.65); tile(2, 5.7, 6.25, 5, 7.4); tile(2, 5.7, 9, 7.4, 10.65); tile(2, 6.25, 9, 5, 5.4);
+tile(2, 0, 4.65, 5, 7.3, 0xc9ced0);
+// dinding dalam
+for (const w of WALLS) {
+  if (w.ext) continue;
+  const fz = FZ[w.f], cz = CZ[w.f];
+  const ops = (w.ops || []).map(([a, b, k]) =>
+    k === "win" ? { s0: a, s1: b, h0: fz + 0.9, h1: fz + 2.2, kind: "win" } :
+    k === "gdoor" ? { s0: a, s1: b, h0: fz, h1: cz - 0.25, kind: "win" } :
+    k === "roster" ? { s0: a, s1: b, h0: fz + 0.02, h1: cz - 0.05, kind: "roster" } :
+    { s0: a, s1: b, h0: fz, h1: fz + 2.2, kind: "open" });
+  wall(interior, w.a, w.at, w.s0, w.s1, fz - 0.01, cz, ops, M.wallIn, w.t || 0.12);
+}
+// lapisan cat abu-abu di muka dalam dinding luar (fasad luar tetap broken white)
+{
+  const full = (a, b, f) => ({ s0: a, s1: b, h0: FZ[f] - 0.05, h1: CZ[f] + 0.05, kind: "open" });
+  const LIN = [
+    [1, "y", 0.156, 3.15, 10, [{ s0: 7.6, s1: 9.4, h0: 2.5, h1: 3.2, kind: "open" }]],
+    [1, "x", 3.156, 0.15, 3.2, [{ s0: 0.4, s1: 2.8, h0: 0.4, h1: 3.3, kind: "open" }]],
+    [1, "x", 5.156, 3.2, 4.85, [full(3.4, 4.65, 1)]],
+    [1, "x", 5.556, 6.25, 8.85, []],
+    [1, "y", 8.844, 5.55, 11.85, []],
+    [1, "x", 11.844, 6.98, 8.85, []],
+    [1, "y", 6.981, 10.65, 11.85, []],
+    [2, "x", 1.656, 0.15, 8.85, [full(0.55, 4.85, 2), full(6.9, 8.5, 2)]],
+    [2, "y", 0.156, 1.65, 10.5, [full(2.0, 4.2, 2), { s0: 5.4, s1: 6.8, h0: DAK + 2.0, h1: DAK + 2.7, kind: "open" }, full(7.8, 10.2, 2)]],
+    [2, "y", 8.844, 1.65, 10.5, []],
+    [2, "x", 10.494, 0.15, 8.85, [full(0.6, 4.0, 2), full(6.0, 8.6, 2)]],
+  ];
+  for (const [f, a, at, s0, s1, ops] of LIN) wall(interior, a, at, s0, s1, FZ[f] - 0.01, CZ[f], ops, M.wallIn, 0.01);
+}
+for (const [f, x0, x1, y0, y1, z0, z1, m] of FURN) box(interior, x0, x1, y0, y1, FZ[f] + z0, FZ[f] + z1, MAT[m]);
+
+/* ---- detail furnitur & dekorasi (hanya 3D) ---- */
+{
+  const S = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.9 });
+  const D = { pillow: S(0xf3efe6), duvetA: S(0x5d7385), duvetB: S(0x9a6f5a), duvetC: S(0x8a9a6b), duvetD: S(0xc9a0a6),
+    accent1: S(0xc07a4f), accent2: S(0x3f5b66), curtain: new THREE.MeshStandardMaterial({ color: 0xe4dccd, roughness: 1, transparent: true, opacity: 0.92 }),
+    tileDark: S(0x5b6266), towel: S(0xd8cfc0), pot: S(0x9c5b3c), book1: S(0x8c3b2f), book2: S(0x2f4d66), book3: S(0xc9a34a), canvas1: S(0xd7b98e), canvas2: S(0x7d9aa8) };
+  const d = (f, x0, x1, y0, y1, z0, z1, m) => box(interior, x0, x1, y0, y1, FZ[f] + z0, FZ[f] + z1, m);
+  // tempat tidur: rangka kayu, bed cover, bantal, sandaran kepala
+  [[1, 8.0, 8.9, 9.9, 11.9, 0.45, D.duvetC, 1], [2, 2.2, 4.0, 2.95, 4.95, 0.5, D.duvetA, 0], [2, 0.25, 1.25, 8.45, 10.45, 0.45, D.duvetA, 1],
+   [2, 3.45, 4.45, 8.55, 10.55, 0.45, D.duvetB, 1], [2, 7.85, 8.85, 8.5, 10.5, 0.45, D.duvetD, 1]].forEach(([f, x0, x1, y0, y1, top, duv, hb]) => {
+    d(f, x0 - 0.03, x1 + 0.03, y0 - 0.03, y1 + 0.03, 0, 0.22, M.wood);
+    d(f, x0 + 0.01, x1 - 0.01, y0 + 0.01, y1 - 0.6, top, top + 0.07, duv);
+    d(f, x0 - 0.01, x1 + 0.01, y0 + 0.01, y1 - 0.6, top - 0.25, top + 0.02, duv);
+    if (x1 - x0 > 1.3) { d(f, x0 + 0.1, (x0 + x1) / 2 - 0.05, y1 - 0.5, y1 - 0.12, top, top + 0.14, D.pillow); d(f, (x0 + x1) / 2 + 0.05, x1 - 0.1, y1 - 0.5, y1 - 0.12, top, top + 0.14, D.pillow); }
+    else d(f, x0 + 0.12, x1 - 0.12, y1 - 0.5, y1 - 0.12, top, top + 0.14, D.pillow);
+    if (hb) d(f, x0 - 0.05, x1 + 0.05, y1 + 0.03, y1 + 0.09, 0, 1.0, M.wood);
+  });
+  d(2, 2.4, 3.8, 2.55, 2.88, 0, 0.45, M.wood);                                                // bangku kaki ranjang
+  for (const x of [1.7, 4.35]) { d(2, x, x + 0.14, 4.6, 4.74, 0.5, 0.85, M.black); d(2, x - 0.06, x + 0.2, 4.54, 4.8, 0.85, 1.05, D.pillow); } // lampu tidur
+  d(2, 2.55, 3.65, 4.92, 4.95, 1.45, 2.1, M.black); d(2, 2.6, 3.6, 4.91, 4.92, 1.5, 2.05, D.canvas1);  // lukisan atas ranjang
+  // sofa: lengan, bantal aksen, lampu lantai, meja samping
+  d(1, 2.2, 3.2, 7.0, 7.15, 0, 0.62, MAT.fabric); d(1, 1.45, 1.6, 5.3, 5.95, 0, 0.62, MAT.fabric);
+  d(1, 2.85, 3.0, 5.5, 5.95, 0.42, 0.82, D.accent1); d(1, 2.85, 3.0, 6.1, 6.55, 0.42, 0.82, D.accent2); d(1, 2.25, 2.7, 5.33, 5.48, 0.42, 0.8, D.pillow);
+  d(1, 3.3, 3.36, 7.0, 7.06, 0, 1.55, M.black); d(1, 3.15, 3.5, 6.85, 7.2, 1.45, 1.75, D.pillow);
+  // tirai
+  for (const [f, a, b, c, e, h] of [[1, 3.4, 3.7, 5.12, 5.16, 3.2], [1, 4.35, 4.65, 5.12, 5.16, 3.2], [1, 0.4, 0.7, 3.1, 3.14, 2.8], [1, 2.5, 2.8, 3.1, 3.14, 2.8],
+    [2, 0.55, 1.05, 1.62, 1.66, 3.05], [2, 4.35, 4.85, 1.62, 1.66, 3.05], [2, 6.9, 7.2, 1.62, 1.66, 2.9], [2, 8.2, 8.5, 1.62, 1.66, 2.9]]) d(f, a, b, c, e, 0.02, h, D.curtain);
+  for (const [f, y0, y1] of [[2, 2.0, 2.35], [2, 3.85, 4.2], [2, 7.8, 8.1], [2, 9.9, 10.2]]) d(f, 0.1, 0.14, y0, y1, 0.02, 3.0, D.curtain);
+  // dapur: backsplash & cooker hood
+  d(1, 0.08, 0.1, 8.15, 9.8, 0.92, 1.5, D.tileDark); d(1, 0.08, 0.55, 9.15, 9.6, 1.35, 1.5, M.alu);
+  // lemari: garis pintu & gagang
+  const doors = (f, axis, face, s0, s1, h) => { for (let s = s0 + 0.5; s < s1 - 0.1; s += 0.5) axis === "x" ? d(f, s - 0.005, s + 0.005, face, face + 0.012, 0.05, h - 0.05, M.black) : d(f, face, face + 0.012, s - 0.005, s + 0.005, 0.05, h - 0.05, M.black);
+    for (let s = s0 + 0.42; s < s1; s += 0.5) axis === "x" ? d(f, s - 0.01, s + 0.01, face, face + 0.03, h * 0.4, h * 0.6, M.alu) : d(f, face, face + 0.03, s - 0.01, s + 0.01, h * 0.4, h * 0.6, M.alu); };
+  doors(2, "y", 6.028, 1.7, 4.0, 2.4); doors(2, "x", 7.95, 0.08, 1.5, 2.2); doors(2, "y", 6.38, 9.0, 10.55, 2.2);
+  // ruang kerja: kursi, buku, lampu meja
+  d(2, 7.75, 7.8, 2.95, 3.4, 0.5, 1.1, M.charcoal); for (const [y, c] of [[1.8, D.book1], [2.1, D.book2], [2.4, D.book3], [2.7, D.book1]]) for (const z of [0.5, 1.0, 1.5]) d(2, 7.15, 7.17, y, y + 0.22, z, z + 0.3, c);
+  d(2, 8.7, 8.74, 3.9, 3.94, 0.76, 1.2, M.black); d(2, 8.6, 8.8, 3.8, 4.0, 1.15, 1.25, D.pillow);
+  // kamar anak: kursi belajar, lukisan, karpet
+  for (const [f, x, y] of [[2, 2.1, 9.55], [2, 6.9, 9.55]]) { d(f, x, x + 0.42, y, y + 0.42, 0.42, 0.47, M.charcoal); d(f, x, x + 0.42, y - 0.04, y, 0.47, 0.9, M.charcoal);
+    for (const [dx, dy] of [[0.02, 0.02], [0.37, 0.02], [0.02, 0.37], [0.37, 0.37]]) d(f, x + dx, x + dx + 0.03, y + dy, y + dy + 0.03, 0, 0.42, M.black); }
+  d(2, 1.7, 2.9, 10.57, 10.59, 1.25, 1.9, D.canvas2); d(2, 6.95, 7.95, 7.46, 7.48, 1.3, 1.9, D.canvas1);
+  d(2, 1.5, 3.2, 8.6, 10.0, 0, 0.012, D.accent2); d(2, 6.2, 7.6, 8.4, 9.6, 0, 0.012, D.duvetD);
+  // KM: cermin & handuk
+  d(2, 2.5, 3.3, 5.06, 5.08, 1.1, 1.8, M.glass); d(1, 6.92, 6.94, 8.75, 9.25, 1.1, 1.7, M.glass);
+  d(2, 1.15, 1.6, 7.2, 7.24, 1.0, 1.5, D.towel); d(2, 3.6, 4.05, 7.2, 7.24, 1.0, 1.5, D.towel);
+  // ISOLASI lantai 1: teralis + kasa nyamuk di pintu kaca, pintu besi ujung koridor (digambar terbuka 90°)
+  const kasa = new THREE.MeshStandardMaterial({ color: 0x2a2f33, roughness: 1, transparent: true, opacity: 0.35 });
+  for (const [a, b] of [[0.7, 2.9], [3.7, 5.2]]) {
+    for (let x = a + 0.06; x < b - 0.03; x += 0.12) d(1, x, x + 0.02, 10.08, 10.1, 0, 3.04, M.black);   // teralis sisi luar
+    d(1, a, b, 10.08, 10.1, 3.0, 3.04, M.black); d(1, a, b, 10.08, 10.1, 0, 0.04, M.black);
+    d(1, a, (a + b) / 2, 9.93, 9.94, 0.02, 3.0, kasa);                                              // kasa nyamuk geser (sisi dalam)
+  }
+  d(1, 5.65, 5.69, 9.1, 10.0, 0, 2.15, M.charcoal);                                                    // daun pintu besi
+  for (let z = 0.3; z < 2.0; z += 0.3) d(1, 5.69, 5.7, 9.15, 9.95, z, z + 0.15, kasa);
+  d(1, 5.7, 5.73, 9.2, 9.24, 1.0, 1.1, M.alu);
+  // musala: lampu dinding & rak Al-Qur'an kecil
+  d(1, 0.3, 0.9, 4.75, 4.93, 1.2, 1.24, M.wood);
+  // tanaman pot
+  const pp = (f, x, y, s) => { d(f, x - s * 0.35, x + s * 0.35, y - s * 0.35, y + s * 0.35, 0, s * 0.8, D.pot);
+    for (let i = 0; i < 4; i++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(s * (0.32 + Math.random() * 0.15), 1), i % 2 ? M.leaf : M.leaf2);
+      b.position.set(x + (Math.random() - .5) * s * .5, FZ[f] + s * (0.95 + i * 0.25), -y + (Math.random() - .5) * s * .5); interior.add(b); } };
+  pp(1, 4.55, 5.45, 0.5); pp(1, 5.0, 9.7, 0.45); pp(1, 2.95, 4.7, 0.35); pp(2, 0.45, 4.6, 0.5); pp(2, 8.65, 4.7, 0.4); pp(2, 5.35, 9.0, 0.35);
+  // lampu downlight di plafon tiap ruang dalam
+  for (const f of [1, 2]) for (const r of ROOMS[f]) if (!r.out) {
+    const cx = (r.r[0] + r.r[1]) / 2, cy = (r.r[2] + r.r[3]) / 2;
+    d(f, cx - 0.09, cx + 0.09, cy - 0.09, cy + 0.09, CZ[f] - FZ[f] - 0.025, CZ[f] - FZ[f] - 0.005, MAT.lamp);
+  }
+}
+// tangga U: 18 anak tangga ≈ 19 cm, lajur A (depan, naik ke kanan) → bordes → lajur B (belakang, naik ke kiri)
+{
+  const R = (DAK - 0.31) / 18, TA = (8.2 - 6.3) / 8, LA = [5.475, 6.275], LB = [6.425, 7.225];
+  for (let i = 1; i <= 8; i++) box(interior, 6.3 + (i - 1) * TA, 6.3 + i * TA, LA[0], LA[1], 0.31 + (i - 1) * R, 0.31 + i * R, M.wood);
+  box(interior, 6.3, 8.2, LA[0], LA[1], 0.31, 0.31 + 0.05, M.concrete);
+  box(interior, 8.2, 8.95, 5.475, 7.225, 0.31 + 9 * R - 0.15, 0.31 + 9 * R, M.wood);            // bordes
+  for (let i = 10; i <= 17; i++) { const k = i - 9;
+    box(interior, 8.2 - k * TA, 8.2 - (k - 1) * TA, LB[0], LB[1], 0.31 + i * R - 0.2, 0.31 + i * R, M.wood); }
+  box(interior, 6.3, 8.2, 6.275, 6.425, 0.31, 2.1, M.wallIn);                                  // dinding tengah
+  // railing kaca di tepi void lantai 2
+  box(interior, 6.25, 9, 5.38, 5.41, DAK, DAK + 1.0, MAT.glass); box(interior, 6.25, 9, 5.37, 5.42, DAK + 0.98, DAK + 1.02, M.black);
+  box(interior, 6.23, 6.26, 5.4, 6.4, DAK, DAK + 1.0, MAT.glass); box(interior, 6.22, 6.27, 5.4, 6.4, DAK + 0.98, DAK + 1.02, M.black);
+}
+// lampu interior (hanya aktif di tab interior)
+const ambient = new THREE.AmbientLight(0xfff4e6, 0); scene.add(ambient);
+const roomLight = new THREE.PointLight(0xffe6c4, 0, 10, 1.4); scene.add(roomLight);
+
+/* ---------- light, sky ---------- */
+const sky = new Sky(); sky.scale.setScalar(450); scene.add(sky);
+const su = sky.material.uniforms;
+su.turbidity.value = 7; su.rayleigh.value = 1.6; su.mieCoefficient.value = 0.005; su.mieDirectionalG.value = 0.8;
+const sun = new THREE.DirectionalLight(0xfff2dd, 3.2);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 120 });
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
+sun.target.position.set(4.5, 0, -6); scene.add(sun, sun.target);
+const hemi = new THREE.HemisphereLight(0xcfe3ff, 0x5b5a48, 0.9); scene.add(hemi);
+const pmrem = new THREE.PMREMGenerator(renderer);
+let envRT = null;
+const sunVec = new THREE.Vector3();
+function setHour(h) {
+  const t = (h - 6) / 12;                 // 0..1 sunrise..sunset
+  const elev = Math.max(4, Math.sin(Math.PI * t) * 78);
+  const az = THREE.MathUtils.lerp(-70, 250, t) ;   // timur di kiri-depan → barat di kanan-belakang
+  sunVec.setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - elev), THREE.MathUtils.degToRad(az));
+  su.sunPosition.value.copy(sunVec);
+  sun.position.copy(sunVec).multiplyScalar(60).add(sun.target.position);
+  const low = elev < 20;
+  sun.color.set(low ? 0xffd2a0 : 0xfff2dd);
+  sun.intensity = low ? 2.2 : 3.2;
+  const envScene = new THREE.Scene(); const s2 = new Sky(); s2.scale.setScalar(450);
+  Object.assign(s2.material.uniforms.turbidity, { value: 7 });
+  s2.material.uniforms.rayleigh.value = 1.6; s2.material.uniforms.sunPosition.value.copy(sunVec);
+  envScene.add(s2);
+  if (envRT) envRT.dispose();
+  envRT = pmrem.fromScene(envScene); scene.environment = envRT.texture;
+  const hh = Math.floor(h), mm = Math.round((h - hh) * 60);
+  document.getElementById("hourOut").textContent = `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+/* ---------- UI ---------- */
+const VIEWS = {
+  sudut: [[-12, 7.5, 13.5], [4.2, 3.4, -5.2]],
+  depan: [[4.5, 4.2, 17.5], [4.5, 3.8, -4]],
+  kiri: [[-16, 5.2, -6.5], [4, 3.8, -6]],
+  atas: [[-9, 24, 12], [4.5, 0, -6]],
+};
+let anim = null;
+function goView(k, instant) {
+  const [p, t] = VIEWS[k];
+  const from = { p: camera.position.clone(), t: controls.target.clone() };
+  const to = { p: new THREE.Vector3(...p), t: new THREE.Vector3(...t) };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (instant || reduce) { camera.position.copy(to.p); controls.target.copy(to.t); return; }
+  anim = { from, to, t0: performance.now(), d: 900 };
+}
+function setPhase(p) {
+  t1.visible = p === 1; t2.visible = p === 2; interior.visible = p === 2;
+  document.getElementById("p1").setAttribute("aria-pressed", p === 1);
+  document.getElementById("p2").setAttribute("aria-pressed", p === 2);
+  document.getElementById("n1").classList.toggle("on", p === 1);
+  document.getElementById("n2").classList.toggle("on", p === 2);
+  document.getElementById("tag").textContent = p === 1 ? "TAHAP 1 · Lantai 1 dihuni, dak beton jadi atap" : "TAHAP 2 · Rumah 2 lantai selesai";
+  try { localStorage.setItem("rumah-phase", p); } catch (e) {}
+}
+document.getElementById("phaseSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setPhase(+b.dataset.p); });
+document.getElementById("viewSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#viewSeg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  goView(b.dataset.v);
+});
+// animasi pagar lipat & tutup bak sampah
+const mech = { gate: { v: 0, to: 0, upd: t => gates.forEach(f => f(t)) }, door: { v: 0, to: 0, upd: doorUpd } };
+document.getElementById("atticBtn").addEventListener("click", e => {
+  const b = e.currentTarget, on = b.getAttribute("aria-pressed") !== "true";
+  b.setAttribute("aria-pressed", on); b.textContent = on ? "Tutup loteng" : "Lihat loteng";
+  atticShell.forEach(m => { m.visible = !on; });   // atap & dinding atas diangkat agar isi loteng terlihat
+  if (on) { setPhase(2); goView("atas");
+    document.querySelectorAll("#viewSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === "atas")); }
+});
+document.getElementById("doorBtn").addEventListener("click", e => toggleMech("door", e.currentTarget, "Buka pintu samping", "Tutup pintu samping"));
+function toggleMech(key, btn, onTxt, offTxt) {
+  const m = mech[key]; m.to = m.to ? 0 : 1;
+  btn.setAttribute("aria-pressed", !!m.to); btn.textContent = m.to ? offTxt : onTxt;
+}
+document.getElementById("gateBtn").addEventListener("click", e => toggleMech("gate", e.currentTarget, "Buka pagar", "Tutup pagar"));
+let lastT = performance.now();
+function stepMech(now) {
+  const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  for (const k in mech) { const m = mech[k]; if (m.v === m.to) continue;
+    const sp = reduce ? 1 : dt / 2.2; m.v = m.to > m.v ? Math.min(m.to, m.v + sp) : Math.max(m.to, m.v - sp);
+    const e = m.v < .5 ? 2 * m.v * m.v : 1 - Math.pow(-2 * m.v + 2, 2) / 2; m.upd(e); }
+}
+let hourTimer;
+document.getElementById("hour").addEventListener("input", e => { clearTimeout(hourTimer); const v = +e.target.value; hourTimer = setTimeout(() => setHour(v), 40); });
+
+const istage = document.getElementById("istage");
+let host = stage, mode = "eksterior";
+function resize() {
+  const w = host.clientWidth, h = host.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+const ro = new ResizeObserver(resize); ro.observe(stage); ro.observe(istage);
+
+/* ================= DENAH SVG ================= */
+const NS = "http://www.w3.org/2000/svg", SC = 100;
+const PX = x => +(x * SC).toFixed(1), PY = y => +((12 - y) * SC).toFixed(1);
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e); return e;
+}
+function rectP(x0, x1, y0, y1, cls, parent, extra = {}) {
+  return el("rect", { x: PX(Math.min(x0, x1)), y: PY(Math.max(y0, y1)), width: Math.abs(x1 - x0) * SC, height: Math.abs(y1 - y0) * SC, class: cls, ...extra }, parent);
+}
+function lineP(x0, y0, x1, y1, cls, parent) { return el("line", { x1: PX(x0), y1: PY(y0), x2: PX(x1), y2: PY(y1), class: cls }, parent); }
+function textP(x, y, s, cls, parent, extra = {}) { const t = el("text", { x: PX(x), y: PY(y), class: cls, ...extra }, parent); t.textContent = s; return t; }
+function doorArc(C, P1, P2, parent) {
+  const c = [PX(C[0]), PY(C[1])], a = [PX(P1[0]), PY(P1[1])], b = [PX(P2[0]), PY(P2[1])];
+  const v1 = [a[0] - c[0], a[1] - c[1]], v2 = [b[0] - c[0], b[1] - c[1]], r = Math.hypot(...v1);
+  const sweep = v1[0] * v2[1] - v1[1] * v2[0] > 0 ? 1 : 0;
+  el("line", { x1: c[0], y1: c[1], x2: a[0], y2: a[1], class: "dr" }, parent);
+  el("path", { d: `M${a[0]} ${a[1]} A${r} ${r} 0 0 ${sweep} ${b[0]} ${b[1]}`, class: "dr", "stroke-dasharray": "5 4" }, parent);
+}
+function drawWall(w, g) {
+  const t = w.t || (w.ext ? 0.15 : 0.12), ops = [...(w.ops || [])].sort((p, q) => p[0] - q[0]);
+  const R = (s0, s1) => w.a === "x" ? rectP(s0, s1, w.at - t / 2, w.at + t / 2, "wl", g) : rectP(w.at - t / 2, w.at + t / 2, s0, s1, "wl", g);
+  const L = (s0, s1, off, cls) => w.a === "x" ? lineP(s0, w.at + off, s1, w.at + off, cls, g) : lineP(w.at + off, s0, w.at + off, s1, cls, g);
+  let cur = w.s0;
+  for (const [a, b, k, side = 1] of ops) {
+    if (a > cur) R(cur, a);
+    if (k === "win" || k === "gdoor") { L(a, b, -t / 4, "wn"); L(a, b, t / 4, "wn"); R(a, a + 0.03); R(b - 0.03, b); }
+    else if (k === "roster") { for (let s = a; s < b - 0.05; s += 0.2) R(s, s + 0.1); }
+    else if (k === "slide") { L(a, a + (b - a) * 0.6, -t / 3, "dr"); L(a + (b - a) * 0.4, b, t / 3, "dr"); }
+    else if (k === "door" || k === "sdoor") {
+      const len = b - a;
+      if (w.a === "x") doorArc([a, w.at], [a, w.at + side * len], [b, w.at], g);
+      else doorArc([w.at, a], [w.at + side * len, a], [w.at, b], g);
+    }
+    cur = b;
+  }
+  if (w.s1 > cur) R(cur, w.s1);
+}
+function planExtras(f, g) {
+  if (f === 1) {
+    // tangga U
+    const TA = (8.2 - 6.3) / 8;
+    rectP(6.3, 8.95, 5.475, 7.225, "ln", g);
+    for (let i = 1; i < 8; i++) { lineP(6.3 + i * TA, 5.475, 6.3 + i * TA, 6.275, "ln", g); lineP(6.3 + i * TA, 6.425, 6.3 + i * TA, 7.225, "ln", g); }
+    lineP(8.2, 5.475, 8.2, 7.225, "ln", g);
+    el("path", { d: `M${PX(6.45)} ${PY(5.875)} H${PX(8.55)} V${PY(6.825)} H${PX(6.5)}`, class: "ln", "marker-end": "url(#arr)" }, g);
+    textP(7.25, 5.95, "Naik", "rd", g);
+    // pintu utama diagonal
+    lineP(4.85, 5.0, 6.25, 5.4, "wl2", g);
+    textP(5.55, 4.15, "Pintu utama 1,45", "rd", g);
+    // kolom & pagar
+    for (const x of [0.12, 3.2, 8.88]) rectP(x - 0.12, x + 0.12, 1.55, 1.8, "wl", g);
+    rectP(0, 0.45, 0, 0.2, "wl", g); rectP(0, 0.2, 0, 0.55, "wl", g);
+    lineP(0.45, 0.035, 2.9, 0.035, "wl2", g); rectP(2.9, 3.4, 0, 0.07, "wl", g); rectP(8.8, 9, 0, 0.08, "wl", g);
+    lineP(3.35, 0.12, 6.3, 0.12, "gt", g); lineP(6.05, 0.22, 9, 0.22, "gt", g);
+    textP(6.1, 0.38, "Gerbang geser teleskopik", "rd", g);
+    // sisi samping: bak sampah, kolom, pintu orang
+    rectP(0, 0.8, 0.55, 1.5, "wl2", g); textP(0.42, 0.98, "Bak", "rd", g); textP(0.42, 0.8, "sampah", "rd", g);
+    rectP(0, 0.24, 1.55, 1.8, "wl", g);
+    rectP(-0.1, 0.1, 1.8, 1.88, "wl", g); rectP(-0.1, 0.1, 2.75, 3.0, "wl", g);
+    doorArc([0.0, 1.88], [0.87, 1.88], [0.0, 2.75], g);
+    // isolasi area utama
+    for (const [a, b] of [[0.7, 2.9], [3.7, 5.2]]) lineP(a, 10.12, b, 10.12, "gt", g);
+    textP(4.45, 10.3, "kaca geser + kasa + teralis", "rd", g);
+    textP(6.15, 10.5, "pintu besi + kasa", "rd", g);
+    // taman belakang: bak tanam & bangku cor
+    rectP(0.15, 6.85, 11.5, 11.87, "fu", g); textP(3.5, 11.6, "bak tanam memanjang", "rd", g);
+    rectP(0.15, 0.7, 10.2, 11.45, "fu", g); textP(0.95, 10.75, "bangku", "rd", g, { transform: `rotate(-90 ${PX(0.95)} ${PY(10.75)})` });
+    // mobil
+    rectP(6.84, 8.66, 0.555, 5.085, "fu", g, { rx: 30 });
+    textP(7.75, 2.75, "SUV 4,53 m", "rd", g);
+  } else {
+    rectP(6.25, 9, 5.4, 7.4, "ln", g); lineP(6.25, 5.4, 9, 7.4, "ln", g); lineP(6.25, 7.4, 9, 5.4, "ln", g);
+    const TA = (8.2 - 6.3) / 8;
+    for (let i = 1; i < 8; i++) lineP(6.3 + i * TA, 6.425, 6.3 + i * TA, 7.225, "ln", g);
+    lineP(6.25, 5.4, 9, 5.4, "wl2", g); lineP(6.25, 5.4, 6.25, 6.4, "wl2", g);
+    el("circle", { cx: PX(1.5), cy: PY(3.05), r: 0.55 * SC, class: "gt" }, g);
+    textP(1.5, 2.3, "Toren di loteng", "rd", g);
+  }
+}
+function renderPlan(svg, f, onPick, selId) {
+  svg.textContent = "";
+  svg.setAttribute("viewBox", "-95 -40 1090 1320");
+  const defs = el("defs", {}, svg);
+  const mk = el("marker", { id: "arr", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: "auto-start-reverse" }, defs);
+  el("path", { d: "M0 0 L10 5 L0 10 z", fill: "currentColor", class: "ln" }, mk);
+  const gR = el("g", {}, svg), gF = el("g", {}, svg), gW = el("g", {}, svg), gX = el("g", {}, svg), gT = el("g", {}, svg), gH = el("g", {}, svg);
+  rectP(0, 9, 0, 12, "rm out", gR);
+  if (f === 2) {
+    rectP(0, 9, 0, 1.5, "rm out", gR); rectP(0, 9, 10.65, 12, "rm out", gR);
+    textP(4.5, 0.65, "Area depan / carport di bawah", "rd", gT); textP(4.5, 11.25, "Taman & servis di bawah", "rd", gT);
+  }
+  for (const r of ROOMS[f]) rectP(r.r[0], r.r[1], r.r[2], r.r[3], "rm" + (r.out ? " out" : "") + (r.wet ? " wet" : ""), gR);
+  for (const [ff, x0, x1, y0, y1, , , , p] of FURN) if (ff === f && p) rectP(x0, x1, y0, y1, "fu", gF);
+  for (const w of WALLS) if (w.f === f) drawWall(w, gW);
+  planExtras(f, gX);
+  for (const r of ROOMS[f]) {
+    const [x0, x1, y0, y1] = r.r, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, narrow = x1 - x0 < 1.3;
+    const lx = r.id === "keluarga" ? 1.9 : r.id === "tangga" ? 7.6 : r.id === "tangga2" ? 7.6 : r.id === "carport" ? 5.1 : cx;
+    const ly = r.id === "keluarga" ? 6.35 : r.id === "tangga" ? 6.95 : r.id === "tangga2" ? 6.5 : r.id === "carport" ? 3.2 : cy;
+    if (narrow) { const t = textP(lx, ly, r.n, "rn", gT, { transform: `rotate(-90 ${PX(lx)} ${PY(ly)})`, dy: 7 }); }
+    else { textP(lx, ly + 0.08, r.n, "rn", gT); textP(lx, ly - 0.2, r.d, "rd", gT); }
+  }
+  textP(4.5, -0.32, "9,00 m  ·  sisi jalan depan", "dm", gT);
+  textP(-0.55, 6, "12,00 m  ·  jalan samping", "dm", gT, { transform: `rotate(-90 ${PX(-0.55)} ${PY(6)})` });
+  if (onPick) for (const r of ROOMS[f]) {
+    const h = el("g", { class: "hit" + (r.id === selId ? " sel" : ""), tabindex: 0, role: "button", "aria-label": "Masuk ke " + r.n }, gH);
+    rectP(r.r[0], r.r[1], r.r[2], r.r[3], "hl", h);
+    h.addEventListener("click", () => onPick(f, r));
+    h.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(f, r); } });
+  }
+}
+renderPlan(document.getElementById("planL1"), 1);
+renderPlan(document.getElementById("planL2"), 2);
+
+/* ================= INTERIOR NAV ================= */
+let iFloor = 1, iRoom = null;
+const iplan = document.getElementById("iplan");
+/* ---- pemain (first person) ---- */
+const P = { x: 5, y: 5.5, z: FZ[1], yaw: 0, pitch: 0, f: 1 };
+const EYE = 1.55, RAD = 0.2;
+const RISE = (DAK - 0.31) / 18;
+// permukaan tempat berpijak di (x, y): lantai 1, tangga, bordes, lantai 2
+function surfaces(x, y) {
+  const s = [];
+  if (x > 0.1 && x < 8.9 && y > 0.1 && y < 11.9) s.push(FZ[1]);
+  if (x >= 6.2 && x <= 8.2 && y >= 5.475 && y <= 6.275) s.push(0.31 + Math.max(0, x - 6.3) / 1.9 * 8 * RISE);
+  if (x >= 8.2 && x <= 8.95 && y >= 5.475 && y <= 7.225) s.push(0.31 + 9 * RISE);
+  if (x >= 6.2 && x <= 8.2 && y >= 6.425 && y <= 7.225) s.push(0.31 + 9 * RISE + Math.min(1, (8.2 - x) / 1.9) * 9 * RISE);
+  if (x > 0.1 && x < 8.9 && y > 1.55 && y < 10.6 && !(x > 6.25 && x < 9 && y > 5.4 && y < 7.4)) s.push(FZ[2]);
+  return s;
+}
+// kotak tabrakan dinding (bagian pejal saja; pintu & bukaan bisa dilewati)
+const SOLIDS = { 1: [], 2: [] };
+for (const w of WALLS) {
+  const t = (w.t || (w.ext ? 0.15 : 0.12)) / 2 + RAD; let cur = w.s0;
+  const add = (a, b) => { if (b - a > 0.01) SOLIDS[w.f].push(w.a === "x" ? [a - RAD, b + RAD, w.at - t, w.at + t] : [w.at - t, w.at + t, a - RAD, b + RAD]); };
+  for (const [a, b, k] of [...(w.ops || [])].sort((p, q) => p[0] - q[0])) { add(cur, a); if (k === "win" || k === "roster") add(a, b); cur = b; }
+  add(cur, w.s1);
+}
+SOLIDS[1].push([6.3 - RAD, 8.2, 6.275 - RAD, 6.425 + RAD]);   // dinding tengah tangga
+function blocked(x, y, z) {
+  const fl = z > 2.4 ? 2 : 1;
+  for (const [a, b, c, e] of SOLIDS[fl]) if (x > a && x < b && y > c && y < e) return true;
+  return false;
+}
+function groundFor(x, y, z) {
+  let best = null;
+  for (const h of surfaces(x, y)) if (h <= z + 0.45 && h >= z - 0.5 && (best === null || h > best)) best = h;
+  return best;
+}
+function tryMove(nx, ny) {
+  const g = groundFor(nx, ny, P.z);
+  if (g === null) return false;
+  if (blocked(nx, ny, Math.max(g, P.z)) && !blocked(P.x, P.y, P.z)) return false;   // boleh keluar bila terlanjur di dalam dinding
+  P.x = nx; P.y = ny; P.z = g; return true;
+}
+function applyCamera() {
+  camera.position.set(P.x, P.z + EYE, -P.y);
+  camera.rotation.set(P.pitch, P.yaw, 0, "YXZ");
+}
+function pickRoom(f, r) {
+  iRoom = r;
+  P.x = r.eye[0]; P.y = r.eye[1]; P.z = FZ[f]; P.f = f;
+  const dx = r.look[0] - r.eye[0], dy = r.look[1] - r.eye[1];
+  P.yaw = Math.atan2(-dx, dy); P.pitch = -0.08;
+  applyCamera(); syncPlan(true);
+}
+// sinkron denah: lantai aktif, ruangan, dan penanda posisi
+let meMark = null, lastRoomId = null, lastF = null;
+function roomAt(f, x, y) { return ROOMS[f].find(r => x >= r.r[0] && x <= r.r[1] && y >= r.r[2] && y <= r.r[3]); }
+function syncPlan(force) {
+  const f = P.z > 2.4 ? 2 : 1;
+  const r = roomAt(f, P.x, P.y);
+  const id = r ? r.id : null;
+  // denah hanya berganti bila posisi pemain berubah lantai/ruang (pilihan lantai manual tetap dihormati)
+  if (force || f !== lastF || id !== lastRoomId) {
+    iFloor = f; lastF = f; lastRoomId = id; if (r) iRoom = r;
+    document.querySelectorAll("#floorSeg button").forEach(x => x.setAttribute("aria-pressed", +x.dataset.f === f));
+    renderPlan(iplan, f, pickRoom, id);
+    meMark = el("g", { class: "me" }, iplan);
+    el("path", { d: "M0 -26 L15 14 L0 6 L-15 14 Z", style: "fill:var(--p-hl);stroke:var(--card);stroke-width:3" }, meMark);
+    document.getElementById("itag").textContent = `LANTAI ${f} · ${r ? r.n : (P.z > 0.6 && P.z < 3.5 ? "Tangga" : "—")}`;
+    const cx = r ? (r.r[0] + r.r[1]) / 2 : P.x, cy = r ? (r.r[2] + r.r[3]) / 2 : P.y;
+    roomLight.position.set(cx, r && r.out ? FZ[f] + 2.6 : CZ[f] - 0.3, -cy);
+  }
+  if (meMark && iFloor === f) {
+    const fx = -Math.sin(P.yaw), fy = Math.cos(P.yaw);
+    meMark.setAttribute("transform", `translate(${PX(P.x)} ${PY(P.y)}) rotate(${(Math.atan2(fx, fy) * 180 / Math.PI).toFixed(1)})`);
+  }
+}
+// input: WASD / panah untuk berjalan, Shift lari, seret untuk melihat
+const keys = new Set();
+addEventListener("keydown", e => {
+  if (mode !== "interior" || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  const k = e.code;
+  if (["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "ShiftLeft", "ShiftRight"].includes(k)) { keys.add(k); if (k.startsWith("Arrow")) e.preventDefault(); }
+});
+addEventListener("keyup", e => keys.delete(e.code));
+addEventListener("blur", () => keys.clear());
+let drag = null;
+renderer.domElement.addEventListener("pointerdown", e => { if (mode !== "interior") return; drag = { x: e.clientX, y: e.clientY }; renderer.domElement.setPointerCapture(e.pointerId); });
+renderer.domElement.addEventListener("pointermove", e => {
+  if (!drag || mode !== "interior") return;
+  P.yaw -= (e.clientX - drag.x) * 0.0045; P.pitch = THREE.MathUtils.clamp(P.pitch - (e.clientY - drag.y) * 0.0035, -1.2, 1.2);
+  drag = { x: e.clientX, y: e.clientY };
+});
+renderer.domElement.addEventListener("pointerup", () => { drag = null; });
+renderer.domElement.addEventListener("pointercancel", () => { drag = null; });
+// tombol layar sentuh
+document.querySelectorAll("#pad button").forEach(b => {
+  const k = b.dataset.k;
+  b.addEventListener("pointerdown", e => { e.preventDefault(); keys.add(k); });
+  for (const ev of ["pointerup", "pointerleave", "pointercancel"]) b.addEventListener(ev, () => keys.delete(k));
+});
+function updatePlayer(dt) {
+  const fwd = (keys.has("KeyW") || keys.has("ArrowUp") ? 1 : 0) - (keys.has("KeyS") || keys.has("ArrowDown") ? 1 : 0);
+  const str = (keys.has("KeyD") ? 1 : 0) - (keys.has("KeyA") ? 1 : 0);
+  const turn = (keys.has("ArrowLeft") ? 1 : 0) - (keys.has("ArrowRight") ? 1 : 0);
+  P.yaw += turn * 1.8 * dt;
+  if (fwd || str) {
+    const sp = (keys.has("ShiftLeft") || keys.has("ShiftRight") ? 3.0 : 1.5) * dt;
+    const fx = -Math.sin(P.yaw), fy = Math.cos(P.yaw), rx = Math.cos(P.yaw), ry = Math.sin(P.yaw);
+    let mx = (fx * fwd + rx * str), my = (fy * fwd + ry * str); const n = Math.hypot(mx, my); mx *= sp / n; my *= sp / n;
+    if (!tryMove(P.x + mx, P.y + my)) { tryMove(P.x + mx, P.y) || tryMove(P.x, P.y + my); }
+  }
+  applyCamera(); syncPlan(false);
+}
+document.getElementById("floorSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#floorSeg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  iFloor = +b.dataset.f;
+  renderPlan(iplan, iFloor, pickRoom, null); meMark = null;
+});
+function setMode(m) {
+  mode = m;
+  const inside = m === "interior";
+  camera.fov = inside ? 72 : 38; camera.updateProjectionMatrix();
+  controls.enabled = !inside; anim = null; keys.clear();
+  ambient.intensity = inside ? 0.6 : 0;
+  roomLight.intensity = inside ? 7 : 0;
+  renderer.toneMappingExposure = inside ? 0.75 : 0.55;
+}
+
+/* ================= TABS ================= */
+const TABS = ["denah", "eksterior", "interior"];
+function showTab(name) {
+  if (!TABS.includes(name)) name = "eksterior";
+  for (const t of TABS) {
+    document.getElementById("tab-" + t).hidden = t !== name;
+    document.getElementById("t-" + t).setAttribute("aria-selected", t === name);
+  }
+  if (name === "eksterior") {
+    const wasInside = mode === "interior";
+    host = stage; stage.prepend(renderer.domElement); setMode("eksterior");
+    if (wasInside) { goView("sudut", true); document.querySelectorAll("#viewSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === "sudut")); }
+  } else if (name === "interior") {
+    host = istage; istage.prepend(renderer.domElement); setMode("interior"); setPhase(2);
+    atticShell.forEach(m => { m.visible = true; });
+    if (!iRoom) pickRoom(1, ROOMS[1].find(r => r.id === "keluarga")); else { applyCamera(); syncPlan(true); }
+  }
+  requestAnimationFrame(resize);
+}
+document.querySelector(".tabs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-tab]"); if (!b) return;
+  if (location.hash !== "#" + b.dataset.tab) location.hash = b.dataset.tab; else showTab(b.dataset.tab);
+});
+addEventListener("hashchange", () => showTab(location.hash.slice(1)));
+
+let startPhase = 1; try { startPhase = +(localStorage.getItem("rumah-phase") || 1); } catch (e) {}
+setPhase(startPhase === 2 ? 2 : 1);
+setHour(9.5); goView("sudut", true);
+showTab(location.hash.slice(1) || "eksterior");
+
+renderer.setAnimationLoop(now => {
+  if (anim) {
+    const k = Math.min(1, (now - anim.t0) / anim.d), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    camera.position.lerpVectors(anim.from.p, anim.to.p, e); controls.target.lerpVectors(anim.from.t, anim.to.t, e);
+    if (k >= 1) anim = null;
+  }
+  stepMech(now);
+  if (mode === "interior") updatePlayer(Math.min(0.05, (now - (window.__lt || now)) / 1000)); else controls.update();
+  window.__lt = now;
+  if (document.getElementById("tab-denah").hidden) renderer.render(scene, camera);   // tab denah tidak perlu render 3D
+});
+</script>
+
+</body>
+</html>
